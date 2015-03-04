@@ -1,0 +1,39 @@
+[xml]
+product: /home/thebrush/etl/wordpress/Prodotti.xml
+availability: /home/thebrush/etl/wordpress/Disponibilita.xml
+reference: /home/thebrush/etl/wordpress/Riferimenti.xml
+wordpress: /home/thebrush/etl/wordpress/out/Wordpress.xml
+only_available: False
+
+[log]
+log_mail: True
+log_verbose: True
+verbose: True
+
+log_file: /home/thebrush/etl/wordpress/log/wordpress.log
+log_err: /home/thebrush/etl/wordpress/log/wordpress_error.log
+log_schedule: /home/thebrush/etl/wordpress/log/wordpress_schedule.log
+log_total: /home/thebrush/etl/wordpress/log/wordpress_tot.log
+log_return: '\n'
+
+[remove]
+product: ['<SIGLA_STAGIONE', '<TIPO_STAGIONE', '<DESCRIZIONE_MODELLO', '<PREZZO_LISTINO', '<PESO_VOLUME', '<PREVENDITA', '<MISURA_DES', '<DATA_PREVENDITA', '<TIPO_IMBALLO', '<PREZZO_IMBALLO', '<PAESE_PRODUZIONE', '<CODICE_MID_PRODUTTORE', '<COMPOSIZIONE_DETTAGLIATA', '<TI_DES_ESTESA', '<BS_DES', '<TS', ' <AR_TS', '<VA_PERIODO_CAMBIO', '<PAGINA_PUBBLICAZIONE', '<RF_CANCELLATO', '<RF_TABELLA', '<RF_TIPO', '<PREVENDITA', '<MAX_DATA_EVA', '<NOR', '<MISURA']
+availability: []
+reference: []
+
+[csv]
+availability: /home/thebrush/etl/wordpress/out/Disponibilita.csv
+availability_title: Reference;Description;Real stock;Alert stock;Price without taxes
+availability_mask: '%(BARCODEEAN)s;%(MM_TAGLIA)s;%(ESI)s;1;0'
+availability_parameter: ['BARCODEEAN', 'MM_TAGLIA', 'ESI']
+
+[smtp]
+server: out.impresasemplice.it
+user: info@generalfoodspa.191.it
+password: general1+
+port: 25
+SSL: False
+from_addr: info@generalfoodspa.191.it
+to_addr: nicola.riolini@gmail.com
+
+
