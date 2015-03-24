@@ -20,6 +20,7 @@ config.read(cfg_file)
 xml_product = config.get('xml', 'product')
 xml_availability = config.get('xml', 'availability')
 xml_reference = config.get('xml', 'reference')
+xml_pricelist = config.get('xml', 'pricelist')
 xml_wordpress = config.get('xml', 'wordpress')
 
 only_available = eval(config.get('xml', 'only_available'))
@@ -39,6 +40,7 @@ log_log_total = config.get('log', 'log_total') # Log total elements imported
 remove_product = eval(config.get('remove', 'product'))
 #remove_availability = eval(config.get('remove', 'availability'))
 #remove_reference = eval(config.get('remove', 'reference'))
+#remove_pricelist = eval(config.get('remove', 'pricelist'))
 
 #csv
 availability_csv = config.get('csv', 'availability') # file csv
@@ -174,6 +176,13 @@ try:
             start = True
             continue
             
+        # Extra export: Check element for CSV file:
+        for csv_key in availability_parameter:
+            if csv_key in line:
+                line_csv[csv_key] = line.split(
+                    "<%s>" % csv_key)[-1].split(
+                        "</%s>" % csv_key)[0]
+
         if start and not item_id:
             if "ID_ARTICOLO" in line:
                 item_id = line.split(
@@ -185,13 +194,6 @@ try:
                     log_err, 
                     "Availability: not found ID_ARTICOLO [line: %s]" % i, )
             continue
-
-        # Extra export: Check element for CSV file:
-        for csv_key in availability_parameter:
-            if csv_key in line:
-                line_csv[csv_key] = line.split(
-                    "<%s>" % csv_key)[-1].split(
-                        "</%s>" % csv_key)[0]
         
         if start and "</Disponibilita>" in line:
             # Extra export CSV file:
@@ -297,7 +299,73 @@ try:
         log_total, 
         msg, 
         )
-    
+
+    # -------------------------------------------------------------------------
+    # Pricelist
+    # -------------------------------------------------------------------------
+    error = "Error importing pricelist"
+    log_message(
+        log_file, 
+        "Start pricelist xml file", )
+
+    pricelist = {}
+    i = 0 # line counter
+    tot = 0 # record counter
+    start = False # find one record
+    item_id = False # find id record
+    record = "" # text of element
+
+    for line in open(xml_pricelist, 'r'):
+        i += 1
+        if i <= 2: # Jump first 2 line
+            continue
+            
+        if not start and "<LISTINI>" in line:
+            start = True
+            continue
+            
+        if start and not item_id:
+            if "LI_ID_VARIANTI" in line:
+                item_id = line.split(
+                    "<LI_ID_VARIANTI>")[-1].split(
+                        "</LI_ID_VARIANTI>")[0]
+            else:
+                error_alert = True
+                log_message(
+                    log_err, 
+                    "Pricelist: not found LI_ID_VARIANTI [line: %s]" % i, )
+            continue
+
+        if start and "</LISTINI>" in line:
+            if item_id not in pricelist:
+                pricelist[item_id] = []
+            pricelist[item_id].append(record)
+            tot += 1
+
+            if verbose:
+                print "%s. Record pricelist for: %s" % (
+                    tot,
+                    item_id, 
+                    )
+            start = False
+            item_id = False
+            record = ""
+            continue
+        
+        if start:
+            record += line    
+
+    msg = "File: %s Line: %s Record: %s Products: %s" % (
+        xml_pricelist,
+        i,
+        tot,
+        len(pricelist), )
+    body += msg + log_log_return    
+    log_message(
+        log_total, 
+        msg, 
+        )
+
     # -------------------------------------------------------------------------
     # Product
     # -------------------------------------------------------------------------
@@ -326,9 +394,9 @@ try:
             error = "Error start loop"
             i += 1
             # -----------------------------------------------------------------
-            # Jump first 2 line
+            # Jump first 2 line (or empty line)
             # -----------------------------------------------------------------
-            if i <= 2: 
+            if i <= 2 or not line.strip(): 
                 continue
                 
             error = "Error test start prodotti"
@@ -373,6 +441,7 @@ try:
             if start and "</Prodotti>" in line: 
                 reference_tot = 0
                 availability_tot = 0
+                pricelist_tot = 0
                 if not jump:
                     # ---------------------------------------------------------
                     # Write reference:
@@ -414,18 +483,41 @@ try:
                     else:
                         file_wordpress.write(
                             "    <Disponibilita></Disponibilita>")
+
+                    # ---------------------------------------------------------
+                    # Write pricelist:
+                    # ---------------------------------------------------------
+                    error = "Error write pricelist"
+                    if item_id in pricelist:
+                        file_wordpress.write(
+                            "%s    <Listini>" % log_log_return)
+                        pricelist_tot = len(pricelist[item_id])
+                        for item in pricelist[item_id]:
+                            file_wordpress.write(
+                                "%s     <Listini>%s%s     </Listini>" % (
+                                    log_log_return,
+                                    log_log_return,
+                                    item.replace(" "*4, " "*6),
+                                    #log_log_return,
+                                    ))
+                        file_wordpress.write(
+                            "%s    </Listini>" % log_log_return)
+                    else:
+                        file_wordpress.write(
+                            "%s    <Listini></Listini>" % log_log_return)
                     
                     file_wordpress.write("%s   </Prodotto>" % log_log_return)
                 tot += 1
 
                 error = "End part"
                 if verbose:
-                    body += "%s. Prodotto %s: %s [Dispo: %s - Immagini: %s (%s)]%s" % (
+                    body += "%s. Prodotto %s: %s [Dispo: %s - Immagini: %s - Listino: %s (%s)]%s" % (
                         tot,
                         "saltato" if jump else "creato",
                         item_id, 
                         availability_tot,
                         reference_tot,
+                        pricelist_tot,
                         "outofstock" if deleted else "instock",
                         log_log_return,
                         )
@@ -493,7 +585,11 @@ try:
                 # Particular cases jumped jeys:
                 # -------------------------------------------------------------
                 for remove_key in remove_product:
-                    if remove_key in line:
+                    # 3 cases: "<key>" "<key " "</key>"  (problema con tag + attr)
+                    if (
+                            "<%s>" % remove_key in line or 
+                            "<%s " % remove_key in line or 
+                            "</%s>" % remove_key in line):
                         writeline = False
                         break # stop loop                   
                 
