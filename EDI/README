@@ -5,8 +5,9 @@ config file where setup parameters: openerp.cfg
 import invoice managed with: split.py
 
 import orders spooler: prepare.py
-   - particular case of conversion: csv2txt.py (launched by prepare.py)
+   - particular case of conversion: csv2txt.py launched before prepare.py 
+     (with a batch command)
 
-file generic with log utility: utility.py
+file generic with log utility: utility.py << TODO not yet implemented!!!
 
 

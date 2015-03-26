@@ -50,6 +50,7 @@ try:
     log_file_name = config.get(company, 'log_file_name')
     log_scheduler = config.get(company, 'log_scheduler_name') # Scheduler log file
     sprix_number = int(config.get(company, 'sprix_number'))
+    
     # Jump order too new:
     jump_order_days = eval(config.get(company, 'jump_order_days'))
     left_start_date = int(config.get(company, 'left_start_date'))
@@ -196,7 +197,7 @@ for ts, file_in in file_list:
     # Jump file to delivery in 'left_days' days (usually 3):
     if jump_order_days:
         fin = open(join(path_in, file_in), "r")
-        test_date = fin.readline()[left_start_date:left_start_date + 8]
+        test_date = fin.readline()[left_start_date:left_start_date + 8] # TODO manage format
         fin.close()
         
         # Load every time the force list:
@@ -204,7 +205,8 @@ for ts, file_in in file_list:
         if file_in in force_list:
             force_list.remove(file_in)
             store_forced(force_file, force_list) # TODO if not imported??
-            log_message(log_file, "Importazione forzata: %s > %s" % (path_in, file_in))
+            log_message(log_file, "Importazione forzata: %s > %s" % (
+                path_in, file_in))
             
         elif test_date >= max_date:
             log_message(log_file,
@@ -287,7 +289,9 @@ for ts, file_in in file_list:
                     from_addr, to_addr, smtp_subject_mask % file_in,
                     datetime.now().strftime("%d/%m/%Y %H:%M"), mail_error))
             smtp.quit()       
-            log_message(log_file, "Invio mail errore importazione: da %s, a %s, \n\t<<<%s\t>>>" % (
+            log_message(
+                log_file, 
+                "Invio mail errore importazione: da %s, a %s, \n\t<<<%s\t>>>" % (
                 from_addr, to_addr, mail_error))    
         else:
             log_message(

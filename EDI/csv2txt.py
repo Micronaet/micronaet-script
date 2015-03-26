@@ -23,15 +23,15 @@
 import sys
 import os
 import ConfigParser
-from os.path import isfile, join
+from os.path import isfile, join, expanduser
+from os import listdir
 from datetime import datetime, timedelta
-from utility import *
 
 # -----------------------------------------------------------------------------
 #                                   Parameters:
 # -----------------------------------------------------------------------------
 # Config file:
-cfg_file = "openerp.cfg" # same directory
+cfg_file = "openerp.lnx.cfg" # same directory
 config = ConfigParser.ConfigParser()
 config.read(cfg_file)
 
@@ -41,81 +41,158 @@ company = "SAR" # default company is SAR
 #from_char = config.get(company, 'split_from_char')
 #to_char = config.get(company, 'split_to_char')
 
+cr = eval(config.get('general', 'return'))
+
 # Char to split csv file:
 slit_char = config.get(company, 'split_char')
 
 # file to log:
-log_file = config.get(company, 'log_file_name')
+log_file = os.path.expanduser(config.get(company, 'log_file_name'))
 
 # Folder with file to split:
-input_folder = config.get(company, 'path_in')
-
-# File converted:
-output_file = config.get(company, 'split_file_out')
+input_folder = os.path.expanduser(config.get(company, 'path_csv'))
+output_folder = os.path.expanduser(config.get(company, 'path_in')) # in for imp
 
 # folder where save input_file after elaboration:
-history_folder = config.get(company, 'path_history')
+history_folder = os.path.expanduser(config.get(company, 'path_history'))
 
 # Output file:
-order_mask = config.get(company, 'split_mask')  # Mask file:
+field_type = config.get(company, 'split_field_type').replace("(", "%(")  # Mask file:
+max_element = eval(config.get(company, 'split_max_cols'))
 
-jump_element = config.get(company, 'split_jump_cols')
-max_element = config.get(company, 'split_max_cols')
+# -----------------------------------------------------------------------------
+#                                  Utility:
+# -----------------------------------------------------------------------------
+# Constant (for log):
+DATETIME_FORMAT = "%Y%m%d_%H%M%S"
+DATETIME_FORMAT_LOG = "%Y/%m/%d %H:%M:%S"
 
+def log_event(comment, log_type='info'):
+    ''' Log on file the operations
+    '''
+    log_file.write("[%s] %s >> %s\n" % (
+        log_type,
+        datetime.now().strftime(DATETIME_FORMAT_LOG),
+        comment, 
+        ))
+    return True    
+
+def new_file(invoice):
+    ''' Operation for get new file:
+    '''
+    out_filename = join(output_folder, invoice)
+    log_event("Output on file: %s" % out_filename)
+    return open(out_filename, 'w') 
+    
 # -----------------------------------------------------------------------------
 #                                  Start procedure:
 # -----------------------------------------------------------------------------
 log_file = open(log_file, 'w')
+
+# Create mask:
+order_mask = ""
+i = 0
+end_col = "" # TODO parametrize (used for debug)
+
+fields = {}
+for item in field_type.split('|'):
+    t = item[:1].lower()
+    fields[i] = item # save for trunk operations
+    if t == "s":
+        if fields[i][1:2] == ">":
+           start = 2
+           sign= ""
+        elif fields[i][1:2] == ("<"):
+           start = 2
+           sign= "-"
+        else: # left align
+           start = 1    
+           sign= "-"
+
+        order_mask += "%s(%s)%s%ss%s" % ("%", i, sign, item[start:], end_col)
+    elif t == "f":
+        order_mask += "%s(%s)%sf%s" % ("%", i, item[1:], end_col)
+    elif t == "x": # jump line
+        pass # Jump field
+    else:
+        log_event(
+            'Field format error, start with %s (correct: X, F, S)' % f, 
+            'error')
+    i += 1
+order_mask += cr
+
 import pdb; pdb.set_trace()
-log_event("Start converting on file: %s" % input_file)
-try:
-    # TODO loop on folder: 
-    # for file in input_folder
-    input_file = "/home/thebrush/Scrivania/ordini.csv" # TODO
-    in_file = open(input_file, 'r')
-    i = 0
-    for line in in_file:
-        i += 1 
-        if not line: # Jump empty lines:
-            log_event("Empty line [%s] (jumped)" % i, 'warning')
-            continue
-        line = line.strip() # remove extra space
-        line = line.split(slit_char) # convert in list
+for file_name in [
+        f for f in listdir(input_folder) if isfile(
+            join(input_folder, f))]:
+    try:
+        error = "Error file not exist"
+        input_file = expanduser(join(input_folder, file_name)) 
+        output_file = expanduser(join(output_folder, file_name)) # same name
+        
+        log_event("Start converting %s > %s" % (
+            input_file,
+            output_file, ))
 
-        if len(line) != max_element:
-            log_event("Column error %s instead of %s (jumped)" % (
-                len(line),
-                max_element,
-                ), 'error')
-            continue
-        dict_line = {}
-        j = 0
-        for item in line:            
-            format_line[str(j)] = item
-            j += 1
+        in_file = open(input_file, 'r')
+        out_file = open(output_file, 'w')
+        
+        error = "Error converting elements"
+        i = 0
+        for line in in_file:
+            i += 1 
+            line = line.strip() # remove extra space
+            line = line.replace("°", ".") # Problem with symbol
+            if not line: # Jump empty lines:
+                #log_event("Empty line [%s] (jumped)" % i, 'warning')
+                continue
+            line = line.split(slit_char) # convert in list
+
+            if len(line) != max_element:
+                log_event("File %s Column error %s instead of %s (jumped)" % (
+                    input_file,
+                    len(line),
+                    max_element,
+                    ), 'error')                
+                break # TODO test jump file!!!    
                 
-        # Formatting and writingstring:        
-        out_file.write(order_mask % (dict_line,)
+            dict_line = {}
+            j = 0
+            for item in line:            
+                t = fields[j][:1].lower()
+                if t == "s": # trunk at char
+                    dict_line[str(j)] = item[:int(fields[j][1:])] 
+                elif t == "f":
+                    dict_line[str(j)] = float(item.replace(",", "."))
+                j += 1
+            
+            # Formatting and writingstring:        
+            out_file.write(order_mask % dict_line)
 
-    # Close file:
-    out_file.close()         
-    in_file.close()
-        
-    # History current converted file:
-    history_filename = join(
-        history_folder, 
-        datetime.now().strftime(DATETIME_FORMAT),
-        )
+        # Close file:
+        out_file.close()         
+        in_file.close()
+            
+        # History current converted file:
+        history_filename = join(
+            history_folder, 
+            "%s_%s" % (
+                datetime.now().strftime(DATETIME_FORMAT),
+                file_name,
+                ),
+            )
+        os.rename(input_file, history_filename)
+        log_event("Historized file: %s > %s" % (
+            input_file,
+            history_filename, ))
+    except:
+        log_event("Error converting: %s [%s]\n" % (
+            error, 
+            sys.exc_info(), 
+            ), 'error')
+            
+log_event("End converting\n")
+log_file.close()
 
-    os.rename(input_file, history_filename, )
-    log_event("Historized file: %s" % history_filename)
-        
-    # Log:
-    log_event("End converting\n")
-    log_file.close()
-except:
-    log_event("Error converting: %s\n" % (sys.exc_info(), ), 'error')
-    sys.exit()
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
