@@ -29,7 +29,7 @@ only_available = eval(config.get('xml', 'only_available'))
 log_log_mail = eval(config.get('log', 'log_mail'))
 log_log_verbose = eval(config.get('log', 'log_verbose'))
 verbose = eval(config.get('log', 'verbose'))
-log_log_return = eval(config.get('log', 'log_return'))
+cr = eval(config.get('log', 'log_return'))
 
 log_log_file = config.get('log', 'log_file') # Log activity
 log_log_schedule = config.get('log', 'log_schedule') # Log start / stop event
@@ -42,12 +42,14 @@ remove_product = eval(config.get('remove', 'product'))
 #remove_reference = eval(config.get('remove', 'reference'))
 #remove_pricelist = eval(config.get('remove', 'pricelist'))
 
-#csv
-availability_csv = config.get('csv', 'availability') # file csv
-availability_mask = config.get('csv', 'availability_mask') + log_log_return
-availability_mask = availability_mask.replace("(", "%(")
-availability_parameter = eval(config.get('csv', 'availability_parameter')) # param.
-availability_title = config.get('csv', 'availability_title') + log_log_return
+#csv:
+output_csv = config.get('csv', 'output') # file csv
+
+product_field_text = config.get('csv', 'product_fields')
+product_fields_csv = product_field_text.split("|")
+
+availability_field_text = config.get('csv', 'availability_fields')
+availability_fields_csv = availability_field_text.split("|")
 
 # SMTP paramenter for log mail:
 smtp_server = config.get('smtp', 'server')
@@ -58,7 +60,7 @@ smtp_SSL = eval(config.get('smtp', 'SSL'))
 smtp_from_addr = config.get('smtp', 'from_addr')
 smtp_to_addr = config.get('smtp', 'to_addr')
 
-body = "Esito importazione: %s" % log_log_return
+body = "Esito importazione: %s" % cr
 # -----------------------------------------------------------------------------
 #                           Utility function
 # -----------------------------------------------------------------------------
@@ -74,7 +76,7 @@ def log_message(log_file, message, model='info', verbose=True):
         model.upper(),
         datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
         message, 
-        log_log_return,
+        cr,
         ))
 
     if verbose: # Out on video during importation
@@ -162,11 +164,8 @@ try:
     start = False # find one record
     item_id = False # find id record
     record = "" # text of element
-    
-    # Extra csv file:
-    availability_csv_file = open(availability_csv, 'w')
-    availability_csv_file.write(availability_title)
-    line_csv = dict.fromkeys(availability_parameter, '')
+
+    availability_csv = {}    
     for line in open(xml_availability, 'r'):
         i += 1
         if i <= 2: # Jump first 2 line
@@ -176,18 +175,29 @@ try:
             start = True
             continue
             
-        # Extra export: Check element for CSV file:
-        for csv_key in availability_parameter:
+        # ----------------    
+        # Extra CSV export
+        # ----------------
+        for csv_key in availability_fields_csv:
             if csv_key in line:
-                line_csv[csv_key] = line.split(
+                key = line.split(
                     "<%s>" % csv_key)[-1].split(
                         "</%s>" % csv_key)[0]
+                        
+                # csv construction:
+                availability_temp[csv_key] = key
 
         if start and not item_id:
             if "ID_ARTICOLO" in line:
                 item_id = line.split(
                     "<ID_ARTICOLO>")[-1].split(
-                        "</ID_ARTICOLO>")[0]
+                        "</ID_ARTICOLO>")[0]                        
+                        
+                # csv reset: 
+                if item_id not in availability_csv:
+                    availability_csv[item_id] = []
+                availability_temp = dict.fromkeys(availability_csv, '')    
+                
             else:
                 error_alert = True
                 log_message(
@@ -196,23 +206,17 @@ try:
             continue
         
         if start and "</Disponibilita>" in line:
-            # Extra export CSV file:
-            # Write CSV line and reset dict
-            availability_csv_file.write(
-                availability_mask % (line_csv))
-            line_csv = (dict.fromkeys(availability_parameter, ''))
-                
-            
             if item_id not in availability:
                 availability[item_id] = []
             availability[item_id].append(record)
             tot += 1
+            
+            # csv append record
+            availability_csv[item_id].append(availability_temp)
 
             if verbose:
                 print "%s. Record availability for: %s" % (
-                    tot,
-                    item_id, 
-                    )
+                    tot, item_id, )
 
             start = False
             item_id = False
@@ -228,7 +232,7 @@ try:
         tot,
         len(availability),
         )
-    body += msg + log_log_return    
+    body += msg + cr    
     log_message(
         log_total, 
         msg,
@@ -294,7 +298,7 @@ try:
         i,
         tot,
         len(reference), )
-    body += msg + log_log_return    
+    body += msg + cr    
     log_message(
         log_total, 
         msg, 
@@ -360,7 +364,7 @@ try:
         i,
         tot,
         len(pricelist), )
-    body += msg + log_log_return    
+    body += msg + cr    
     log_message(
         log_total, 
         msg, 
@@ -389,6 +393,8 @@ try:
 <DocumentElement Date="2014-11-25 15:48:15">
   <Prodotti>""")
     
+    # csv collector:
+    product_csv = {}    
     for line in open(xml_product, 'r'):
         try:
             error = "Error start loop"
@@ -398,12 +404,24 @@ try:
             # -----------------------------------------------------------------
             if i <= 2 or not line.strip(): 
                 continue
-                
+
             error = "Error test start prodotti"
             if not start and "<Prodotti>" in line:
                 start = True
                 continue
                 
+            # ----------------    
+            # Extra CSV export
+            # ----------------
+            for csv_key in product_fields_csv:             
+                if csv_key in line:
+                    key = line.split(
+                        "<%s>" % csv_key)[-1].split(
+                            "</%s>" % csv_key)[0]
+                            
+                    # csv construction record       
+                    product_csv[item_id][csv_key] = key
+
             error = "Error read id"
             # -----------------------------------------------------------------
             # 1st line after prodotti
@@ -413,6 +431,11 @@ try:
                     item_id = line.split(
                         "<ID_ARTICOLO>")[-1].split(
                             "</ID_ARTICOLO>")[0]                            
+                    
+                    # csv reset:        
+                    product_csv[item_id] = dict.fromkeys(
+                        product_fields_csv, '')                    
+                    product_csv[item_id]['ID_ARTICOLO'] = item_id # always
                 else:
                     error = True
                     log_message(
@@ -427,10 +450,10 @@ try:
                 else:
                     # Write prodotto start tag:
                     file_wordpress.write("%s   <Prodotto>%s" % (
-                        log_log_return,
-                        log_log_return,
+                        cr,
+                        cr,
                         ))
-                        
+
                     file_wordpress.write(line) # ID_ARTICOLO
                 continue
 
@@ -453,31 +476,31 @@ try:
                         for item in reference[item_id]:
                             file_wordpress.write(
                                 "%s     <Riferimenti>%s%s     </Riferimenti>" % (
-                                    log_log_return,
-                                    log_log_return,
+                                    cr,
+                                    cr,
                                     item.replace(" "*4, " "*6),
                                     ))
                                     
                         file_wordpress.write("%s    </Immagini>%s" % (
-                            log_log_return,
-                            log_log_return,
+                            cr,
+                            cr,
                             ))
                     else:
-                        file_wordpress.write("    <Immagini></Immagini>%s" % log_log_return)
+                        file_wordpress.write("    <Immagini></Immagini>%s" % cr)
                     
                     # ---------------------------------------------------------
                     # Write availability:
                     # ---------------------------------------------------------
                     error = "Error write availability"
                     if item_id in availability:
-                        file_wordpress.write("    <Disponibilita>%s" % log_log_return)                
+                        file_wordpress.write("    <Disponibilita>%s" % cr)                
                         availability_tot = len(availability[item_id])
                         for item in availability[item_id]:
                             file_wordpress.write(
                                 "     <Disponibilita>%s%s     </Disponibilita>%s" % (
-                                    log_log_return,
+                                    cr,
                                     item.replace(" "*4, " "*6),
-                                    log_log_return,
+                                    cr,
                                     ))
                         file_wordpress.write("    </Disponibilita>")
                     else:
@@ -490,23 +513,23 @@ try:
                     error = "Error write pricelist"
                     if item_id in pricelist:
                         file_wordpress.write(
-                            "%s    <Listini>" % log_log_return)
+                            "%s    <Listini>" % cr)
                         pricelist_tot = len(pricelist[item_id])
                         for item in pricelist[item_id]:
                             file_wordpress.write(
                                 "%s     <Listini>%s%s     </Listini>" % (
-                                    log_log_return,
-                                    log_log_return,
+                                    cr,
+                                    cr,
                                     item.replace(" "*4, " "*6),
-                                    #log_log_return,
+                                    #cr,
                                     ))
                         file_wordpress.write(
-                            "%s    </Listini>" % log_log_return)
+                            "%s    </Listini>" % cr)
                     else:
                         file_wordpress.write(
-                            "%s    <Listini></Listini>" % log_log_return)
+                            "%s    <Listini></Listini>" % cr)
                     
-                    file_wordpress.write("%s   </Prodotto>" % log_log_return)
+                    file_wordpress.write("%s   </Prodotto>" % cr)
                 tot += 1
 
                 error = "End part"
@@ -519,7 +542,7 @@ try:
                         reference_tot,
                         pricelist_tot,
                         "outofstock" if deleted else "instock",
-                        log_log_return,
+                        cr,
                         )
                 # Reset variables for next record:        
                 start = False
@@ -540,10 +563,10 @@ try:
                     deleted = ">1<" in line
                     if deleted:
                         file_wordpress.write(
-                            "    <VALIDO>outofstock</VALIDO>%s" % log_log_return)    
+                            "    <VALIDO>outofstock</VALIDO>%s" % cr)    
                     else: # "0"
                         file_wordpress.write(
-                            "    <VALIDO>instock</VALIDO>%s" % log_log_return)    
+                            "    <VALIDO>instock</VALIDO>%s" % cr)    
                 
                 # B1) Gender - SETTORE:
                 if "<SETTORE />" in line:
@@ -578,14 +601,14 @@ try:
                     file_wordpress.write(
                         "    <GRUPPO>%s</GRUPPO>%s" % (
                             group,
-                            log_log_return,
+                            cr,
                             ))
                             
                 # -------------------------------------------------------------
                 # Particular cases jumped jeys:
                 # -------------------------------------------------------------
                 for remove_key in remove_product:
-                    # 3 cases: "<key>" "<key " "</key>"  (problema con tag + attr)
+                    # 3 cases: "<key>" "<key " "</key>" (problema con tag + attr)
                     if (
                             "<%s>" % remove_key in line or 
                             "<%s " % remove_key in line or 
@@ -611,16 +634,42 @@ try:
         xml_product,
         i,
         tot, )
-    body += msg + log_log_return    
+    body += msg + cr    
     log_message(
         log_total, 
         msg,
         )
 
     # -------------------------------------------------------------------------
-    #                             FTP OPERATIONS:
+    #                            CREATE CSV FILE:
     # -------------------------------------------------------------------------
-    #os.system(sprix_command)
+    # ---------------
+    # Extra csv file:
+    # ---------------
+    # Header:
+    output_csv_file = open(output_csv, 'w')
+
+    output_csv_file.write(
+        "ID_ARTICOLO;%s;%s%s" % (
+            product_field_text.replace("|", ";"), 
+            availability_field_text.replace("|", ";"),
+            cr,
+            ))
+        
+    import pdb; pdb.set_trace()
+    # Create 2 masks
+    product_mask = "s(ID_ARTICOLO)%;%(" + \
+        product_field_text.replace("|", ")s;%(") + \
+        ")"
+    availability_mask = "%(" + product_field_text.replace("|", ")s;%(") + ")"
+
+    # Loop for all product linking availability    
+    for k1 in product_csv:
+        for item in availability_csv.get(k1, []):
+            output_csv_file.write("%s;%s%s" % ( # title
+                product_mask % product_csv[k1],
+                availability_mask % item,
+                cr, ))
 
     # -------------------------------------------------------------------------
     #                             HISTORY OPERATIONS:
