@@ -50,6 +50,7 @@ try:
     log_file_name = config.get(company, 'log_file_name')
     log_scheduler = config.get(company, 'log_scheduler_name') # Scheduler log file
     sprix_number = int(config.get(company, 'sprix_number'))
+    urgent_order = eval(config.get(company, 'urgent_order'))
     
     # Jump order too new:
     jump_order_days = eval(config.get(company, 'jump_order_days'))
@@ -209,10 +210,14 @@ for ts, file_in in file_list:
                 path_in, file_in))
             
         elif test_date >= max_date:
-            log_message(log_file,
-                "File saltato [%s] limite %s < data file %s" % (
-                    file_in, max_date, test_date), "warning")
-            continue
+            if urgent_order and urgent_order not in file_in: # test urgent:
+                log_message(log_file, "Importazione urgente: %s > %s" % (
+                    path_in, file_in))
+            else:    
+                log_message(log_file,
+                    "File saltato [%s] limite %s < data file %s" % (
+                        file_in, max_date, test_date), "warning")
+                continue
     else:
         test_date = "Data non letta"
     log_message(log_file, "Divisione file: %s > %s" % (path_in, file_in))
