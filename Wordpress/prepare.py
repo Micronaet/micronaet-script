@@ -657,33 +657,21 @@ try:
             cr,
             ))
         
-    import pdb; pdb.set_trace()
     # Create 2 masks
     product_mask = "%(ID_ARTICOLO)s;%(" + \
         product_field_text.replace("|", ")s;%(") + \
         ")s"
-    availability_mask = "%(" + product_field_text.replace("|", ")s;%(") + ")s"
+    availability_mask = "%(" + availability_field_text.replace(
+        "|", ")s;%(") + ")s"
 
     # Loop for all product linking availability    
     for k1 in product_csv:
         for item in availability_csv.get(k1, []):
-            output_csv_file.write("%s;%s%s" % ( # title
+            ris = "%s;%s%s" % ( # title
                 product_mask % product_csv[k1],
                 availability_mask % item,
-                cr, ))
-
-    # -------------------------------------------------------------------------
-    #                             HISTORY OPERATIONS:
-    # -------------------------------------------------------------------------
-    # History the file (only if no error)
-    """try:
-        os.rename(join(path_in, file_in), join(path_history, file_in))
-        log_message(
-            log_file, "Importato il file e storicizzato: %s" % file_in)
-    except:
-        log_message(
-            log_file, "Errore storicizzando il file: %s" % file_in,
-            'error')"""
+                cr, )
+            output_csv_file.write(ris)    
 
 except:
     print "[ERR] %s [%s]" % (error, sys.exc_info())    
