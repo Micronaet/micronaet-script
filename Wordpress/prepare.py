@@ -196,7 +196,7 @@ try:
                 # csv reset: 
                 if item_id not in availability_csv:
                     availability_csv[item_id] = []
-                availability_temp = dict.fromkeys(availability_csv, '')    
+                availability_temp = dict.fromkeys(availability_fields_csv, '')    
                 
             else:
                 error_alert = True
@@ -432,10 +432,11 @@ try:
                         "<ID_ARTICOLO>")[-1].split(
                             "</ID_ARTICOLO>")[0]                            
                     
-                    # csv reset:        
+                    # csv reset (always not present!):  
                     product_csv[item_id] = dict.fromkeys(
-                        product_fields_csv, '')                    
-                    product_csv[item_id]['ID_ARTICOLO'] = item_id # always
+                        product_fields_csv, '')
+                    product_csv[item_id]['ID_ARTICOLO'] = item_id # add key
+                        
                 else:
                     error = True
                     log_message(
@@ -658,10 +659,10 @@ try:
         
     import pdb; pdb.set_trace()
     # Create 2 masks
-    product_mask = "s(ID_ARTICOLO)%;%(" + \
+    product_mask = "%(ID_ARTICOLO)s;%(" + \
         product_field_text.replace("|", ")s;%(") + \
-        ")"
-    availability_mask = "%(" + product_field_text.replace("|", ")s;%(") + ")"
+        ")s"
+    availability_mask = "%(" + product_field_text.replace("|", ")s;%(") + ")s"
 
     # Loop for all product linking availability    
     for k1 in product_csv:
