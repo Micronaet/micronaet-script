@@ -38,18 +38,14 @@ log_log_total = config.get('log', 'log_total') # Log total elements imported
 
 # Remove elements:
 remove_product = eval(config.get('remove', 'product'))
-#remove_availability = eval(config.get('remove', 'availability'))
-#remove_reference = eval(config.get('remove', 'reference'))
-#remove_pricelist = eval(config.get('remove', 'pricelist'))
 
 #csv:
 output_csv = config.get('csv', 'output') # file csv
-
 product_field_text = config.get('csv', 'product_fields')
 product_fields_csv = product_field_text.split("|")
-product_separator = eval(config.get('csv', 'product_separator'))
-product_replace_csv = eval(config.get('csv', 'product_replace')).split("|")
+product_mask = eval(config.get('csv', 'product_mask')).replace("*", "%")
 # Create replace dict:
+product_replace_csv = eval(config.get('csv', 'product_replace')).split("|")
 product_replace = {}
 pos = 0
 for element in product_replace_csv:
@@ -57,19 +53,19 @@ for element in product_replace_csv:
         product_replace[product_fields_csv[pos]] = element
     pos += 1
 
+
 availability_field_text = config.get('csv', 'availability_fields')
 availability_fields_csv = availability_field_text.split("|")
-availability_separator = eval(config.get('csv', 'availability_separator'))
-availability_replace_csv = eval(config.get('csv', 'availability_replace')).split("|")
+availability_mask = eval(config.get('csv', 'availability_mask')).replace("*", "%")
 # Create replace dict:
+availability_replace_csv = eval(
+    config.get('csv', 'availability_replace')).split("|")
 availability_replace = {}
 pos = 0
 for element in availability_replace_csv:
     if element:
         availability_replace[availability_fields[pos]] = element
     pos += 1
-
-key_separator = eval(config.get('csv', 'key_separator')) # id and block
 
 # SMTP paramenter for log mail:
 smtp_server = config.get('smtp', 'server')
@@ -680,54 +676,18 @@ try:
     output_csv_file = open(output_csv, 'w')
      
     # Header:
-    header_text = "ID_ARTICOLO" + key_separator[0]
-    pos = 0
-    for k in product_fields_csv:
-        header_text += k + product_separator[pos:pos + 1] # last is ""
-        pos += 1
-    pos = 0
-    header_text += key_separator[1]
-    for k in availability_fields_csv:        
-        header_text += k + availability_separator[
-            pos:pos + 1]
-        pos += 1
+    #header_text = (product_mask + availability_mask).replace(
+    #    "%(", "").replace(")s", "")    
+    #output_csv_file.write(header_text)
     
-    output_csv_file.write(header_text)
-    #    "ID_ARTICOLO%s%s;%s%s" % (
-    #        key_separator, 
-    #        product_field_text.replace("|", ";"), 
-    #        availability_field_text.replace("|", ";"),
-    #        cr,
-    #        ))
-        
-    # Create 2 masks
-    product_mask = "%(ID_ARTICOLO)s" + key_separator[0]
-    pos = 0
-    for k in product_fields_csv:
-        product_mask += "%(" + k + ")s" + product_separator[pos:pos + 1] # last is ""
-        pos += 1        
-    #product_mask = "%(ID_ARTICOLO)s" + key_separator + "%(" + \
-    #    product_field_text.replace("|", ")s;%(") + \
-    #    ")s"
-    
-    availability_mask = ""
-    pos = 0
-    for k in availability_fields_csv:        
-        availability_mask += "%(" + k + ")s" + availability_separator[
-            pos:pos + 1]
-        pos += 1        
-    #availability_mask = "%(" + availability_field_text.replace(
-    #    "|", ")s;%(") + ")s"
-
-    line_mask = "%s" + key_separator[1] + "%s%s"
     # Loop for all product linking availability    
     for k1 in product_csv:
         for item in availability_csv.get(k1, []):
-            ris = line_mask % ( # title
+            ris = "%s%s%s" % (
                 product_mask % product_csv[k1],
                 availability_mask % item,
-                cr, )
-            output_csv_file.write(ris)    
+                cr)
+            output_csv_file.write(ris)
 
 except:
     print "[ERR] %s [%s]" % (error, sys.exc_info())    
