@@ -675,11 +675,6 @@ try:
     # ---------------
     output_csv_file = open(output_csv, 'w')
      
-    # Header:
-    #header_text = (product_mask + availability_mask).replace(
-    #    "%(", "").replace(")s", "")    
-    #output_csv_file.write(header_text)
-    
     # Loop for all product linking availability    
     for k1 in product_csv:
         for item in availability_csv.get(k1, []):
