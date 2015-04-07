@@ -48,10 +48,26 @@ output_csv = config.get('csv', 'output') # file csv
 product_field_text = config.get('csv', 'product_fields')
 product_fields_csv = product_field_text.split("|")
 product_separator = eval(config.get('csv', 'product_separator'))
+product_replace_csv = eval(config.get('csv', 'product_replace')).split("|")
+# Create replace dict:
+product_replace = {}
+pos = 0
+for element in product_replace_csv:
+    if element:
+        product_replace[product_fields_csv[pos]] = element
+    pos += 1
 
 availability_field_text = config.get('csv', 'availability_fields')
 availability_fields_csv = availability_field_text.split("|")
 availability_separator = eval(config.get('csv', 'availability_separator'))
+availability_replace_csv = eval(config.get('csv', 'availability_replace')).split("|")
+# Create replace dict:
+availability_replace = {}
+pos = 0
+for element in availability_replace_csv:
+    if element:
+        availability_replace[availability_fields[pos]] = element
+    pos += 1
 
 key_separator = eval(config.get('csv', 'key_separator')) # id and block
 
@@ -189,6 +205,11 @@ try:
                         "</%s>" % csv_key)[0]
                         
                 # csv construction:
+                if csv_key in availability_replace:
+                    key = key.replace(
+                        availability_replace(csv_key)[0], 
+                        availability_replace(csv_key)[1],
+                        )
                 availability_temp[csv_key] = key
 
         if start and not item_id:
@@ -423,6 +444,11 @@ try:
                         "<%s>" % csv_key)[-1].split(
                             "</%s>" % csv_key)[0]
                             
+                    if csv_key in product_replace:
+                        key = key.replace(
+                            product_replace[csv_key][0], 
+                            product_replace[csv_key][1],
+                            )
                     # csv construction record       
                     product_csv[item_id][csv_key] = key
 
