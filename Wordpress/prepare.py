@@ -23,6 +23,17 @@ xml_reference = config.get('xml', 'reference')
 xml_pricelist = config.get('xml', 'pricelist')
 xml_wordpress = config.get('xml', 'wordpress')
 
+# Path for update files:
+path_product = os.path.dirname(xml_product)
+path_availability = os.path.dirname(xml_product)
+path_reference = os.path.dirname(xml_product)
+path_pricelist = os.path.dirname(xml_product)
+# Filter mask for update:
+xml_product_filter = config.get('xml', 'product_filter')
+xml_availability_filter = config.get('xml', 'availability_filter')
+xml_reference_filter = config.get('xml', 'reference_filter')
+xml_pricelist_filter = config.get('xml', 'pricelist_filter')
+
 only_available = eval(config.get('xml', 'only_available'))
 
 # Log parameters:
