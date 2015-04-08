@@ -495,7 +495,7 @@ try:
     file_wordpress.write("""<?xml version="1.0" standalone="yes"?>
 <DocumentElement Date="2014-11-25 15:48:15">
   <Prodotti>""")
-    
+    import pdb; pdb.set_trace()
     # csv collector:
     product_csv = {}    
     for line in open(xml_product, 'r'):
@@ -513,22 +513,23 @@ try:
                 start = True
                 continue
                 
-            # ----------------    
-            # Extra CSV export
-            # ----------------
-            for csv_key in product_fields_csv:             
-                if csv_key in line:
-                    key = line.split(
-                        "<%s>" % csv_key)[-1].split(
-                            "</%s>" % csv_key)[0]
-                            
-                    if csv_key in product_replace:
-                        key = key.replace(
-                            product_replace[csv_key][0], 
-                            product_replace[csv_key][1],
-                            )
-                    # csv construction record       
-                    product_csv[item_id][csv_key] = key
+            if start:
+                # ----------------    
+                # Extra CSV export
+                # ----------------
+                for csv_key in product_fields_csv:             
+                    if csv_key in line:
+                        key = line.split(
+                            "<%s>" % csv_key)[-1].split(
+                                "</%s>" % csv_key)[0]
+                                
+                        if csv_key in product_replace:
+                            key = key.replace(
+                                product_replace[csv_key][0], 
+                                product_replace[csv_key][1],
+                                )
+                        # csv construction record       
+                        product_csv[item_id][csv_key] = key
 
             error = "Error read id"
             # -----------------------------------------------------------------
@@ -539,16 +540,17 @@ try:
                     item_id = line.split(
                         "<ID_ARTICOLO>")[-1].split(
                             "</ID_ARTICOLO>")[0]                            
-                    if update_mode and item_id not in update_list:
-                        # jump if not in update_list (in update mode)
-                        start = False
-                        continue
+
                         
                     # csv reset (always not present!):  
                     product_csv[item_id] = dict.fromkeys(
                         product_fields_csv, '')
                     product_csv[item_id]['ID_ARTICOLO'] = item_id # add key
                         
+                    # jump if not in update_list (in update mode)
+                    if update_mode and item_id not in update_list:
+                        start = False
+                        continue
                 else:
                     error = True
                     log_message(
@@ -736,6 +738,7 @@ try:
                     file_wordpress.write(line)
                     
         except:
+            import pdb; pdb.set_trace()
             print error, sys.exc_info() # TODO
             
     # Start file:
