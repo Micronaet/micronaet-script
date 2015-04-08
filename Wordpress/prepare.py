@@ -64,7 +64,6 @@ for element in product_replace_csv:
         product_replace[product_fields_csv[pos]] = element
     pos += 1
 
-
 availability_field_text = config.get('csv', 'availability_fields')
 availability_fields_csv = availability_field_text.split("|")
 availability_mask = eval(config.get('csv', 'availability_mask')).replace("*", "%")
@@ -77,6 +76,13 @@ for element in availability_replace_csv:
     if element:
         availability_replace[availability_fields[pos]] = element
     pos += 1
+
+# Read start up parameter (for update mode):
+if len(sys.argv) == 2:
+    if sys.argv[1].lower() == 'update':    
+        update_move = True
+    else:
+        update_mode = False    
 
 # SMTP paramenter for log mail:
 smtp_server = config.get('smtp', 'server')
