@@ -13,6 +13,15 @@ import ConfigParser
 # -----------------------------------------------------------------------------
 #                              Parameters
 # -----------------------------------------------------------------------------
+# FROM CALL:
+# Read start up parameter (for update mode):
+if len(sys.argv) == 2 and sys.argv[1].lower() == 'update':    
+    update_mode = True
+else:
+    update_mode = False    
+update_list = []    
+
+# FROM FILE:
 cfg_file = "openerp.cfg" # same directory
 config = ConfigParser.ConfigParser()
 config.read(cfg_file)
@@ -22,7 +31,11 @@ xml_product = config.get('xml', 'product')
 xml_availability = config.get('xml', 'availability')
 xml_reference = config.get('xml', 'reference')
 xml_pricelist = config.get('xml', 'pricelist')
-xml_wordpress = config.get('xml', 'wordpress')
+
+if update_mode:
+    xml_wordpress = config.get('xml', 'wordpress_update')
+else:    
+    xml_wordpress = config.get('xml', 'wordpress')
 
 # Path for update files:
 #path_product = os.path.dirname(xml_product)
@@ -53,7 +66,11 @@ log_log_total = config.get('log', 'log_total') # Log total elements imported
 remove_product = eval(config.get('remove', 'product'))
 
 #csv:
-output_csv = config.get('csv', 'output') # file csv
+if update_mode:
+    output_csv = config.get('csv', 'output_update')
+else:    
+    output_csv = config.get('csv', 'output')
+    
 product_field_text = config.get('csv', 'product_fields')
 product_fields_csv = product_field_text.split("|")
 product_mask = eval(config.get('csv', 'product_mask')).replace("*", "%")
@@ -77,15 +94,7 @@ pos = 0
 for element in availability_replace_csv:
     if element:
         availability_replace[availability_fields[pos]] = element
-    pos += 1
-
-# Read start up parameter (for update mode):
-if len(sys.argv) == 2 and sys.argv[1].lower() == 'update':    
-    update_mode = True
-else:
-    update_mode = False    
-update_list = []    
-    
+    pos += 1    
 
 # SMTP paramenter for log mail:
 smtp_server = config.get('smtp', 'server')
@@ -96,7 +105,11 @@ smtp_SSL = eval(config.get('smtp', 'SSL'))
 smtp_from_addr = config.get('smtp', 'from_addr')
 smtp_to_addr = config.get('smtp', 'to_addr')
 
-body = "Esito importazione: %s" % cr
+if update_mode:
+    body = "UPDATE MODE: Esito importazione: %s" % cr
+else:    
+    body = "COMPLETE MODE: Esito importazione: %s" % cr
+    
 # -----------------------------------------------------------------------------
 #                           Utility function
 # -----------------------------------------------------------------------------
@@ -476,7 +489,7 @@ try:
     # -------------------------------------------------------------------------
     # Product
     # -------------------------------------------------------------------------
-    error = "Error importing availability"
+    error = "Error importing product"
     log_message(
         log_file, 
         "Start product xml file", )
@@ -490,9 +503,11 @@ try:
     gender = False
 
     if update_mode:
+        msg = "Update only product: %s" % (update_list, )
         log_message(
             log_file, 
-            "Update only product: %s" % (update_list, ) )
+            msg)
+        body += msg + cr
         
     file_wordpress = open(xml_wordpress, 'w') # output file
 
