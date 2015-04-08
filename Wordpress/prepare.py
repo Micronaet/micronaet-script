@@ -33,8 +33,8 @@ path_pricelist = os.path.dirname(xml_product)
 # Filter mask for update:
 #xml_product_filter = config.get('xml', 'product_filter')
 xml_availability_filter = config.get('xml', 'availability_filter')
-xml_reference_filter = config.get('xml', 'reference_filter')
-xml_pricelist_filter = config.get('xml', 'pricelist_filter')
+#xml_reference_filter = config.get('xml', 'reference_filter')
+#xml_pricelist_filter = config.get('xml', 'pricelist_filter')
 
 only_available = eval(config.get('xml', 'only_available'))
 
@@ -80,11 +80,11 @@ for element in availability_replace_csv:
     pos += 1
 
 # Read start up parameter (for update mode):
-if len(sys.argv) == 2:
-    if sys.argv[1].lower() == 'update':    
-        update_mode = True
-    else:
-        update_mode = False    
+if len(sys.argv) == 2 and sys.argv[1].lower() == 'update':    
+    update_mode = True
+else:
+    update_mode = False    
+    
 
 # SMTP paramenter for log mail:
 smtp_server = config.get('smtp', 'server')
