@@ -33,8 +33,8 @@ path_pricelist = os.path.dirname(xml_product)
 # Filter mask for update:
 #xml_product_filter = config.get('xml', 'product_filter')
 xml_availability_filter = config.get('xml', 'availability_filter')
-#xml_reference_filter = config.get('xml', 'reference_filter')
-#xml_pricelist_filter = config.get('xml', 'pricelist_filter')
+xml_reference_filter = config.get('xml', 'reference_filter')
+xml_pricelist_filter = config.get('xml', 'pricelist_filter')
 
 only_available = eval(config.get('xml', 'only_available'))
 
@@ -206,6 +206,10 @@ try:
             log_file, 
             "Start availability xml file", )
 
+    log_message(
+        log_file, 
+        "Start reading: %s" % xml_availability)
+
     availability = {}
     i = 0 # line counter
     tot = 0 # record counter
@@ -294,10 +298,26 @@ try:
     # -------------------------------------------------------------------------
     # Reference
     # -------------------------------------------------------------------------
-    error = "Error importing reference"
+    if update_mode: # search last dated file for open        
+        error = "Error importing reference update"
+        try:
+            file_list = glob.glob(os.path.join(
+                path_reference, xml_reference_filter))
+            file_list.sort()    
+            xml_reference = file_list[-1]
+        except:
+            log_message(
+                log_file, 
+                "Start reference xml file (complete file)", )
+    else:
+        error = "Error importing reference"
+        log_message(
+            log_file, 
+            "Start reference xml file", )
+
     log_message(
         log_file, 
-        "Start reference xml file", )
+        "Start reading: %s" % xml_reference)
 
     reference = {}
     i = 0 # line counter
@@ -360,10 +380,26 @@ try:
     # -------------------------------------------------------------------------
     # Pricelist
     # -------------------------------------------------------------------------
-    error = "Error importing pricelist"
+    if update_mode: # search last dated file for open        
+        error = "Error importing pricelist update"
+        try:
+            file_list = glob.glob(os.path.join(
+                path_pricelist, xml_pricelist_filter))
+            file_list.sort()    
+            xml_pricelist = file_list[-1]
+        except:
+            log_message(
+                log_file, 
+                "Start pricelist xml file (complete file)", )
+    else:
+        error = "Error importing pricelist"
+        log_message(
+            log_file, 
+            "Start pricelist xml file", )
+
     log_message(
         log_file, 
-        "Start pricelist xml file", )
+        "Start reading: %s" % xml_pricelist)
 
     pricelist = {}
     i = 0 # line counter
