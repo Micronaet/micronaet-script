@@ -6,6 +6,7 @@
 # -----------------------------------------------------------------------------
 import os
 import sys
+import glob
 from datetime import datetime, timedelta
 import ConfigParser
 
@@ -24,12 +25,13 @@ xml_pricelist = config.get('xml', 'pricelist')
 xml_wordpress = config.get('xml', 'wordpress')
 
 # Path for update files:
-path_product = os.path.dirname(xml_product)
+#path_product = os.path.dirname(xml_product)
 path_availability = os.path.dirname(xml_product)
 path_reference = os.path.dirname(xml_product)
 path_pricelist = os.path.dirname(xml_product)
+
 # Filter mask for update:
-xml_product_filter = config.get('xml', 'product_filter')
+#xml_product_filter = config.get('xml', 'product_filter')
 xml_availability_filter = config.get('xml', 'availability_filter')
 xml_reference_filter = config.get('xml', 'reference_filter')
 xml_pricelist_filter = config.get('xml', 'pricelist_filter')
@@ -80,7 +82,7 @@ for element in availability_replace_csv:
 # Read start up parameter (for update mode):
 if len(sys.argv) == 2:
     if sys.argv[1].lower() == 'update':    
-        update_move = True
+        update_mode = True
     else:
         update_mode = False    
 
@@ -186,10 +188,23 @@ try:
     # -------------------------------------------------------------------------
     # Availability
     # -------------------------------------------------------------------------
-    error = "Error importing availability"
-    log_message(
-        log_file, 
-        "Start availability xml file", )
+    # In update mode search last:
+    if update_mode: # search last dated file for open        
+        error = "Error importing availability update"
+        try:
+            file_list = glob.glob(os.path.join(
+                path_availability, xml_availability_filter))
+            file_list.sort()    
+            xml_availability = file_list[-1]
+        except:
+            log_message(
+                log_file,
+                "Error reading availability data file (use complete file)!", )
+    else:
+        error = "Error importing availability"
+        log_message(
+            log_file, 
+            "Start availability xml file", )
 
     availability = {}
     i = 0 # line counter
@@ -198,7 +213,7 @@ try:
     item_id = False # find id record
     record = "" # text of element
 
-    availability_csv = {}    
+    availability_csv = {}
     for line in open(xml_availability, 'r'):
         i += 1
         if i <= 2: # Jump first 2 line
