@@ -488,14 +488,19 @@ try:
     jump = False
     deleted = False # CANCELLATO
     gender = False
-    
+
+    if update_mode:
+        log_message(
+            log_file, 
+            "Update only product: %s" % (update_list, ) )
+        
     file_wordpress = open(xml_wordpress, 'w') # output file
 
     # Start file:
     file_wordpress.write("""<?xml version="1.0" standalone="yes"?>
 <DocumentElement Date="2014-11-25 15:48:15">
   <Prodotti>""")
-    import pdb; pdb.set_trace()
+
     # csv collector:
     product_csv = {}    
     for line in open(xml_product, 'r'):
@@ -549,7 +554,7 @@ try:
                         
                     # jump if not in update_list (in update mode)
                     if update_mode and item_id not in update_list:
-                        start = False
+                        jump = True
                         continue
                 else:
                     error = True
@@ -558,10 +563,11 @@ try:
                         "Prodotto: ID_ARTICOLO non trovato [line: %s]" % i, )
                     jump = True
                     continue
-
+                
                 # Check only available
                 if only_available and item_id not in availability:                    
                     jump = True
+                    continue
                 else:
                     # Write prodotto start tag:
                     file_wordpress.write("%s   <Prodotto>%s" % (
@@ -570,7 +576,7 @@ try:
                         ))
 
                     file_wordpress.write(line) # ID_ARTICOLO
-                continue
+                continue 
 
             # -----------------------------------------------------------------
             # End record
@@ -738,7 +744,6 @@ try:
                     file_wordpress.write(line)
                     
         except:
-            import pdb; pdb.set_trace()
             print error, sys.exc_info() # TODO
             
     # Start file:
