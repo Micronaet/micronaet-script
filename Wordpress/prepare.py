@@ -84,6 +84,7 @@ if len(sys.argv) == 2 and sys.argv[1].lower() == 'update':
     update_mode = True
 else:
     update_mode = False    
+update_list = []    
     
 
 # SMTP paramenter for log mail:
@@ -250,7 +251,11 @@ try:
                     "<ID_ARTICOLO>")[-1].split(
                         "</ID_ARTICOLO>")[0]                        
                         
-                # csv reset: 
+                # Update check:
+                if update_mode and item_id not in update_list:
+                    update_list.append(item_id)
+
+                # csv reset:                
                 if item_id not in availability_csv:
                     availability_csv[item_id] = []
                 availability_temp = dict.fromkeys(availability_fields_csv, '')    
@@ -340,6 +345,10 @@ try:
                 item_id = line.split(
                     "<RF_RECORD_ID>")[-1].split(
                         "</RF_RECORD_ID>")[0]
+
+                # Update check:
+                if update_mode and item_id not in update_list:
+                    update_list.append(item_id)
             else:
                 error_alert = True
                 log_message(
@@ -422,6 +431,11 @@ try:
                 item_id = line.split(
                     "<LI_ID_VARIANTI>")[-1].split(
                         "</LI_ID_VARIANTI>")[0]
+
+                # Update check:
+                if update_mode and item_id not in update_list:
+                    update_list.append(item_id)
+
             else:
                 error_alert = True
                 log_message(
@@ -525,7 +539,11 @@ try:
                     item_id = line.split(
                         "<ID_ARTICOLO>")[-1].split(
                             "</ID_ARTICOLO>")[0]                            
-                    
+                    if update_mode and item_id not in update_list:
+                        # jump if not in update_list (in update mode)
+                        start = False
+                        continue
+                        
                     # csv reset (always not present!):  
                     product_csv[item_id] = dict.fromkeys(
                         product_fields_csv, '')
