@@ -31,7 +31,7 @@ from datetime import datetime, timedelta
 #                                   Parameters:
 # -----------------------------------------------------------------------------
 # Config file:
-cfg_file = "openerp.lnx.cfg" # same directory
+cfg_file = "openerp.cfg" # same directory
 config = ConfigParser.ConfigParser()
 config.read(cfg_file)
 
@@ -44,7 +44,7 @@ company = "SAR" # default company is SAR
 cr = eval(config.get('general', 'return'))
 
 # Char to split csv file:
-slit_char = config.get(company, 'split_char')
+split_char = config.get(company, 'split_char')
 
 # file to log:
 log_file = os.path.expanduser(config.get(company, 'log_file_name'))
@@ -144,7 +144,7 @@ for file_name in [
             if not line: # Jump empty lines:
                 #log_event("Empty line [%s] (jumped)" % i, 'warning')
                 continue
-            line = line.split(slit_char) # convert in list
+            line = line.split(split_char) # convert in list
             
             if len(line) != max_element:
                 log_event("File %s Column error %s instead of %s (jumped)" % (
