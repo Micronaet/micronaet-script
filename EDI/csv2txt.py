@@ -88,7 +88,6 @@ def new_file(invoice):
 #                                  Start procedure:
 # -----------------------------------------------------------------------------
 log_file = open(log_file, 'w')
-
 # Create mask:
 order_mask = ""
 i = 0
@@ -98,7 +97,7 @@ fields = {}
 for item in field_type.split('|'):
     t = item[:1].lower()
     fields[i] = item # save for trunk operations
-    if t == "s":
+    if t == "s": # string
         if fields[i][1:2] == ">":
            start = 2
            sign= ""
@@ -110,7 +109,7 @@ for item in field_type.split('|'):
            sign= "-"
 
         order_mask += "%s(%s)%s%ss%s" % ("%", i, sign, item[start:], end_col)
-    elif t == "f":
+    elif t == "f": # fload
         order_mask += "%s(%s)%sf%s" % ("%", i, item[1:], end_col)
     elif t == "x": # jump line
         pass # Jump field
@@ -121,21 +120,20 @@ for item in field_type.split('|'):
     i += 1
 order_mask += cr
 
-import pdb; pdb.set_trace()
+split_count = 0
+previous_order = False
+
 for file_name in [
         f for f in listdir(input_folder) if isfile(
             join(input_folder, f))]:
     try:
         error = "Error file not exist"
         input_file = expanduser(join(input_folder, file_name)) 
-        output_file = expanduser(join(output_folder, file_name)) # same name
         
-        log_event("Start converting %s > %s" % (
-            input_file,
-            output_file, ))
+        log_event("Start converting: %s" % input_file)
 
+        # Input file:
         in_file = open(input_file, 'r')
-        out_file = open(output_file, 'w')
         
         error = "Error converting elements"
         i = 0
@@ -147,7 +145,7 @@ for file_name in [
                 #log_event("Empty line [%s] (jumped)" % i, 'warning')
                 continue
             line = line.split(slit_char) # convert in list
-
+            
             if len(line) != max_element:
                 log_event("File %s Column error %s instead of %s (jumped)" % (
                     input_file,
@@ -155,8 +153,21 @@ for file_name in [
                     max_element,
                     ), 'error')                
                 break # TODO test jump file!!!    
-                
-            dict_line = {}
+
+            order_ref = line[1]                
+            # Split file if necessary:
+            if not previous_order or previous_order != order_ref:
+                previous_order = order_ref
+                try:
+                    out_file.close()
+                except:
+                    pass # no error if file is not present
+                # order ref is name
+                output_file = expanduser(join(output_folder, order_ref))
+                out_file = open(output_file, 'w')
+                log_event("New output file: %s" % output_file)
+
+            dict_line = {}            
             j = 0
             for item in line:            
                 t = fields[j][:1].lower()
@@ -193,6 +204,4 @@ for file_name in [
             
 log_event("End converting\n")
 log_file.close()
-
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
