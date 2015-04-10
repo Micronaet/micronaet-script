@@ -122,6 +122,7 @@ order_mask += cr
 
 split_count = 0
 previous_order = False
+date_part = datetime.now().strftime("%Y%m%d")
 
 for file_name in [
         f for f in listdir(input_folder) if isfile(
@@ -163,7 +164,8 @@ for file_name in [
                 except:
                     pass # no error if file is not present
                 # order ref is name
-                output_file = expanduser(join(output_folder, order_ref))
+                output_file = expanduser(join(
+                    output_folder, "%s_%s.asc" % (date_part, order_ref)))
                 out_file = open(output_file, 'w')
                 log_event("New output file: %s" % output_file)
 
