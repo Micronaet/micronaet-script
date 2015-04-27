@@ -46,16 +46,3 @@ cr.execute("""
         ))
 
 connection.close()
-    
-    
-
-
-    
-
-    
-
-
-
-
-
-
