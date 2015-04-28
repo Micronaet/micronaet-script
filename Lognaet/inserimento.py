@@ -1,6 +1,7 @@
 import getpass
 import platform
 import sys
+import MySQLdb
 
 # -----------------------------------------------------------------------------
 #                                Parameters
