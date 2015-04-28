@@ -47,7 +47,7 @@ for row in open(mm_file, 'r'): # loop on all rows
             row[67:69].replace(chr(0), ''), # Fiscal code
             row[79:87].replace(chr(0), ''), # Date
             row[75:79].replace(chr(0), ''), # Year
-            datetime.now().strftime("%Y-%m-%d %H:%M%:S"),# Timestamp
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),# Timestamp
             row[18:38].replace(chr(0), ''), # Previous
             row[38:58].replace(chr(0), ''), # Current
             ))
