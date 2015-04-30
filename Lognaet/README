@@ -1,9 +1,0 @@
-Configurare parametri di accesso:
-
-install VCForPython27.msi  <<< 64 bit 
-
-python.exe get-pip.py
-easy_install MySQL-python
-
-copiare i files *.py nella cartella script
-copiare i batch in script
