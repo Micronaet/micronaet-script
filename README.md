@@ -1,2 +1,3 @@
 # micronaet-script
-Script for batch operations (various application)
+Script for batch operations 
+(various application)
