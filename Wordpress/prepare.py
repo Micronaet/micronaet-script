@@ -439,6 +439,10 @@ try:
             start = True
             continue
             
+        # A) Sale price:
+        if "<LI_PREZZO_SAL>" in line:
+            line = line.replace(">0<", "><") # Discount price                    
+
         if start and not item_id:
             if "LI_ID_VARIANTI" in line:
                 item_id = line.split(
@@ -739,7 +743,7 @@ try:
                             group,
                             cr,
                             ))
-                            
+
                 # -------------------------------------------------------------
                 # Particular cases jumped jeys:
                 # -------------------------------------------------------------
