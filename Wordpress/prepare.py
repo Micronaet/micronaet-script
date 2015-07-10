@@ -439,10 +439,6 @@ try:
             start = True
             continue
             
-        # A) Sale price:
-        if "<LI_PREZZO_SAL>" in line:
-            line = line.replace(">0<", "><") # Discount price                    
-
         if start and not item_id:
             if "LI_ID_VARIANTI" in line:
                 item_id = line.split(
@@ -459,6 +455,10 @@ try:
                     log_err, 
                     "Pricelist: not found LI_ID_VARIANTI [line: %s]" % i, )
             continue
+
+        # A) Sale price:
+        if start and "<LI_PREZZO_SAL>" in line:
+            line = line.replace(">0<", "><") # Discount price                    
 
         if start and "</LISTINI>" in line:
             if item_id not in pricelist:
