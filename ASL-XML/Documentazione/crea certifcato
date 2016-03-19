@@ -1,0 +1,15 @@
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX
+
+You can add -nodes if you don't want to protect your private key with a passphrase.
+Self-signed certs are not validated with any third party unless you import them to the browsers previously. If you need more security, you should use a certificate signed by a CA.
+
+
+Criptare:
+
+openssl rsautl -encrypt -in CF.txt -out CF.enc -inkey MEF.cer -certin -pkcs
+
+import base64
+
+f = open("yourfile.ext", "rb")
+encoded_string = base64.b64encode(f.read())
+

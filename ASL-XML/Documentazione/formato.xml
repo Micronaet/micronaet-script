@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<precompilata xsi:noNamespaceSchemaLocation="730_precompilata_new.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <opzionale1>text</opzionale1>   <!--facoltativi-->
+   <opzionale2>text</opzionale2>   <!--facoltativi-->
+   <opzionale3>text</opzionale3>   <!--facoltativi-->
+   
+   <propietario>
+       <codiceRegione>000</codiceRegione>   <!--facoltativi-->
+       <codiceAsl>000</codiceAsl>   <!--facoltativi-->
+       <codiceSSA>00000</codiceSSA>   <!--facoltativi-->
+       <cfPropietario>aaaaaaaaaaaaa</cfPropietario>   <!--facoltativi-->
+   </propietario>
+   
+   <documentoSpesa>   <!--senza limiti-->
+       <idSpesa>
+           <pIva>00000000000</pIva>   <!--numerico totale 11-->  
+           <dataEmissione>2016-01-01</dataEmissione>   <!--AAAA-MM-DD -->
+           <numDocumentoFiscale>
+               <dispositivo>1</dispositivo>   <!--1 >> 999--> 
+               <numDocumento>-</numDocumento>   <!-- a-z A-Z 0-9 _ . / \ - da 1 a 20  -->
+           </numDocumentoFiscale>
+       </idSpesa>       
+       <idRimborso>
+           <pIva>00000000000</pIva>
+           <dataEmissione>2016-01-01</dataEmissione>
+           <numDocumentoFiscale>
+               <dispositivo>1</dispositivo>
+               <numDocumento>abcd/1234</numDocumento>
+           </numDocumentoFiscale>
+       </idRimborso>
+       
+       <dataPagamento>2016-01-01</dataPagamento>
+       <flagPagamentoAnticipato>1</flagPagamentoAnticipato>       
+       <flagOperazione>I</flagOperazione>   <!--I(nser.) V(ariaz) R(imb.) C(ancell.)-->
+       <cfCittadino>aaaaaaaaaaaaa</cfCittadino>   <!--stringa max 256 -->
+       
+       <voceSpesa>   <!--senza limiti-->
+          <tipoSpesa>TK</tipoSpesa>   <!--TK(ticket) FC(farmaco) FV(veterinario) AS(spese sanitarie) SR(spese prestazioni assistenza) CT(cure terminali) PI(protesica) IC(chirurgia estetica) AA(altro) -->
+          <flagTipoSpesa>1</flagTipoSpesa>   <!--facoltativi   1(ticket) 2(intramoenia)-->
+          <importo>00000.01</importo>   <!-- max 5 . max 2 (sempre >0)-->
+       </voceSpesa>
+       <voceSpesa>
+          <tipoSpesa>FC</tipoSpesa>
+          <flagTipoSpesa>2</flagTipoSpesa>
+          <importo>0.01</importo>
+       </voceSpesa>       
+   </documentoSpesa>   
+   ++++ documentoSpesa
+</precompilata>
