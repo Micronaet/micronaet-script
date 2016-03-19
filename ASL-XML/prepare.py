@@ -24,8 +24,10 @@
 # -----------------------------------------------------------------------------
 import os
 import sys
-from datetime import datetime, timedelta
+import xlrd
+import base64
 import ConfigParser
+from datetime import datetime, timedelta
 
 # -----------------------------------------------------------------------------
 #                              Parameters
@@ -72,7 +74,6 @@ xml_file = '%(codiceRegione)s_%(codiceAsl)s_%(codiceSSA)s_730.XML' % (
     proprietario)
 
 xml_mask = xml_mask.replace('||proprietario||', proprietario)
-import pdb; pdb.set_trace()
 
 documentoSpesa_mask = '''
     <documentoSpesa>
@@ -108,7 +109,6 @@ documentoSpesa_mask = '''
 # -----------------------------------------------------------------------------
 error_alert = False
 
-import xlrd
  
 try:
     # -------------------------------------------------------------------------
