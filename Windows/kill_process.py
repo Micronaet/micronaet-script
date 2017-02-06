@@ -20,13 +20,16 @@
 # Installation with pip:
 # pip install wmi
 # download pywin32 from http://www.lfd.uci.edu/~gohlke/pythonlibs/#pywin32
-# pip install pywin32
+# pip install pywin32-22'.1-cè27-cp27m-win32.whl # this version for win7 pro
 
-import wmi
+# Change position:
+# http://stackoverflow.com/questions/25257274/python-3-4-importerror-no-module-named-win32api
+
 import os
+import wmi
 
 c = wmi.WMI ()
 for process in c.Win32_Process ():
   print process.ProcessId, process.Name
   
-os.system("taskkill /im make.exe")
+os.system('taskkill /im make.exe')
