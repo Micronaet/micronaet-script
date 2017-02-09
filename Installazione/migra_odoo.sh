@@ -5,6 +5,7 @@ origin="192.168.100.121"
 # Update system and install dependencies:
 echo Installazione dipendenze: ************************************************
 apt-get update; apt-get upgrade
+
 apt-get install postgresql pgadmin3 openssh-server python-dateutil python-decorator python-docutils python-feedparser \
 python-gdata python-gevent python-imaging python-jinja2 python-ldap python-libxslt1 python-lxml \
 python-mako python-mock python-openid python-passlib python-psutil python-psycopg2 python-pybabel \
@@ -19,7 +20,6 @@ adduser odoo #--system --home=/home/odoo --group odoo
 
 # Installazione postgres:
 echo Configurazione postgres: *************************************************
-#sudo apt-get install postgresql pgadmin3
 #sudo nano /etc/postgresql/x.x/main/pg_hba.conf 
 #local   all         odoo                              md5
 service postgresql restart
@@ -81,3 +81,5 @@ pip install psycogreen
 pip install pysftp # da errore per paramiko
 
 echo Ricordare configurazione file postgres
+echo Mettere sudoers odoo e administrator
+
