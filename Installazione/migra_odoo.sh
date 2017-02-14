@@ -83,3 +83,18 @@ pip install pysftp # da errore per paramiko
 echo Ricordare configurazione file postgres
 echo Mettere sudoers odoo e administrator
 
+
+# Da mettere a posto:
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+
+cd /aeolib
+sudo python ./setup.py install
+sudo pip install erppeek
+sudo pip install qrcode
+sudo pip install xlrd
+sudo pip install xlsxwriter
+sudo pip install dbf
+
+
+lanciare ~/update_git.sh
+
