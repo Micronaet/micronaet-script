@@ -6,12 +6,20 @@ origin="192.168.100.121"
 echo Installazione dipendenze: ************************************************
 apt-get update; apt-get upgrade
 
-apt-get install postgresql pgadmin3 openssh-server python-dateutil python-decorator python-docutils python-feedparser \
-python-gdata python-gevent python-imaging python-jinja2 python-ldap python-libxslt1 python-lxml \
-python-mako python-mock python-openid python-passlib python-psutil python-psycopg2 python-pybabel \
-python-pychart python-pydot python-pyparsing python-pypdf python-reportlab python-requests \
-python-simplejson python-tz python-unittest2 python-vatnumber python-vobject python-werkzeug \
-python-xlwt python-yaml wkhtmltopdf python-yaml node-less git
+apt-get install postgresql pgadmin3 openssh-server python-dateutil \
+    python-decorator python-docutils python-feedparser \
+    python-gdata python-gevent python-imaging python-jinja2 python-ldap \
+    python-libxslt1 python-lxml \
+    python-mako python-mock python-openid python-passlib python-psutil \
+    python-psycopg2 python-pybabel \
+    python-pychart python-pydot python-pyparsing python-pypdf \
+    python-reportlab python-requests \
+    python-simplejson python-tz python-unittest2 python-vatnumber \
+    python-vobject python-werkzeug \
+    python-xlwt python-yaml wkhtmltopdf python-yaml node-less git \
+    build-essential libssl-dev libffi-dev python-dev \
+    python-pyodbc screen python-mysqldb
+
 
 # Create user for ODOO:
 echo Creazione utenti: ********************************************************
@@ -71,30 +79,129 @@ npm install -g less
 # pip install:
 wget https://bootstrap.pypa.io/get-pip.py
 python ./get-pip.py
-pip install pip==8.1.2
+pip install pip==8.1.2 # XXX se necessario
+pip install psycogreen pysftp erppeek qrcode xlrd xlsxwriter dbf sqlalchemy \
+    codicefiscale unicodecsv pymssql
 
+# Non si installano: unixodbc pyodbc
 # Smb share to create
 echo Creazione condivisioni samba: ********************************************
 apt-get install samba cifs-utils
 
-pip install psycogreen
-pip install pysftp # da errore per paramiko
+cd ~/git/aeroolib 
+python ./setup.py install
 
 echo Ricordare configurazione file postgres
 echo Mettere sudoers odoo e administrator
 
+echo Aggiorno moduli:
+#~/update_git.sh # integarlo qui magari
+cd ~/mx/
+cd account-financial-tools
+git pull
+cd ../micronaet
+git pull
+cd ../micronaet-accounting
+git pull
+cd ../micronaet-analytic
+git pull
+cd ../micronaet-bom
+git pull
+cd ../micronaet-campaign
+git pull
+cd ../micronaet-crm
+git pull
+cd ../micronaet-developer
+git pull
+cd ../micronaet-email
+git pull
+cd ../micronaet-force
+git pull
+cd ../micronaet-hr
+git pull
+cd ../micronaet-images
+git pull
+cd ../micronaet-label
+git pull
+cd ../micronaet-menu
+git pull
+cd ../micronaet-migration
+git pull
+cd ../micronaet-mx
+git pull
+cd ../micronaet-mx8
+git pull
+cd ../micronaet-note-alert
+git pull
+cd ../micronaet-notify
+git pull
+cd ../micronaet-order
+git pull
+cd ../micronaet-product
+git pull
+cd ../micronaet-production
+git pull
+cd ../micronaet-purchase
+git pull
+cd ../micronaet-sale
+git pull
+cd ../micronaet-sql
+git pull
+cd ../micronaet-sql7
+git pull
+cd ../micronaet-utility
+git pull
+cd ../micronaet-xmlrpc
+git pull
+cd ..
 
-# Da mettere a posto:
-sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+echo scarico moduli nuovi:
+git clone https://www.github.com/Micronaet/micronaet-connector
+git clone https://www.github.com/Micronaet/micronaet-php-web
 
-cd /aeolib
-sudo python ./setup.py install
-sudo pip install erppeek
-sudo pip install qrcode
-sudo pip install xlrd
-sudo pip install xlsxwriter
-sudo pip install dbf
+echo Ricreo i collegamenti simbolici:
+cd ~/git/addons
+ln -s ~/mx/account-financial-tools/* .
+ln -s ~/mx/micronaet/* .
+ln -s ~/mx/micronaet-accounting/* .
+ln -s ~/mx/micronaet-analytic/* .
+ln -s ~/mx/micronaet-bom/* .
+ln -s ~/mx/micronaet-campaign/* .
+ln -s ~/mx/micronaet-crm/* .
+ln -s ~/mx/micronaet-connector/* .
+ln -s ~/mx/micronaet-developer/* .
+ln -s ~/mx/micronaet-email/* .
+ln -s ~/mx/micronaet-force/* .
+ln -s ~/mx/micronaet-hr/* .
+ln -s ~/mx/micronaet-images/* .
+ln -s ~/mx/micronaet-label/* .
+ln -s ~/mx/micronaet-menu/* .
+ln -s ~/mx/micronaet-migration/* .
+ln -s ~/mx/micronaet-mx/* .
+ln -s ~/mx/micronaet-mx8/* .
+ln -s ~/mx/micronaet-note-alert/* .
+ln -s ~/mx/micronaet-notify/* .
+ln -s ~/mx/micronaet-order/* .
+ln -s ~/mx/micronaet-php-web/* .
+ln -s ~/mx/micronaet-product/* .
+ln -s ~/mx/micronaet-production/* .
+ln -s ~/mx/micronaet-purchase/* .
+ln -s ~/mx/micronaet-sale/* .
+ln -s ~/mx/micronaet-sql/* .
+# valutare: ln -s ~/mx/micronaet-sql7/* .
+ln -s ~/mx/micronaet-utility/* .
+ln -s ~/mx/micronaet-xmlrpc/* .
 
 
-lanciare ~/update_git.sh
+
+echo Fare script per inserire tutti i collegamenti simbolici (occhio alle cartelle c\'è netsvc in parecchi moduli)
+
+echo backup e restore database
+echo fare una rilevazione dei moduli nuovi
+echo fare l\'update all
+
+#Note: 
+# Riscaricato micronaet-menuitem
+# Manca rep: micronaet-connector
+# Problema con module bom_dynamic_structured << min_optional (campo non esistente!)
 
