@@ -28,19 +28,21 @@
 # File: /root/cifs/serverwin                                                                                                             
 # File: /root/cifs/mexal                                                                                                           
 
-# -------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Parametri:
-# -------------------------------------------------------------
-echo "Get user information"
+# -----------------------------------------------------------------------------
+echo "Get user information:"
 # Linux account:
 uid="administrator"
 gid="administrator"
 
 # Server name (used also for credentials file name)
+echo "Get server name:"
 server="serverwin" 
 zentyal="192.168.1.2"
 mexal="192.168.1.110"
 
+echo "Generate server credentials path:"
 root_cred=/root/cifs
 server_cred=$root_cred/$server
 zentyal_cred=$root_cred/$zentyal
@@ -49,6 +51,7 @@ mexal_cred=$root_cred/$mexal
 # -----------------------------------------------------------------------------
 # Sharing folder path (SMB name):
 # -----------------------------------------------------------------------------
+echo "Generate smb path name:"
 # Docnaet:
 # TODO change server in zentyal:
 docnaet_smb=//$server/centosdocnaet$
@@ -63,6 +66,7 @@ scanner_smb=//$zentyal/scanner
 # -----------------------------------------------------------------------------
 # Mount point path:
 # -----------------------------------------------------------------------------
+echo "Generate mount moint name:"
 # Root path:
 root_mp=/home/$uid/smb
 
@@ -79,6 +83,7 @@ scanner_mp=$root_mp/scanner
 # -----------------------------------------------------------------------------
 # Create mount point:
 # -----------------------------------------------------------------------------
+echo "Create mount point folder:"
 # Docnaet folders:
 sudo mkdir -p $docnaet_mp
 mkdir -p $docfax_mp
@@ -95,23 +100,31 @@ mkdir -p $scanner_mp
 # -----------------------------------------------------------------------------
 # Connessione share sui mount point:
 # -----------------------------------------------------------------------------
+echo "Mount all resources:"
+
 # Docnaet:
+echo "Mounting... $docnaet_smb $docnaet_mp" 
 sudo umount $docnaet_mp
 sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$server_cred,gid=$gid,uid=$uid
 
+echo "Mounting... $docfax_smb $docfax_mp"
 sudo umount $docfax_mp
 sudo mount -t cifs $docfax_smb $docfax_mp -o credentials=$server_cred,gid=$gid,uid=$uid
 
 # Generiche:
+echo "Mounting... $documenti_smb $documenti_mp"
 sudo umount $documenti_mp
 sudo mount -t cifs $documenti_smb $documenti_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
+echo "Mounting... $user_smb $user_mp"
 sudo umount $user_mp
 sudo mount -t cifs $user_smb $user_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
+echo "Mounting... $export_smb $export_mp"
 sudo umount $export_mp
 sudo mount -t cifs $export_smb $export_mp -o credentials=$mexal_cred,gid=$gid,uid=$uid
 
+echo "Mounting... $scanner_smb $scanner_mp"
 sudo umount $scanner_mp
 sudo mount -t cifs $scanner_smb $scanner_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
