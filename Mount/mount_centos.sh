@@ -103,28 +103,28 @@ mkdir -p $scanner_mp
 echo "Mount all resources:"
 
 # Docnaet:
-echo "Mounting... $docnaet_smb $docnaet_mp" 
+echo "Mounting docnaet... $docnaet_smb $docnaet_mp" 
 sudo umount $docnaet_mp
 sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$server_cred,gid=$gid,uid=$uid
 
-echo "Mounting... $docfax_smb $docfax_mp"
+echo "Mounting docfax... $docfax_smb $docfax_mp"
 sudo umount $docfax_mp
 sudo mount -t cifs $docfax_smb $docfax_mp -o credentials=$server_cred,gid=$gid,uid=$uid
 
 # Generiche:
-echo "Mounting... $documenti_smb $documenti_mp"
+echo "Mounting documenti... $documenti_smb $documenti_mp"
 sudo umount $documenti_mp
 sudo mount -t cifs $documenti_smb $documenti_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
-echo "Mounting... $user_smb $user_mp"
-sudo umount $user_mp
-sudo mount -t cifs $user_smb $user_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
+echo "Mounting utenti... $users_smb $users_mp"
+sudo umount $users_mp
+sudo mount -t cifs $users_smb $users_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
-echo "Mounting... $export_smb $export_mp"
+echo "Mounting export... $export_smb $export_mp"
 sudo umount $export_mp
 sudo mount -t cifs $export_smb $export_mp -o credentials=$mexal_cred,gid=$gid,uid=$uid
 
-echo "Mounting... $scanner_smb $scanner_mp"
+echo "Mounting scanner... $scanner_smb $scanner_mp"
 sudo umount $scanner_mp
 sudo mount -t cifs $scanner_smb $scanner_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
