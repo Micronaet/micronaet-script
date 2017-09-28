@@ -31,6 +31,7 @@
 # -------------------------------------------------------------
 # Parametri:
 # -------------------------------------------------------------
+echo "Get user information"
 # Linux account:
 uid="administrator"
 gid="administrator"
