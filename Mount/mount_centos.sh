@@ -38,7 +38,7 @@ gid="administrator"
 
 # Server name (used also for credentials file name)
 echo "Get server name:"
-server="serverwin" 
+server="serverwin"
 zentyal="192.168.1.2"
 mexal="192.168.1.110"
 
@@ -54,8 +54,8 @@ mexal_cred=$root_cred/$mexal
 echo "Generate smb path name:"
 # Docnaet:
 # TODO change server in zentyal:
-docnaet_smb=//$server/centosdocnaet$
-docfax_smb=//$server/docfax
+docnaet_smb=//$zentyal/docnaet
+docfax_smb=//$zentyal/docfax
 
 # Server:
 documenti_smb=//$zentyal/documenti
@@ -105,11 +105,11 @@ echo "Mount all resources:"
 # Docnaet:
 echo "Mounting docnaet... $docnaet_smb $docnaet_mp" 
 sudo umount $docnaet_mp
-sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$server_cred,gid=$gid,uid=$uid
+sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
 echo "Mounting docfax... $docfax_smb $docfax_mp"
 sudo umount $docfax_mp
-sudo mount -t cifs $docfax_smb $docfax_mp -o credentials=$server_cred,gid=$gid,uid=$uid
+sudo mount -t cifs $docfax_smb $docfax_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
 # Generiche:
 echo "Mounting documenti... $documenti_smb $documenti_mp"
