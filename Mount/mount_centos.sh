@@ -54,7 +54,8 @@ mexal_cred=$root_cred/$mexal
 echo "Generate smb path name:"
 # Docnaet:
 # TODO change server in zentyal:
-docnaet_smb=//$zentyal/docnaet
+#docnaet_smb=//$zentyal/docnaet
+docnaet_smb=//$server/docnaet
 docfax_smb=//$zentyal/docfax
 
 # Server:
@@ -105,7 +106,8 @@ echo "Mount all resources:"
 # Docnaet:
 echo "Mounting docnaet... $docnaet_smb $docnaet_mp" 
 sudo umount $docnaet_mp
-sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
+sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$server_cred,gid=$gid,uid=$uid
+#sudo mount -t cifs $docnaet_smb $docnaet_mp -o credentials=$zentyal_cred,gid=$gid,uid=$uid
 
 echo "Mounting docfax... $docfax_smb $docfax_mp"
 sudo umount $docfax_mp
