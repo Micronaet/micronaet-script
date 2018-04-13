@@ -50,6 +50,7 @@ file_csv = os.path.join(current_path, 'CSV', out_csv)
 no_line_text = ('CODICE CATALOGO', )
 file_log = os.path.join(current_path, 'LOG', 'conversioni.txt')
 f_log = open(file_log, 'a')
+path_log_xls = os.path.join(current_path, 'LOG', 'XLS')
 
 header = [
     '_ARTIP',
@@ -456,16 +457,25 @@ def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
 # Load origin name from XLS
 # -----------------------------------------------------------------------------
 filename_xls = '601.00055.xls' # TODO
-file_xls = os.path.join(current_path, 'XLS', filename_xls,
-    )
+file_xls = os.path.join(current_path, 'XLS', filename_xls)
+file_log_xls = os.path.join(path_log_xls, '%s.txt' % filename_xls)
+
 supplier_code = ''.join(
    filename_xls.split('.')[:-1]
    )   
 try:
    WB = xlrd.open_workbook(file_xls)
-   file_log_data(f_log, '')
+   file_log_data(
+       f_log, 
+       'Aperto file XLS: %s' % file_xls, 
+       newline=newline)
 except:
-   print '[ERROR] File XLS non leggibile: %s' % file_xls
+   file_log_data(
+       f_log, 
+       'File XLS non leggibile: %s' % file_xls, 
+       mode='ERROR',
+       newline=newline,
+       )
    sys.exit()
 WS = WB.sheet_by_index(0)
 
@@ -478,7 +488,11 @@ i = 0
 # Open output file and write header:
 f_csv = open(file_csv, 'w')
 f_csv.write(';'.join(header))
-print u'%s. [INFO] File da importare: %s [Tot.: %s]' % (i, file_xls, WS.nrows)
+file_log_data(
+    file_log_xls, 
+    u'%s. File da importare: %s [Tot.: %s]' % (i, file_xls, WS.nrows),   
+    newline=newline,
+    )
 
 for row in range(row_start, WS.nrows):
     i += 1
@@ -488,7 +502,12 @@ for row in range(row_start, WS.nrows):
     # -------------------------------------------------------------------------
     default_code = get_code(WS.cell(row, 0).value)
     if not default_code:
-        print u'%s. [WARNING] Saltata riga senza codice' % i
+        file_log_data(
+            file_log_xls, 
+            u'%s. Saltata riga senza codice' % i,
+            mode='WARNING',
+            newline=newline,
+            )
         continue        
         
     name = get_ascii_name(WS.cell(row, 1).value)
@@ -501,14 +520,22 @@ for row in range(row_start, WS.nrows):
     name1 = name_csv[:name_split]
     name2 = name_csv[name_split:]
     
-    
     # Test if is data line:
     if default_code in no_line_text:
-        print u'%s. [WARNING] Saltata riga di intestazione: %s' % (
-            i, default_code)
+        file_log_data(
+            file_log_xls, 
+            u'%s. Saltata riga di intestazione: %s' % (i, default_code),
+            mode='WARNING',
+            newline=newline,
+            )
         continue        
     if not price or type(price) != float:
-        print u'%s. [WARNING] Saltata riga senza prezzo' % i
+        file_log_data(
+            file_log_xls, 
+            u'%s. Saltata riga senza prezzo' % i,
+            mode='WARNING',
+            newline=newline,
+            )
         continue
 
     record = [
@@ -856,10 +883,15 @@ for row in range(row_start, WS.nrows):
         error += u'[Nome troncato da %s a %s]' % (len(name), name_limit)
     
     # Write log line:
-    print u'%s. [%s] Riga importata: %s %s' % (
-        i, 
-        u'WARNING' if error else u'INFO', 
-        default_code,
-        error,
+    file_log_data(
+        file_log_xls, 
+        u'%s. Riga importata: %s %s' % (i, default_code, error)
+        mode=u'WARNING' if error else u'INFO', 
+        newline=newline,
         )
-                
+        
+file_log_data(
+   f_log, 
+   'Chiuso file XLS [Righe lette: %s]: %s' % (file_xls, i), 
+   newline=newline)
+
