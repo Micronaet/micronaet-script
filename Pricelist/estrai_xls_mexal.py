@@ -28,10 +28,12 @@ current_path = os.path.dirname(__file__)
 # -----------------------------------------------------------------------------
 # Parameters from config file:
 # -----------------------------------------------------------------------------
+# Open file:
 cfg_file = os.path.expanduser('./mexal.cfg')
 config = ConfigParser.ConfigParser()
 config.read([cfg_file])
 
+# Read data:
 end_line = config.get('parameter', 'end_line')
 row_start = eval(config.get('parameter', 'row_start'))
 code_limit = eval(config.get('parameter', 'code_limit')
@@ -46,70 +48,6 @@ out_csv = config.get('file', 'out_csv')
 file_csv = os.path.join(current_path, 'CSV', out_csv)
 no_line_text = ('CODICE CATALOGO', )
 
-filename_xls = '601.00055.xls' # TODO
-file_xls = os.path.join(current_path, 'XLS', filename_xls,
-    )
-supplier_code = ''.join(
-   filename_xls.split('.')[:-1]
-   )
-
-# -----------------------------------------------------------------------------
-# Utility:
-# -----------------------------------------------------------------------------
-# Conversion function for CSV file:
-def csv_float(value, price_decimal=3):
-    if not value or type(value) != float:
-        value = 0.0
-        
-    mask = '%%20.%sf' % price_decimal
-    return (mask % value).strip().replace('.', ',')
-
-def csv_uom(value):
-    return (value or '').upper()
-
-def csv_vat(value):
-    return int(value)
-
-def csv_text(value, limit):
-    return value[:limit]
-
-def get_code(value):
-    if type(value) == float:
-        return '%s' % int(value)
-    elif value:
-        return value.strip()
-    else:
-        return ''
-
-def get_ascii_name(value):
-    if not value:
-        return ''
-        
-    res = ''
-    for c in value.strip():
-        if c == ';':
-            res += ','
-        elif ord(c) < 127:
-            res += c
-        elif c == u'\xb0': # °
-            res += 'o'
-        else:
-            pass
-    return res        
-    
-# -----------------------------------------------------------------------------
-# Load origin name from XLS
-# -----------------------------------------------------------------------------
-try:
-   WB = xlrd.open_workbook(file_xls)
-except:
-   print '[ERROR] Cannot read XLS file: %s' % file_xls
-   sys.exit()
-WS = WB.sheet_by_index(0)
-
-# -----------------------------------------------------------------------------
-# Load pricelist and create CSV
-# -----------------------------------------------------------------------------
 header = [
     '_ARTIP',
     '_ARCOD',
@@ -318,6 +256,7 @@ header = [
     '_ARQTA(4,1)',
     '_ARQTA(4,2)',
     '_ARQTA(4,3)',
+
     '_ARVAL(4)',
     '_ARSCQ(4,1)',
     '_ARSCQ(4,2)',
@@ -442,14 +381,79 @@ header = [
     'CONDAGE18',
     'TIPPROV18',
     'FORMULA18',
+    end_line,
     ]
+
+# -----------------------------------------------------------------------------
+# Utility:
+# -----------------------------------------------------------------------------
+# Conversion function for CSV file:
+def csv_float(value, price_decimal=3):
+    if not value or type(value) != float:
+        value = 0.0
+        
+    mask = '%%20.%sf' % price_decimal
+    return (mask % value).strip().replace('.', ',')
+
+def csv_uom(value):
+    return (value or '').upper()
+
+def csv_vat(value):
+    return int(value)
+
+def csv_text(value, limit):
+    return value[:limit]
+
+def get_code(value):
+    if type(value) == float:
+        return '%s' % int(value)
+    elif value:
+        return value.strip()
+    else:
+        return ''
+
+def get_ascii_name(value):
+    if not value:
+        return ''
+        
+    res = ''
+    for c in value.strip():
+        if c == ';':
+            res += ','
+        elif ord(c) < 127:
+            res += c
+        elif c == u'\xb0': # °
+            res += 'o'
+        else:
+            pass
+    return res        
+    
+# -----------------------------------------------------------------------------
+# Load origin name from XLS
+# -----------------------------------------------------------------------------
+filename_xls = '601.00055.xls' # TODO
+file_xls = os.path.join(current_path, 'XLS', filename_xls,
+    )
+supplier_code = ''.join(
+   filename_xls.split('.')[:-1]
+   )
+try:
+   WB = xlrd.open_workbook(file_xls)
+except:
+   print '[ERROR] Cannot read XLS file: %s' % file_xls
+   sys.exit()
+WS = WB.sheet_by_index(0)
+
+# -----------------------------------------------------------------------------
+# Load pricelist and create CSV
+# -----------------------------------------------------------------------------
     
 pricelist_db = {}
 i = 0
 
 # Open output file and write header:
 f_csv = open(file_csv, 'w')
-f_csv.write(';'.join(header) + end_line)
+f_csv.write(';'.join(header))
 print u'%s. [INFO] File da importare: %s [Tot.: %s]' % (i, file_xls, WS.nrows)
 
 for row in range(row_start, WS.nrows):
