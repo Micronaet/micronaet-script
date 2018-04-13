@@ -22,6 +22,7 @@
 import os
 import sys
 import xlrd
+import ConfigParser
 from datetime import datetime
 
 current_path = os.path.dirname(__file__)
@@ -30,18 +31,18 @@ current_path = os.path.dirname(__file__)
 # Parameters from config file:
 # -----------------------------------------------------------------------------
 # Open file:
-cfg_file = os.path.expanduser('./mexal.cfg')
+cfg_file = os.path.join(current_path, 'mexal.cfg')
 config = ConfigParser.ConfigParser()
 config.read([cfg_file])
 
 # Read data:
-newline = config.get('parameter', 'newline')
+newline = eval(config.get('parameter', 'newline'))
 row_start = eval(config.get('parameter', 'row_start'))
-code_limit = eval(config.get('parameter', 'code_limit')
-name_limit = eval(config.get('parameter', 'name_limit')
-name_split = eval(config.get('parameter', 'name_split')
-price_decimal = eval(config.get('parameter', 'price_decimal')
-currency_id = eval(config.get('parameter', 'currency_id')
+code_limit = eval(config.get('parameter', 'code_limit'))
+name_limit = eval(config.get('parameter', 'name_limit'))
+name_split = eval(config.get('parameter', 'name_split'))
+price_decimal = eval(config.get('parameter', 'price_decimal'))
+currency_id = str(config.get('parameter', 'currency_id'))
 
 out_csv = config.get('file', 'out_csv')
 
@@ -50,7 +51,9 @@ file_csv = os.path.join(current_path, 'CSV', out_csv)
 no_line_text = ('CODICE CATALOGO', )
 file_log = os.path.join(current_path, 'LOG', 'conversioni.txt')
 f_log = open(file_log, 'a')
+
 path_log_xls = os.path.join(current_path, 'LOG', 'XLS')
+path_done_xls = os.path.join(current_path, 'XLS', 'FATTI')
 
 header = [
     '_ARTIP',
@@ -383,14 +386,19 @@ header = [
     'CODAGEN18',
     'CONDAGE18',
     'TIPPROV18',
-    'FORMULA18',
-    newline,
+    'FORMULA18',    
     ]
 
 # -----------------------------------------------------------------------------
 # Utility:
 # -----------------------------------------------------------------------------
 # Conversion function for CSV file:
+def now():
+    ''' Return datetime string
+    '''
+    now = '%s' % datetime.now()
+    return now.replace('/', '_').replace(':', '-').split('.')[0]
+    
 def csv_float(value, price_decimal=3):
     ''' Return string from float passed (decimal is a parameter)
     '''
@@ -451,14 +459,21 @@ def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
         datetime.now(),
         event,
         newline,
-        )
+        ))
     return True
+
 # -----------------------------------------------------------------------------
 # Load origin name from XLS
 # -----------------------------------------------------------------------------
+is_error = False 
 filename_xls = '601.00055.xls' # TODO
 file_xls = os.path.join(current_path, 'XLS', filename_xls)
-file_log_xls = os.path.join(path_log_xls, '%s.txt' % filename_xls)
+done_file_xls = os.path.join(path_done_xls, '%s%s' % (now(), filename_xls))
+file_log_xls = os.path.join(path_log_xls, '%s.%s.txt' % (
+    filename_xls,
+    now(),
+    ))
+f_log_xls = open(file_log_xls, 'w')
 
 supplier_code = ''.join(
    filename_xls.split('.')[:-1]
@@ -470,13 +485,14 @@ try:
        'Aperto file XLS: %s' % file_xls, 
        newline=newline)
 except:
-   file_log_data(
+    is_error = True
+    file_log_data(
        f_log, 
        'File XLS non leggibile: %s' % file_xls, 
        mode='ERROR',
        newline=newline,
        )
-   sys.exit()
+   sys.exit() # TODO remove
 WS = WB.sheet_by_index(0)
 
 # -----------------------------------------------------------------------------
@@ -487,13 +503,12 @@ i = 0
 
 # Open output file and write header:
 f_csv = open(file_csv, 'w')
-f_csv.write(';'.join(header))
+f_csv.write(';'.join(header) + newline)
 file_log_data(
-    file_log_xls, 
+    f_log_xls, 
     u'%s. File da importare: %s [Tot.: %s]' % (i, file_xls, WS.nrows),   
     newline=newline,
     )
-
 for row in range(row_start, WS.nrows):
     i += 1
     
@@ -503,7 +518,7 @@ for row in range(row_start, WS.nrows):
     default_code = get_code(WS.cell(row, 0).value)
     if not default_code:
         file_log_data(
-            file_log_xls, 
+            f_log_xls, 
             u'%s. Saltata riga senza codice' % i,
             mode='WARNING',
             newline=newline,
@@ -523,7 +538,7 @@ for row in range(row_start, WS.nrows):
     # Test if is data line:
     if default_code in no_line_text:
         file_log_data(
-            file_log_xls, 
+            f_log_xls, 
             u'%s. Saltata riga di intestazione: %s' % (i, default_code),
             mode='WARNING',
             newline=newline,
@@ -531,7 +546,7 @@ for row in range(row_start, WS.nrows):
         continue        
     if not price or type(price) != float:
         file_log_data(
-            file_log_xls, 
+            f_log_xls, 
             u'%s. Saltata riga senza prezzo' % i,
             mode='WARNING',
             newline=newline,
@@ -870,10 +885,9 @@ for row in range(row_start, WS.nrows):
         '', #CONDAGE18',        
         '', #TIPPROV18',
         '', #FORMULA18',
-        newline,
         ]
     
-    f_csv.write(u';'.join(record))
+    f_csv.write(u';'.join(record) + newline)
 
     # Check error:    
     error = u''    
@@ -884,8 +898,8 @@ for row in range(row_start, WS.nrows):
     
     # Write log line:
     file_log_data(
-        file_log_xls, 
-        u'%s. Riga importata: %s %s' % (i, default_code, error)
+        f_log_xls, 
+        u'%s. Riga importata: %s %s' % (i, default_code, error),
         mode=u'WARNING' if error else u'INFO', 
         newline=newline,
         )
@@ -894,4 +908,18 @@ file_log_data(
    f_log, 
    'Chiuso file XLS [Righe lette: %s]: %s' % (file_xls, i), 
    newline=newline)
+   
+f_log_xls.close()
+if not is_error:
+    shutil.move(file_xls, done_file_xls)
+    file_log_data(
+       f_log, 
+       'Storicizzato il file in: %s' % done_file_xls, 
+       newline=newline)
+else:       
+    file_log_data(
+       f_log, 
+       'Errore elaborando il file non storicizzato: %s' % file_xls, 
+       newline=newline)
 
+f_log.close()
