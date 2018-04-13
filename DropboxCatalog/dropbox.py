@@ -131,7 +131,8 @@ for product in product_db:
             )        
         
         # 2. Create if not present:
-        os.system('mkdir -p %s' % product_folder)
+        if not demo:
+            os.system('mkdir -p %s' % product_folder)
         
         for f in product_db[product][key]:
             tot += 1
