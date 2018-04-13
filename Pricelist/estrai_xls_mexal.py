@@ -22,6 +22,7 @@
 import os
 import sys
 import xlrd
+import shutil
 import ConfigParser
 from datetime import datetime
 
@@ -477,7 +478,6 @@ def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
 # SINGLE FILE: Open output file and write header:
 f_csv = open(file_csv, 'w')
 f_csv.write(';'.join(header) + newline)
-import pdb; pdb.set_trace()
 for root, dirs, files in os.walk(path_xls):
     for filename_xls in files:
         is_error = False 
@@ -910,8 +910,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #CONDAGE18',        
                 '', #TIPPROV18',
                 '', #FORMULA18',
-                ]
-            
+                ]            
             f_csv.write(u';'.join(record) + newline)
 
             # Check error:    
@@ -931,9 +930,9 @@ for root, dirs, files in os.walk(path_xls):
                 )
                 
         file_log_data(
-           f_log, 
-           'Chiuso file XLS [Righe lette: %s]: %s' % (file_xls, i), 
-           newline=newline)
+            f_log, 
+            'Chiuso file XLS [Righe lette: %s]: %s' % (file_xls, i), 
+            newline=newline)
         
         # ---------------------------------------------------------------------
         # History the file:   
@@ -941,14 +940,16 @@ for root, dirs, files in os.walk(path_xls):
         if not is_error:
             shutil.move(file_xls, done_file_xls)
             file_log_data(
-               f_log, 
-               'Storicizzato il file in: %s' % done_file_xls, 
-               newline=newline)
+                f_log, 
+                'Storicizzato il file in: %s' % done_file_xls, 
+                newline=newline,
+                )
         else:       
             file_log_data(
-               f_log, 
-               'Errore elaborando il file non storicizzato: %s' % file_xls, 
-               newline=newline)
+                f_log, 
+                'Errore elaborando il file non storicizzato: %s' % file_xls, 
+                newline=newline,
+                )
 
         # Close mono file log:   
         f_log_xls.close()

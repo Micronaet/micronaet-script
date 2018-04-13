@@ -103,9 +103,9 @@ for (key, path, extension, walk) in input_folders:
             if product_upper in case_db:
                 if product != case_db[product_upper]:
                     error.append('Case error product %s now %s' % (
-                        product, product_case[product_upper]))
+                        product, case_db[product_upper]))
             else:
-                product_case[product_upper] = product                
+                case_db[product_upper] = product                
 
             # Log insert:                
             log.append('File used %s [Key: %s]' % (f, key))
@@ -142,13 +142,15 @@ for product in product_db:
                 )
 
             # DESTINATION: Filename
+            name = clean_char(
+                '%s_%s' % (key, f), # Filename for destination
+                file_replace_char, # Replace list
+                )
+
             destination = os.path.join(
                 dropbox_path,
                 product_folder, # Product folder
-                clean_char(
-                    '%s_%s' % (key, f), # Filename for destination
-                    file_replace_char, # Replace list
-                    ),
+                name.strip(),
                 )
             
             # Symlink operations:     
