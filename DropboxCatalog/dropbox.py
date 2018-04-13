@@ -22,7 +22,6 @@ import sys
 import shutil
 import config # Micronaet: configuration file
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
 
 # -----------------------------------------------------------------------------
 # Parameters:
