@@ -22,6 +22,7 @@
 import os
 import sys
 import xlrd
+from datetime import datetime
 
 current_path = os.path.dirname(__file__)
 
@@ -34,7 +35,7 @@ config = ConfigParser.ConfigParser()
 config.read([cfg_file])
 
 # Read data:
-end_line = config.get('parameter', 'end_line')
+newline = config.get('parameter', 'newline')
 row_start = eval(config.get('parameter', 'row_start'))
 code_limit = eval(config.get('parameter', 'code_limit')
 name_limit = eval(config.get('parameter', 'name_limit')
@@ -47,6 +48,8 @@ out_csv = config.get('file', 'out_csv')
 # Calculated paremeters:
 file_csv = os.path.join(current_path, 'CSV', out_csv)
 no_line_text = ('CODICE CATALOGO', )
+file_log = os.path.join(current_path, 'LOG', 'conversioni.txt')
+f_log = open(file_log, 'a')
 
 header = [
     '_ARTIP',
@@ -256,7 +259,6 @@ header = [
     '_ARQTA(4,1)',
     '_ARQTA(4,2)',
     '_ARQTA(4,3)',
-
     '_ARVAL(4)',
     '_ARSCQ(4,1)',
     '_ARSCQ(4,2)',
@@ -381,7 +383,7 @@ header = [
     'CONDAGE18',
     'TIPPROV18',
     'FORMULA18',
-    end_line,
+    newline,
     ]
 
 # -----------------------------------------------------------------------------
@@ -389,6 +391,8 @@ header = [
 # -----------------------------------------------------------------------------
 # Conversion function for CSV file:
 def csv_float(value, price_decimal=3):
+    ''' Return string from float passed (decimal is a parameter)
+    '''
     if not value or type(value) != float:
         value = 0.0
         
@@ -396,15 +400,23 @@ def csv_float(value, price_decimal=3):
     return (mask % value).strip().replace('.', ',')
 
 def csv_uom(value):
+    ''' String conversion of UM
+    '''
     return (value or '').upper()
 
 def csv_vat(value):
-    return int(value)
+    ''' VAT conversion in string
+    '''
+    return str(int(value))
 
 def csv_text(value, limit):
+    ''' CSV limited text (for write in file)
+    '''
     return value[:limit]
 
 def get_code(value):
+    ''' String data code (manage float problem)
+    '''
     if type(value) == float:
         return '%s' % int(value)
     elif value:
@@ -413,6 +425,8 @@ def get_code(value):
         return ''
 
 def get_ascii_name(value):
+    ''' Clean extra ascii char and remove it (or replace managed char)
+    '''
     if not value:
         return ''
         
@@ -427,7 +441,17 @@ def get_ascii_name(value):
         else:
             pass
     return res        
-    
+
+def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
+    ''' Log data in event format
+    '''
+    f_log.write('[%s] %s: %s%s' % (
+        mode,
+        datetime.now(),
+        event,
+        newline,
+        )
+    return True
 # -----------------------------------------------------------------------------
 # Load origin name from XLS
 # -----------------------------------------------------------------------------
@@ -436,18 +460,18 @@ file_xls = os.path.join(current_path, 'XLS', filename_xls,
     )
 supplier_code = ''.join(
    filename_xls.split('.')[:-1]
-   )
+   )   
 try:
    WB = xlrd.open_workbook(file_xls)
+   file_log_data(f_log, '')
 except:
-   print '[ERROR] Cannot read XLS file: %s' % file_xls
+   print '[ERROR] File XLS non leggibile: %s' % file_xls
    sys.exit()
 WS = WB.sheet_by_index(0)
 
 # -----------------------------------------------------------------------------
 # Load pricelist and create CSV
 # -----------------------------------------------------------------------------
-    
 pricelist_db = {}
 i = 0
 
@@ -819,7 +843,7 @@ for row in range(row_start, WS.nrows):
         '', #CONDAGE18',        
         '', #TIPPROV18',
         '', #FORMULA18',
-        end_line,
+        newline,
         ]
     
     f_csv.write(u';'.join(record))
