@@ -518,7 +518,6 @@ for root, dirs, files in os.walk(path_xls):
         # ---------------------------------------------------------------------
         # Load pricelist and create CSV
         # ---------------------------------------------------------------------
-        #pricelist_db = {}
         i = 0
 
         file_log_data(
@@ -911,7 +910,8 @@ for root, dirs, files in os.walk(path_xls):
             if len(default_code) > code_limit:
                 error += u'[Codice troncato]'
             if len(name) > name_limit:    
-                error += u'[Nome troncato da %s a %s]' % (len(name), name_limit)
+                error += u'[Nome troncato da %s a %s]' % (
+                    len(name), name_limit)
             
             # Write log line:
             file_log_data(
@@ -925,8 +925,10 @@ for root, dirs, files in os.walk(path_xls):
            f_log, 
            'Chiuso file XLS [Righe lette: %s]: %s' % (file_xls, i), 
            newline=newline)
-           
-        f_log_xls.close()
+        
+        # ---------------------------------------------------------------------
+        # History the file:   
+        # ---------------------------------------------------------------------
         if not is_error:
             shutil.move(file_xls, done_file_xls)
             file_log_data(
@@ -938,5 +940,8 @@ for root, dirs, files in os.walk(path_xls):
                f_log, 
                'Errore elaborando il file non storicizzato: %s' % file_xls, 
                newline=newline)
+
+        # Close mono file log:   
+        f_log_xls.close()
 
 f_log.close()
