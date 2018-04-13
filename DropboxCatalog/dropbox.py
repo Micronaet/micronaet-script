@@ -160,4 +160,5 @@ for product in product_db:
             log_sym.append('origin: %s destination: %s' % (
                 origin, destination)) 
 
+print log_sym                
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
