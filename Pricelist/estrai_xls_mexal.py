@@ -46,16 +46,24 @@ currency_id = str(config.get('parameter', 'currency_id'))
 
 out_csv = config.get('file', 'out_csv')
 
+# -----------------------------------------------------------------------------
 # Calculated paremeters:
+# -----------------------------------------------------------------------------
+# CSV:
 file_csv = os.path.join(current_path, 'CSV', out_csv)
-no_line_text = ('CODICE CATALOGO', )
-file_log = os.path.join(current_path, 'LOG', 'conversioni.txt')
+
+# Log:
+path_log = os.path.join(current_path, 'LOG')
+path_log_xls = os.path.join(path_log, 'XLS')
+file_log = os.path.join(path_log, 'conversioni.txt')
 f_log = open(file_log, 'a')
 
-path_log_xls = os.path.join(current_path, 'LOG', 'XLS')
+# XLS:
 path_xls = os.path.join(current_path, 'XLS')
-path_done_xls = os.path.join(current_path, 'XLS', 'FATTI')
+path_done_xls = os.path.join(path_xls, 'FATTI')
 
+# File:
+no_line_text = ('CODICE CATALOGO', )
 header = [
     '_ARTIP',
     '_ARCOD',
@@ -469,15 +477,16 @@ def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
 # SINGLE FILE: Open output file and write header:
 f_csv = open(file_csv, 'w')
 f_csv.write(';'.join(header) + newline)
+import pdb; pdb.set_trace()
 for root, dirs, files in os.walk(path_xls):
     for filename_xls in files:
         is_error = False 
         f_split = filename_xls.split('.')
-        if len(f_split) != 3 or 
-                not f_split[0].isdigit() or 
-                not f_split[1].isdigit() or  
-                len(f_split[0]) != 3 or
-                len(f_split[1]) != 5 or
+        if len(f_split) != 3 or \
+                not f_split[0].isdigit() or \
+                not f_split[1].isdigit() or \
+                len(f_split[0]) != 3 or \
+                len(f_split[1]) != 5 or \
                 f_split[2].lower() not in ('xls' or 'xlsx'):
             file_log_data(
                f_log, 
@@ -487,7 +496,7 @@ for root, dirs, files in os.walk(path_xls):
                )
             continue    
                 
-        file_xls = os.path.join(path_xls, 'XLS', filename_xls)
+        file_xls = os.path.join(path_xls, filename_xls)
         done_file_xls = os.path.join(
             path_done_xls, 
             '%s%s' % (now(), 
@@ -497,7 +506,7 @@ for root, dirs, files in os.walk(path_xls):
             filename_xls, now()))
         f_log_xls = open(file_log_xls, 'w')
 
-        supplier_code = ''.join(f_split[:-1])   
+        supplier_code = '.'.join(f_split[:-1])   
         try:
            WB = xlrd.open_workbook(file_xls)
            file_log_data(
@@ -512,7 +521,7 @@ for root, dirs, files in os.walk(path_xls):
                mode='ERROR',
                newline=newline,
                )
-           continue
+            continue
         WS = WB.sheet_by_index(0)
 
         # ---------------------------------------------------------------------
