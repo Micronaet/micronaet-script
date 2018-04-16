@@ -31,6 +31,7 @@ dropbox_path = parameters.dropbox_path
 file_replace_char = parameters.file_replace_char
 folder_replace_char = parameters.folder_replace_char
 product_part = parameters.product_part
+parent_part = parameters.parent_part
 
 print '''
 Setup parameters: 
@@ -152,16 +153,20 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
+import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
         # DESTINATION: Folder
         # ---------------------------------------------------------------------
         # 1. Generate name:        
-        product_folder = os.path.join(
-            dropbox_path, 
-            clean_char(product, folder_replace_char), # change char
-            )        
+        folder_name = clean_char(product, folder_replace_char), # change char
+        folder_parent = folder_name[:parent_part]
+        if folder_parent.isdigit():
+            product_folder = os.path.join(
+                dropbox_path, folder_parent, folder_name)
+        else:        
+            product_folder = os.path.join(dropbox_path, folder_name)
         
         # 2. Create if not present:
         if not demo:

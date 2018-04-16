@@ -62,6 +62,7 @@ folder_replace_char = [
 # Product name beginning char to consider:
 # -----------------------------------------------------------------------------
 # Es. 127TX_ANBIBES.001.jpeg >> 127TX_ANBIBE (Folder that will be created)
-product_part = 12
+product_part = 12 # Folder product name
+parent_part = 3 # Folder parent name (if all numeric)
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
