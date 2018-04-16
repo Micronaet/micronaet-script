@@ -89,7 +89,7 @@ for (key, path, extension, walk) in input_folders:
                 product_db[product][key] = []
                 
             # File to symlink:    
-            product_db[product][key].append(f)    
+            product_db[product][key].append(os.path.join(root, f))    
 
             # -----------------------------------------------------------------
             # Check case problem:
@@ -131,25 +131,27 @@ for product in product_db:
         if not demo:
             os.system('mkdir -p "%s"' % product_folder)
         
-        for f in product_db[product][key]:
+        for origin in product_db[product][key]:
             tot += 1
             # ORIGIN: Filename:
-            origin = os.path.join(
-                folder_db[key], # Origin folder for that key
-                f,
-                )
+            #origin = os.path.join(
+            #    folder_db[key], # Origin folder for that key
+            #    f,
+            #    )
 
             # DESTINATION: Filename
             name = '%s_%s' % (key, clean_char(
                 f, 
                 file_replace_char, # Replace list
                 )) # Filename for destination
-
-            destination = os.path.join(
-                dropbox_path,
-                product_folder, # Product folder
-                name,
-                )
+            try:
+                destination = os.path.join(
+                    dropbox_path,
+                    product_folder, # Product folder
+                    name,
+                    )
+            except:
+                import pdb; pdb.set_trace()        
             
             # Symlink operations:     
             if not demo:
