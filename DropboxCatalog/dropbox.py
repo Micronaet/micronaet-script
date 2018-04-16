@@ -67,12 +67,17 @@ for (key, path, extension, walk) in input_folders:
             if f.startswith('.'):
                 log.append('Temp file not used: %s' % f)
                 continue
+            if '.' not in f:
+                log.append('No dot in filename, so no ext.: %s' % f)
+                continue
                 
             # -----------------------------------------------------------------
             # Check estension:
             # -----------------------------------------------------------------
             part = f.split('.')
-            name = '.'.join(part[:-1])
+            if len(part) > 2:
+                log.append('File with dot extra: %s' % f)
+            name = part[0] # Take only first block at first dot!                
             ext = part[-1].upper()
             
             if not name:
