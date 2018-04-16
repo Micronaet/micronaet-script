@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Copyright (C) 2001-2014 Micronaet SRL (<http://www.micronaet.it>).
@@ -77,7 +76,7 @@ for (key, path, extension, walk) in input_folders:
             part = f.split('.')
             if len(part) > 2:
                 log.append('File with dot extra: %s' % f)
-            name = part[0] # Take only first block at first dot!                
+            name = part[0].upper() # Take only first block at first dot!                
             ext = part[-1].upper()
             
             if not name:
@@ -127,7 +126,6 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
-import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
