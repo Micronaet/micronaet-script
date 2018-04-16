@@ -20,7 +20,7 @@
 import os
 import sys
 import shutil
-import config # Micronaet: configuration file
+from . import config # Micronaet: configuration file
 from datetime import datetime, timedelta
 
 # -----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ from datetime import datetime, timedelta
     file_replace_char,
     folder_replace_char,
     product_part,      
-    ) = config.config.parameters()
+    ) = config.parameters()
 
 # Database elements:
 product_db = {}
