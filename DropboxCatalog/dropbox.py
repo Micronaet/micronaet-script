@@ -20,9 +20,8 @@
 import os
 import sys
 import shutil
-from config import (demo, input_folders, dropbox_path, file_replace_char,
-    folder_replace_char, product_part
-    ) # Micronaet: configuration file
+from config import demo, input_folders, dropbox_path, file_replace_char,\
+    folder_replace_char, product_part # Micronaet: configuration file
 from datetime import datetime, timedelta
 
 # Database elements:
