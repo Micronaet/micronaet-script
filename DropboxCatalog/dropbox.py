@@ -45,13 +45,12 @@ def clean_char(name, replace_char):
     '''
     for (find, replace) in replace_char:
         name = name.replace(find, replace)
-    return name
+    return name.strip() # Clean extra spaces
 
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
 tot = 0
-import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     # XXX walk for now is not used
     
