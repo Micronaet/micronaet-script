@@ -115,15 +115,15 @@ for (key, path, extension, walk) in input_folders:
                 else:
                     if demo:
                         print 'Da %s A %s' % (
-                        os.path.join(root, f),
-                        os.path.join(root, new_name),
-                        )
+                            os.path.join(root, f),
+                            os.path.join(root, new_name),
+                            )
                     else:
-                    shutil.move(
-                        os.path.join(root, f),
-                        os.path.join(root, new_name),
-                        )                    
-                    name_done.append(new_name)
+                        shutil.move(
+                            os.path.join(root, f),
+                            os.path.join(root, new_name),
+                            )                    
+                        name_done.append(new_name)
 
 print 'Done elements: \n\n%s' % (ext_done, )            
 
