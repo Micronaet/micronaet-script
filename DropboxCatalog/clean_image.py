@@ -80,7 +80,7 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # Case problem in Extension:
             # -----------------------------------------------------------------
-            if ext == ext.lower() and new_extension.lower() != 'jpeg':
+            if ext == ext.lower() and ext.lower() != 'jpeg':
                 new_extension = ext # remain the same
             else:
                 # Clean case error:
