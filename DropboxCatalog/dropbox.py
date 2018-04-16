@@ -20,7 +20,7 @@
 import os
 import sys
 import shutil
-from . import config # Micronaet: configuration file
+import config # Micronaet: configuration file
 from datetime import datetime, timedelta
 
 # -----------------------------------------------------------------------------
