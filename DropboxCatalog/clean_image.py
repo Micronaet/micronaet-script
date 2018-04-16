@@ -27,7 +27,7 @@ from datetime import datetime, timedelta
 # -----------------------------------------------------------------------------
 demo = parameters.demo
 input_folders = parameters.input_folders
-
+demo = True #XXX
 print '''
 Setup parameters: 
     Demo: %s
@@ -113,6 +113,12 @@ for (key, path, extension, walk) in input_folders:
                 if new_name in name_done:
                     name_duplicated.append(new_name) # XXX no rename!
                 else:
+                    if demo:
+                        print 'Da %s A %s' % (
+                        os.path.join(root, f),
+                        os.path.join(root, new_name),
+                        )
+                    else:
                     shutil.move(
                         os.path.join(root, f),
                         os.path.join(root, new_name),
