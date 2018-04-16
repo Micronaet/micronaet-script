@@ -160,7 +160,7 @@ for product in product_db:
         # DESTINATION: Folder
         # ---------------------------------------------------------------------
         # 1. Generate name:        
-        folder_name = clean_char(product, folder_replace_char), # change char
+        folder_name = clean_char(product, folder_replace_char) # change char
         folder_parent = folder_name[:parent_part]
         if folder_parent.isdigit():
             product_folder = os.path.join(
