@@ -64,14 +64,4 @@ folder_replace_char = [
 # Es. 127TX_ANBIBES.001.jpeg >> 127TX_ANBIBE (Folder that will be created)
 product_part = 12
 
-def parameters():
-    return (
-        demo,
-        input_folders,
-        dropbox_path,
-        file_replace_char,
-        folder_replace_char,
-        product_part,      
-        )
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
