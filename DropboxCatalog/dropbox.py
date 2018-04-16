@@ -19,18 +19,18 @@
 import os
 import sys
 import shutil
-import config # Micronaet: configuration file
+import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
 
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
-demo = config.demo
-input_folders = config.input_folders
-dropbox_path = config.dropbox_path
-file_replace_char = config.file_replace_char
-folder_replace_char = config.folder_replace_char
-product_part = config.product_part
+demo = parameters.demo
+input_folders = parameters.input_folders
+dropbox_path = parameters.dropbox_path
+file_replace_char = parameters.file_replace_char
+folder_replace_char = parameters.folder_replace_char
+product_part = parameters.product_part
 
 # Database elements:
 product_db = {}
