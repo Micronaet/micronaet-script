@@ -154,10 +154,18 @@ for product in product_db:
                 import pdb; pdb.set_trace()        
             
             # Symlink operations:     
-            if not demo:
-                os.symlink(origin, destination)
-            log_sym.append('origin: %s destination: %s' % (
-                origin, destination)) 
+            if demo:
+                log_sym.append('DEMO origin: %s destination: %s' % (
+                    origin, destination)) 
+            else:    
+                try:
+                    os.symlink(origin, destination)
+                    log_sym.append('CREATO: origin: %s destination: %s' % (
+                        origin, destination))
+                except:
+                    log_sym.append('PRESENTE: origin: %s destination: %s' % (
+                        origin, destination))
+                        
 
 print log_sym                
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
