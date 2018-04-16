@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
-demo = True #parameters.demo  # TODO change
+demo = parameters.demo  # TODO change
 input_folders = parameters.input_folders
 
 print '''
