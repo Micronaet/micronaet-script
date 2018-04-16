@@ -64,6 +64,10 @@ for (key, path, extension, walk) in input_folders:
         for f in files:
             tot += 1    
 
+            if f.startswith('.'):
+                log.append('Temp file not used: %s' % f)
+                continue
+                
             # -----------------------------------------------------------------
             # Check estension:
             # -----------------------------------------------------------------
