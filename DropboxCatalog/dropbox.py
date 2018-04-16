@@ -49,7 +49,7 @@ log_sym = [] # Log database for symlinks
 
 
 # -----------------------------------------------------------------------------
-# Read all folders:
+#                                 UTILITY:
 # -----------------------------------------------------------------------------
 def clean_char(name, replace_char):
     ''' Clean name with replate list of elements
@@ -59,9 +59,10 @@ def clean_char(name, replace_char):
     return name
 
 # -----------------------------------------------------------------------------
-# Read all folders:
+#                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
 tot = 0
+import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     # XXX walk for now is not used
     
@@ -111,7 +112,7 @@ for (key, path, extension, walk) in input_folders:
             log.append('File used %s [Key: %s]' % (f, key))
 
 # -----------------------------------------------------------------------------
-# Create symlinks:
+#                            CREATE SYMLINKS:
 # -----------------------------------------------------------------------------
 # Destination root folder:
 dropbox_path = os.path.expanduser(dropbox_path)
@@ -119,6 +120,7 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
+import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
@@ -127,12 +129,12 @@ for product in product_db:
         # 1. Generate name:        
         product_folder = os.path.join(
             dropbox_path, 
-            clean_char(product, folder_replace_char),
+            clean_char(product, folder_replace_char), # change char
             )        
         
         # 2. Create if not present:
         if not demo:
-            os.system('mkdir -p %s' % product_folder)
+            os.system('mkdir -p "%s"' % product_folder)
         
         for f in product_db[product][key]:
             tot += 1
