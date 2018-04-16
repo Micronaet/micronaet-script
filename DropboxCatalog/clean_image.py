@@ -51,7 +51,6 @@ ext_duplicated = []
 
 name_done = []
 name_duplicated = []
-import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     path = os.path.expanduser(path)
     for root, dirs, files in os.walk(path):
