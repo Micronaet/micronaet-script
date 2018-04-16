@@ -104,6 +104,7 @@ for (key, path, extension, walk) in input_folders:
 
             # Log insert:                
             log.append('File used %s [Key: %s]' % (f, key))
+        break # Only first folder
 
 # -----------------------------------------------------------------------------
 #                            CREATE SYMLINKS:
