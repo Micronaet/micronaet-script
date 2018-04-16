@@ -71,6 +71,10 @@ for (key, path, extension, walk) in input_folders:
             name = '.'.join(part[:-1])
             ext = part[-1].upper()
             
+            if not name:
+                log.append('%s. No product folder: %s' % (i, f))
+                continue
+
             if extension and ext not in extension:
                 log.append('%s. Estension %s not used: %s' % (i, ext, f))
                 continue
