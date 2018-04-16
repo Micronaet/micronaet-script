@@ -25,16 +25,6 @@ from config import (input_folders, dropbox_path, file_replace_char,
     ) # Micronaet: configuration file
 from datetime import datetime, timedelta
 
-# -----------------------------------------------------------------------------
-# Parameters:
-# -----------------------------------------------------------------------------
-demo = config.demo
-input_folders = config.input_folders
-dropbox_path = config.dropbox_path
-file_replace_char = config.file_replace_char
-folder_replace_char = config.folder_replace_char
-product_part = config.product_part
-
 # Database elements:
 product_db = {}
 folder_db = {}
@@ -46,7 +36,6 @@ warning = [] # Warning database
 info = [] #Info database
 log = [] # Log database
 log_sym = [] # Log database for symlinks
-
 
 # -----------------------------------------------------------------------------
 #                                 UTILITY:
