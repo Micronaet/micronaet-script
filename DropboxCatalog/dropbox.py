@@ -67,7 +67,10 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # Check estension:
             # -----------------------------------------------------------------
-            ext = (f.split('.')[-1]).upper()
+            part = f.split('.')
+            name = '.'.join(part[:-1])
+            ext = part[-1].upper()
+            
             if extension and ext not in extension:
                 log.append('%s. Estension %s not used: %s' % (i, ext, f))
                 continue
@@ -75,9 +78,9 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # Generate product / folder name
             # -----------------------------------------------------------------
-            product = f[:product_part]
+            product = name[:product_part]
             if product not in product_db:
-                product_db[product] = {}                
+                product_db[product] = {}
             if key not in product_db[product]:
                 product_db[product][key] = []
                 
@@ -132,15 +135,15 @@ for product in product_db:
                 )
 
             # DESTINATION: Filename
-            name = clean_char(
-                '%s_%s' % (key, f), # Filename for destination
+            name = '%s_%s' % (key, clean_char(
+                f, 
                 file_replace_char, # Replace list
-                )
+                )) # Filename for destination
 
             destination = os.path.join(
                 dropbox_path,
                 product_folder, # Product folder
-                name.strip(),
+                name,
                 )
             
             # Symlink operations:     
