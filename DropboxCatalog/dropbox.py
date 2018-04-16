@@ -153,7 +153,6 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
-import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
@@ -203,7 +202,5 @@ for product in product_db:
                 except:
                     log_sym.append('PRESENTE: origin: %s destination: %s' % (
                         origin, destination))
-                        
-
 print log_sym                
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
