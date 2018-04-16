@@ -142,6 +142,9 @@ for (key, path, extension, walk) in input_folders:
 
             # Log insert:                
             log.append('File used %s [Key: %s]' % (f, key))
+        # TODO check walk clause here!!!
+        # if not walk: 
+        #     break
         break # Only first folder
 
 # -----------------------------------------------------------------------------
