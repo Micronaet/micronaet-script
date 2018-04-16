@@ -32,6 +32,23 @@ file_replace_char = parameters.file_replace_char
 folder_replace_char = parameters.folder_replace_char
 product_part = parameters.product_part
 
+print '''
+Setup parameters: 
+    Demo: %s
+    Input folders: %s
+    Dropbox path: %s
+    File replace char: %s
+    Folder replace char: %s
+    Product part: %s    
+    ''' % (
+        demo,
+        input_folders,
+        dropbox_path,
+        file_replace_char,
+        folder_replace_char,
+        product_part,        
+        )
+
 # Database elements:
 product_db = {}
 folder_db = {}
