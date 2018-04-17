@@ -54,10 +54,10 @@ for (key, path, extension, walk) in input_folders:
             rename_file = False
             
             if f.startswith('.'):
-                log.append('Temp file not used: %s' % f)
+                log.append('NO|Temp file not used|%s|' % f)
                 continue
             if '.' not in f:
-                log.append('No dot in filename, so no ext.: %s' % f)
+                log.append('NO|No extension (no '.')|%s|' % f)
                 continue
                 
             # -----------------------------------------------------------------
@@ -65,14 +65,14 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             part = f.split('.')
             if len(part) > 3:
-                log.append('File with dot extra: %s' % f)
+                log.append('NO|File with extra dot|%s|' % f)
                 continue
                 
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
             ext = part[-1]
             
             if not name:
-                log.append('No image file: %s' % f)
+                log.append('NO|No image file|%s|' % f)
                 continue
 
             # -----------------------------------------------------------------
@@ -112,7 +112,7 @@ for (key, path, extension, walk) in input_folders:
                 elif not extra_s:
                     new_name = new_name[:-1] # Remove S
                 else:
-                    log.append('No SX format: %s' % f)
+                    log.append('NO|No SX format|%s|' % f)
                     continue
                 
             # -----------------------------------------------------------------
@@ -123,7 +123,7 @@ for (key, path, extension, walk) in input_folders:
             # 5. + JUMPED
             # -----------------------------------------------------------------
             if '+' in new_name:
-                log.append('Jumped more product (+): %s' % f)
+                log.append('NO|Jumped more product (+)|%s|' % f)
                 continue
 
             # TODO case not managed: _COPIA, S1-0, NOME(1).jpg
@@ -139,19 +139,19 @@ for (key, path, extension, walk) in input_folders:
             # END: Rename procedure:
             # -----------------------------------------------------------------        
             if not rename_file:
-                log.append('No rename operation: %s' % f)
+                log.append('NO|No rename operation|%s|' % f)
                 continue
                 
             new_name = '%s.%s' % (new_name, new_extension)
             from_file = os.path.join(root, f)
             to_file = os.path.join(root, new_name)
             if os.path.isfile(to_file):
-                log.append('Duplicated: origin %s - new: %s' % (f, new_name))
+                log.append('NO|Duplicated name|%s|%s' % (f, new_name))
                 continue
             
             if demo:
                 # Log operation:
-                log.append('Old: %s, new: %s' % (f, new_name))
+                log.append('YES|RENAMED|%s|%s' % (f, new_name))
             else:    
                 # Rename operation:
                 pass#shutil.move(from_file, to_file)

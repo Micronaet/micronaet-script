@@ -475,7 +475,8 @@ f_csv = open(file_csv, 'w')
 f_csv.write(';'.join(header) + newline)
 for root, dirs, files in os.walk(path_xls):
     for filename_xls in files:
-        is_error = False 
+        is_error = False
+        default_discount = False
         f_split = filename_xls.split('.')
         if len(f_split) != 3 or \
                 not f_split[0].isdigit() or \
@@ -500,7 +501,7 @@ for root, dirs, files in os.walk(path_xls):
             filename_xls, now()))
         f_log_xls = open(file_log_xls, 'w')
 
-        supplier_code = '.'.join(f_split[:-1])   
+        supplier_code = ''.join(f_split[:-1])   
         try:
            WB = xlrd.open_workbook(file_xls)
            file_log_data(
@@ -548,7 +549,12 @@ for root, dirs, files in os.walk(path_xls):
             price = WS.cell(row, 2).value
             vat = WS.cell(row, 3).value
             uom = WS.cell(row, 4).value
-            discount = WS.cell(row, 5).value # Supplier discount values
+            if default_discount == False:
+                discount = WS.cell(row, 5).value # Supplier discount values
+                if discount:
+                    default_discount = discount
+                else:
+                    default_discount = ''
 
             # Transform data read:
             name_csv = csv_text(name, name_limit)
@@ -664,7 +670,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARSCQ(1,1)',
                 '', #_ARSCQ(1,2)',
                 '', #_ARSCQ(1,3)',        
-                discount, #_ARSCQ(1,4)',
+                default_discount, #_ARSCQ(1,4)',
                 '', #_ARFOR(2)',
                 '', #_ARGGR(2)',
                 '', #_ARLOT(2)',
