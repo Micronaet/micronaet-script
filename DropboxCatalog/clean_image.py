@@ -21,7 +21,7 @@ import sys
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
-import pdb; pdb.set_trace()
+
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
@@ -156,11 +156,9 @@ for (key, path, extension, walk) in input_folders:
                 # Rename operation:
                 pass#shutil.move(from_file, to_file)
         break
-log.append('Done elements: \n\n%s' % (ext_done, ))
 
 f_log = open('./log.txt', 'w')
 for item in log:
     f_log.write(item)
 f_log.close()    
-    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
