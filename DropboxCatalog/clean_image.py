@@ -142,6 +142,7 @@ for (key, path, extension, walk) in input_folders:
                 log.append('NO|No rename operation|%s|' % f)
                 continue
                 
+            new_name = new_name.strip('_')    
             new_name = '%s.%s' % (new_name, new_extension)
             from_file = os.path.join(root, f)
             to_file = os.path.join(root, new_name)
