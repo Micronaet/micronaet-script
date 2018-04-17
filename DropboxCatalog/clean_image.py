@@ -116,11 +116,24 @@ for (key, path, extension, walk) in input_folders:
                     continue
                 
             # -----------------------------------------------------------------
-            # 4. "NOME 1.jpg" >>> NOME.001.jpg
+            # 4. "NOME (1).jpg" >>> NOME.001.jpg
+            # -----------------------------------------------------------------
+            if '(' in new_name and ')' in new_name:
+                extra_s = new_name[13:]                
+                extra_s = extra_s.replace('(', '').replace(')', '').strip()
+                if extra_s.isdigit():
+                    rename_file = True
+                    new_name = '%s.%03d' % (
+                        new_name[:13].strip('_'), # Remove extra _
+                        int(extra_s), # XXX < 3 char
+                        ) 
+
+            # -----------------------------------------------------------------
+            # 5. "NOME 1.jpg" >>> NOME.001.jpg
             # -----------------------------------------------------------------
 
             # -----------------------------------------------------------------
-            # 5. + JUMPED
+            # 6. + JUMPED
             # -----------------------------------------------------------------
             if '+' in new_name:
                 log.append('NO|Jumped more product (+)|%s|' % f)
