@@ -46,12 +46,12 @@ log = [] # Log database
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
-name_done = []
-name_duplicated = []
 for (key, path, extension, walk) in input_folders:
     path = os.path.expanduser(path)
     for root, dirs, files in os.walk(path):
         for f in files:
+            rename_file = False
+            
             if f.startswith('.'):
                 log.append('Temp file not used: %s' % f)
                 continue
@@ -80,6 +80,7 @@ for (key, path, extension, walk) in input_folders:
             if ext == ext.lower() and ext.lower() != 'jpeg':
                 new_extension = ext # remain the same
             else:
+                rename_file = True
                 # Clean case error:
                 new_extension = ext.lower()
                 
@@ -93,12 +94,14 @@ for (key, path, extension, walk) in input_folders:
             if name == name.upper():   
                 new_name = name    
             else:
+                rename_file = True
                 new_name = name.upper()
 
             # -----------------------------------------------------------------
             # 3. SX >> .001 change     or S.jpg >>> .jpg
             # -----------------------------------------------------------------
             if new_name[13:14] == 'S':                
+                rename_file = True
                 extra_s = new_name[14:]
                 if extra_s.is_digit():
                     new_name = '%s.%03d' % (
@@ -118,36 +121,45 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # 5. + JUMPED
             # -----------------------------------------------------------------
-
+            if '+' in new_name:
+                log.append('Jumped more product (+): %s' % f)
+                continue
 
             # TODO case not managed: _COPIA, S1-0, NOME(1).jpg
             
             # -----------------------------------------------------------------
             # LAST. " " >>> "_"
             # -----------------------------------------------------------------
-
-
+            if ' ' in new_name:
+                rename_file = True
+                new_name = new_name.replace(' ', '_')
+                
             # -----------------------------------------------------------------
             # END: Rename procedure:
             # -----------------------------------------------------------------        
-            new_name = '%s.%s' % (new_name, new_extension)
-            if new_name in name_done:
-                name_duplicated.append(new_name) # XXX no rename duplicated!
+            if not rename_file:
+                log.append('No rename operation: %s' % f)
                 continue
-            else:
-                if demo:
-                    # Log operation:
-                    print 'Old: %s, new: %s' % (f, new_name)
-                else:    
-                    # Rename operation:
-                    shutil.move(
-                        os.path.join(root, f),
-                        os.path.join(root, new_name),
-                        )                    
-                name_done.append(new_name)
+                
+            new_name = '%s.%s' % (new_name, new_extension)
+            from_file = os.path.join(root, f)
+            to_file = os.path.join(root, new_name)
+            if os.path.isfile(to_file):
+                log.append('Duplicated: origin %s - new: %s' % (f, new_name))
+                continue
+            
+            if demo:
+                # Log operation:
+                log.append('Old: %s, new: %s' % (f, new_name))
+            else:    
+                # Rename operation:
+                shutil.move(from_file, to_file)
         break
-print 'Done elements: \n\n%s' % (ext_done, )            
+log.append('Done elements: \n\n%s' % (ext_done, ))
 
-if ext_duplicated:
-    print 'Duplicated elements: \n\n%s' % (ext_duplicated, )            
+f_log = open('./log.txt', 'w')
+for item in log:
+    f_log.write(item)
+f_log.close()    
+    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
