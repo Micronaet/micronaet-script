@@ -110,7 +110,7 @@ for (key, path, extension, walk) in input_folders:
                 new_name = new_name[2:] # remove prefix for analysis extra value
 
             # -----------------------------------------------------------------
-            # 3. SX >> .001 change     or S.jpg >>> .jpg
+            # 3A. SX >> .001 change     or S.jpg >>> .jpg
             # -----------------------------------------------------------------
             if new_name[13:14] == 'S':                
                 rename_file = True
@@ -125,6 +125,21 @@ for (key, path, extension, walk) in input_folders:
                 else:
                     log.append('NO|No SX format|%s|' % f)
                     continue
+
+            # -----------------------------------------------------------------
+            # 3B. SX >> .001 (13 char)
+            # -----------------------------------------------------------------
+            # Wrong SX format in position 13 instead of 14
+            if new_name[12:13] == 'S':                
+                extra_s = new_name[13:]
+                if extra_s.isdigit():
+                    rename_file = True
+                    new_name = '%s.%03d' % (
+                        new_name[:12].strip('_'),
+                        int(extra_s), # XXX < 3 char
+                        ) 
+                else:
+                    pass # S(ingle) product        
                 
             # -----------------------------------------------------------------
             # 4. "NOME (1).jpg" >>> NOME.001.jpg
