@@ -65,6 +65,7 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             part = f.split('.')
             
+            product = part[0]
             prefix = ''    
             version = ''
             if len(part) > 3:
@@ -72,7 +73,8 @@ for (key, path, extension, walk) in input_folders:
                 continue
             elif len(part) == 3:
                 version = part[1]
-            
+
+            # File name splitted:            
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
             ext = part[-1]
             
@@ -168,7 +170,7 @@ for (key, path, extension, walk) in input_folders:
             # END: Rename procedure:
             # -----------------------------------------------------------------        
             if not rename_file:
-                if len(new_name) > 13:
+                if len(product) > 13:
                     log.append('NO|Check format (>13 char)|%s|' % f)
                     continue
                 elif version and len(version) != 3:
