@@ -65,14 +65,14 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             part = f.split('.')
             
-            product = part[0]
+            product = part[0].upper()
             prefix = ''    
             version = ''
             if len(part) > 3:
                 log.append('NO|File with extra dot|%s|' % f)
                 continue
             elif len(part) == 3:
-                version = part[1]
+                version = part[1]                
 
             # File name splitted:            
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
@@ -108,6 +108,7 @@ for (key, path, extension, walk) in input_folders:
             if new_name[:2] in ('ST', 'MT'):
                 prefix = new_name[:2]
                 new_name = new_name[2:] # remove prefix for analysis extra value
+                product = product[2:]
 
             # -----------------------------------------------------------------
             # 3A. SX >> .001 change     or S.jpg >>> .jpg
