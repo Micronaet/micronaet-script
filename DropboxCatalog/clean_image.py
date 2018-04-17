@@ -57,7 +57,7 @@ for (key, path, extension, walk) in input_folders:
                 log.append('NO|Temp file not used|%s|' % f)
                 continue
             if '.' not in f:
-                log.append('NO|No extension (no '.')|%s|' % f)
+                log.append('NO|No extension (no .)|%s|' % f)
                 continue
                 
             # -----------------------------------------------------------------
