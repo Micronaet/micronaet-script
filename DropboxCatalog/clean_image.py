@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
-demo = parameters.demo  # TODO change
+demo = True #parameters.demo  # TODO change
 input_folders = parameters.input_folders
 
 print '''
@@ -46,9 +46,6 @@ log = [] # Log database
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
-ext_done = []
-ext_duplicated = []
-
 name_done = []
 name_duplicated = []
 for (key, path, extension, walk) in input_folders:
@@ -66,8 +63,9 @@ for (key, path, extension, walk) in input_folders:
             # Parse filename:
             # -----------------------------------------------------------------
             part = f.split('.')
-            if len(part) > 2:
+            if len(part) > 3:
                 log.append('File with dot extra: %s' % f)
+                continue
                 
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
             ext = part[-1]
@@ -77,53 +75,77 @@ for (key, path, extension, walk) in input_folders:
                 continue
 
             # -----------------------------------------------------------------
-            # Case problem in Extension:
+            # 1. Case problem in Extension (lower not jpeg:
             # -----------------------------------------------------------------
             if ext == ext.lower() and ext.lower() != 'jpeg':
                 new_extension = ext # remain the same
             else:
                 # Clean case error:
-                log.append('Rename extension %s file: %s' % (ext, f))
                 new_extension = ext.lower()
                 
                 # Remove jpeg files:
                 if new_extension == 'jpeg':
                     new_extension = 'jpg'
-                new_name = '%s.%s' % (name, new_extension)
-                if new_name in ext_done:
-                    ext_duplicated.append(new_name) # XXX no rename!
+
+            # -----------------------------------------------------------------
+            # 2. Case problem in name:
+            # -----------------------------------------------------------------
+            if name == name.upper():   
+                new_name = name    
+            else:
+                new_name = name.upper()
+
+            # -----------------------------------------------------------------
+            # 3. SX >> .001 change     or S.jpg >>> .jpg
+            # -----------------------------------------------------------------
+            if new_name[13:14] == 'S':                
+                extra_s = new_name[14:]
+                if extra_s.is_digit():
+                    new_name = '%s.%03d' % (
+                        new_name[:13],
+                        int(extra_s), # XXX < 3 char
+                        ) 
+                elif not extra_s:
+                    new_name = new_name[:-1] # Remove S
                 else:
+                    log.append('No SX format: %s' % f)
+                    continue
+                
+            # -----------------------------------------------------------------
+            # 4. "NOME 1.jpg" >>> NOME.001.jpg
+            # -----------------------------------------------------------------
+
+            # -----------------------------------------------------------------
+            # 5. + JUMPED
+            # -----------------------------------------------------------------
+
+
+            # TODO case not managed: _COPIA, S1-0, NOME(1).jpg
+            
+            # -----------------------------------------------------------------
+            # LAST. " " >>> "_"
+            # -----------------------------------------------------------------
+
+
+            # -----------------------------------------------------------------
+            # END: Rename procedure:
+            # -----------------------------------------------------------------        
+            new_name = '%s.%s' % (new_name, new_extension)
+            if new_name in name_done:
+                name_duplicated.append(new_name) # XXX no rename duplicated!
+                continue
+            else:
+                if demo:
+                    # Log operation:
+                    print 'Old: %s, new: %s' % (f, new_name)
+                else:    
+                    # Rename operation:
                     shutil.move(
                         os.path.join(root, f),
                         os.path.join(root, new_name),
                         )                    
-                    ext_done.append(new_name)
-
-            # -----------------------------------------------------------------
-            # Case problem in name:
-            # -----------------------------------------------------------------
-            if name != name.upper():          
-                # Clean case error:
-                log.append('Rename %s file: %s' % (name, f))
-                new_name = name.upper()
-                
-                # Remove jpeg files:
-                new_name = '%s.%s' % (new_name, new_extension)
-                if new_name in name_done:
-                    name_duplicated.append(new_name) # XXX no rename!
-                else:
-                    if demo:
-                        print 'Da %s A %s' % (
-                            os.path.join(root, f),
-                            os.path.join(root, new_name),
-                            )
-                    else:
-                        shutil.move(
-                            os.path.join(root, f),
-                            os.path.join(root, new_name),
-                            )                    
-                        name_done.append(new_name)
-
+                name_done.append(new_name)
+        break
 print 'Done elements: \n\n%s' % (ext_done, )            
 
 if ext_duplicated:

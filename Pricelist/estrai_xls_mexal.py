@@ -464,12 +464,7 @@ def get_ascii_name(value):
 def file_log_data(f_log, event, mode='INFO', newline='\n\r'):
     ''' Log data in event format
     '''
-    f_log.write('[%s] %s: %s%s' % (
-        mode,
-        datetime.now(),
-        event,
-        newline,
-        ))
+    f_log.write('[%s] %s: %s%s' % (mode, datetime.now(), event, newline))
     return True
 
 # -----------------------------------------------------------------------------
@@ -499,9 +494,8 @@ for root, dirs, files in os.walk(path_xls):
         file_xls = os.path.join(path_xls, filename_xls)
         done_file_xls = os.path.join(
             path_done_xls, 
-            '%s%s' % (now(), 
-            filename_xls,
-            ))
+            '%s.%s' % (now(), filename_xls),
+            )
         file_log_xls = os.path.join(path_log_xls, '%s.%s.txt' % (
             filename_xls, now()))
         f_log_xls = open(file_log_xls, 'w')
@@ -554,6 +548,7 @@ for root, dirs, files in os.walk(path_xls):
             price = WS.cell(row, 2).value
             vat = WS.cell(row, 3).value
             uom = WS.cell(row, 4).value
+            discount = WS.cell(row, 5).value # Supplier discount values
 
             # Transform data read:
             name_csv = csv_text(name, name_limit)
@@ -616,7 +611,7 @@ for root, dirs, files in os.walk(path_xls):
                 currency_id, #_ARVST',       
                 currency_id, #_ARVUL',
                 currency_id, #_ARVUP',
-                csv_float(price, price_decimal), #_ARSST',
+                '', #_ARSST',
                 '', #_ARCUL',
                 '', #_ARCUP',       
                 '', #_ARRIC',
@@ -628,7 +623,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARIMB',
                 '', #_ARQPR',
                 '', #_ARQPA',
-                '', #_ARPRZ(1)',       
+                csv_float(price, price_decimal), #_ARPRZ(1)',       
                 '', #_ARPRZ(2)',
                 '', #_ARPRZ(3)',
                 '', #_ARPRZ(4)',
@@ -669,7 +664,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARSCQ(1,1)',
                 '', #_ARSCQ(1,2)',
                 '', #_ARSCQ(1,3)',        
-                '', #_ARSCQ(1,4)',
+                discount, #_ARSCQ(1,4)',
                 '', #_ARFOR(2)',
                 '', #_ARGGR(2)',
                 '', #_ARLOT(2)',
@@ -950,8 +945,6 @@ for root, dirs, files in os.walk(path_xls):
                 'Errore elaborando il file non storicizzato: %s' % file_xls, 
                 newline=newline,
                 )
-
         # Close mono file log:   
         f_log_xls.close()
-
 f_log.close()
