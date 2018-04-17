@@ -156,10 +156,9 @@ for (key, path, extension, walk) in input_folders:
                 # Rename operation:
                 pass#shutil.move(from_file, to_file)
         break
-        
-import pdb; pdb.set_trace()
+
 f_log = open('./log.txt', 'w')
 for item in log:
-    f_log.write(item)
+    f_log.write('%s\n' % item)
 f_log.close()    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
