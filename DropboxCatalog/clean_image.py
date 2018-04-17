@@ -101,7 +101,7 @@ for (key, path, extension, walk) in input_folders:
 
             if new_name[:2] in ('ST', 'MT'):
                 prefix = new_name[:2]
-                new_name = [2:] # remove prefix for analysis extra value
+                new_name = new_name[2:] # remove prefix for analysis extra value
 
             # -----------------------------------------------------------------
             # 3. SX >> .001 change     or S.jpg >>> .jpg
