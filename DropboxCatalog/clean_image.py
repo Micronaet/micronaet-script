@@ -171,7 +171,7 @@ for (key, path, extension, walk) in input_folders:
                 pass#shutil.move(from_file, to_file)
         break
 
-f_log = open('./log.txt', 'w')
+f_log = open('./log.csv', 'w')
 for item in log:
     f_log.write('%s\n' % item)
 f_log.close()    
