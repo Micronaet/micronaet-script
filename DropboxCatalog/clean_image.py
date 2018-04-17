@@ -104,7 +104,7 @@ for (key, path, extension, walk) in input_folders:
             if new_name[13:14] == 'S':                
                 rename_file = True
                 extra_s = new_name[14:]
-                if extra_s.is_digit():
+                if extra_s.isdigit():
                     new_name = '%s.%03d' % (
                         new_name[:13],
                         int(extra_s), # XXX < 3 char
@@ -154,7 +154,7 @@ for (key, path, extension, walk) in input_folders:
                 log.append('Old: %s, new: %s' % (f, new_name))
             else:    
                 # Rename operation:
-                shutil.move(from_file, to_file)
+                pass#shutil.move(from_file, to_file)
         break
 log.append('Done elements: \n\n%s' % (ext_done, ))
 
