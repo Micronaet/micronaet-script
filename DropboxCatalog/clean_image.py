@@ -64,11 +64,15 @@ for (key, path, extension, walk) in input_folders:
             # Parse filename:
             # -----------------------------------------------------------------
             part = f.split('.')
+            
+            prefix = ''    
+            version = ''
             if len(part) > 3:
                 log.append('NO|File with extra dot|%s|' % f)
                 continue
+            elif len(part) == 3:
+                version = part[1]
             
-            prefix = ''    
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
             ext = part[-1]
             
@@ -164,6 +168,15 @@ for (key, path, extension, walk) in input_folders:
             # END: Rename procedure:
             # -----------------------------------------------------------------        
             if not rename_file:
+                if len(new_name) > 13:
+                    log.append('NO|Check format (>13 char)|%s|' % f)
+                    continue
+                elif version and len(version) != 3:
+                    log.append('NO|Check format (version 3 char)|%s|' % f)                    
+                    continue
+                elif version and not version.isdigit():
+                    log.append('NO|Check format (version not #)|%s|' % f)
+                    continue
                 log.append('NO|No rename operation|%s|' % f)
                 continue
                 
