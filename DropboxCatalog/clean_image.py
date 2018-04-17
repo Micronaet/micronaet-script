@@ -21,7 +21,7 @@ import sys
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
-
+import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
