@@ -54,10 +54,10 @@ for (key, path, extension, walk) in input_folders:
             rename_file = False
             
             if f.startswith('.'):
-                log.append('NO|Temp file not used|%s|' % f)
+                log.append('NO|Temp file not used|%s|%s' % (f, f))
                 continue
             if '.' not in f:
-                log.append('NO|No extension (no .)|%s|' % f)
+                log.append('NO|No extension (no .)|%s|%s' % (f, f))
                 continue
                 
             # -----------------------------------------------------------------
@@ -69,7 +69,7 @@ for (key, path, extension, walk) in input_folders:
             prefix = ''    
             version = ''
             if len(part) > 3:
-                log.append('NO|File with extra dot|%s|' % f)
+                log.append('NO|File with extra dot|%s|%s' % (f, f))
                 continue
             elif len(part) == 3:
                 version = part[1]                
@@ -79,7 +79,7 @@ for (key, path, extension, walk) in input_folders:
             ext = part[-1]
             
             if not name:
-                log.append('NO|No image file|%s|' % f)
+                log.append('NO|No image file|%s|%s' % (f, f))
                 continue
 
             # -----------------------------------------------------------------
@@ -124,7 +124,7 @@ for (key, path, extension, walk) in input_folders:
                 elif not extra_s:
                     new_name = new_name[:-1] # Remove S
                 else:
-                    log.append('NO|No SX format|%s|' % f)
+                    log.append('NO|No SX format|%s|%s' % (f, f))
                     continue
 
             # -----------------------------------------------------------------
@@ -163,15 +163,23 @@ for (key, path, extension, walk) in input_folders:
             # 6. + JUMPED
             # -----------------------------------------------------------------
             if '+' in new_name or '-' in new_name:
-                log.append('NO|Jumped more product (+ or -)|%s|' % f)
+                log.append('NO|Jumped more product (+ or -)|%s|%s' % (f, f))
                 continue
 
             # -----------------------------------------------------------------
             # 7. + JUMPED
             # -----------------------------------------------------------------
             if 'COPIA' in new_name:
-                log.append('NO|Jumped COPIA product|%s|' % f)
+                log.append('NO|Jumped COPIA product|%s|%s' % (f, f))
                 continue
+
+            # -----------------------------------------------------------------
+            # 8. + JUMPED
+            # -----------------------------------------------------------------
+            if  new_name[13:14] == 'A':
+                log.append('NO|Environment image|%s|%s' % (f, f))
+                continue
+
 
             # TODO case not managed: _COPIA, S1-0, NOME(1).jpg
             
@@ -187,15 +195,17 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------        
             if not rename_file:
                 if len(product) > 13:
-                    log.append('NO|Check format (>13 char)|%s|' % f)
+                    log.append('NO|Check format (>13 char)|%s|%s' % (f, f))
                     continue
                 elif version and len(version) != 3:
-                    log.append('NO|Check format (version 3 char)|%s|' % f)                    
+                    log.append(
+                        'NO|Check format (version 3 char)|%s|%s' % (f, f))
                     continue
                 elif version and not version.isdigit():
-                    log.append('NO|Check format (version not #)|%s|' % f)
+                    log.append(
+                        'NO|Check format (version not #)|%s|%s' % (f, f))
                     continue
-                log.append('NO|No rename operation|%s|' % f)
+                log.append('NO|No rename operation|%s|%s' % (f, f))
                 continue
                 
             new_name = new_name.strip('_')
