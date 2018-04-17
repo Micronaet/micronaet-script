@@ -106,7 +106,7 @@ for (key, path, extension, walk) in input_folders:
                 extra_s = new_name[14:]
                 if extra_s.isdigit():
                     new_name = '%s.%03d' % (
-                        new_name[:13],
+                        new_name[:13].strip('_'),
                         int(extra_s), # XXX < 3 char
                         ) 
                 elif not extra_s:
