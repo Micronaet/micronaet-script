@@ -172,7 +172,7 @@ for (key, path, extension, walk) in input_folders:
         break
 
 f_log = open('./log.csv', 'w')
-for item in log:
+for item in sorted(log):
     f_log.write('%s\n' % item)
 f_log.close()    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
