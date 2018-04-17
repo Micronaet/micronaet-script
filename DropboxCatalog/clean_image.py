@@ -67,7 +67,8 @@ for (key, path, extension, walk) in input_folders:
             if len(part) > 3:
                 log.append('NO|File with extra dot|%s|' % f)
                 continue
-                
+            
+            prefix = ''    
             name = '.'.join(part[:-1]) # Take only first block at first dot!                
             ext = part[-1]
             
@@ -97,6 +98,10 @@ for (key, path, extension, walk) in input_folders:
             else:
                 rename_file = True
                 new_name = name.upper()
+
+            if new_name[:2] in ('ST', 'MT'):
+                prefix = new_name[:2]
+                new_name = [2:] # remove prefix for analysis extra value
 
             # -----------------------------------------------------------------
             # 3. SX >> .001 change     or S.jpg >>> .jpg
@@ -135,8 +140,15 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # 6. + JUMPED
             # -----------------------------------------------------------------
-            if '+' in new_name:
-                log.append('NO|Jumped more product (+)|%s|' % f)
+            if '+' in new_name or '-' in new_name:
+                log.append('NO|Jumped more product (+ or -)|%s|' % f)
+                continue
+
+            # -----------------------------------------------------------------
+            # 7. + JUMPED
+            # -----------------------------------------------------------------
+            if 'COPIA' in new_name:
+                log.append('NO|Jumped COPIA product|%s|' % f)
                 continue
 
             # TODO case not managed: _COPIA, S1-0, NOME(1).jpg
@@ -155,8 +167,8 @@ for (key, path, extension, walk) in input_folders:
                 log.append('NO|No rename operation|%s|' % f)
                 continue
                 
-            new_name = new_name.strip('_')    
-            new_name = '%s.%s' % (new_name, new_extension)
+            new_name = new_name.strip('_')
+            new_name = '%s%s.%s' % (prefix, new_name, new_extension)
             from_file = os.path.join(root, f)
             to_file = os.path.join(root, new_name)
             if os.path.isfile(to_file):
