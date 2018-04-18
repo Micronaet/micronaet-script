@@ -45,7 +45,6 @@ product_part = parameters.product_part
 parent_part = parameters.parent_part
 no_family_name = parameters.no_family_name
 
-with_family = False # TODO
 print '''
 Setup parameters: 
     ODOO: Connection: %s:%s DB %s utente: %s
@@ -246,17 +245,17 @@ for product in product_db:
         # ---------------------------------------------------------------------
         family_name = no_family_name
         found_parent = False
-        #for l in sorted(parent_char, reverse=True):
-        #    family_parent = folder_name[:l]
-        #    if family_parent in family_db:
-        #        family_name = family_db[family_parent]
-        #        found_parent = family_parent
-        #        break
+        for l in sorted(parent_char, reverse=True):
+            family_parent = folder_name[:l]
+            if family_parent in family_db:
+                family_name = family_db[family_parent]
+                found_parent = family_parent
+                break
         
         if folder_parent.isdigit() or found_parent:
             product_folder = os.path.join(
                 dropbox_path, 
-                #family_name, 
+                family_name, 
                 found_parent or folder_parent, 
                 folder_name,
                 )
@@ -264,12 +263,14 @@ for product in product_db:
             if found_parent:
                 product_folder = os.path.join(
                     dropbox_path, 
-                    #family_name, 
-                    found_parent, folder_name)
+                    family_name, 
+                    found_parent, 
+                    folder_name,
+                    )
             else:        
                 product_folder = os.path.join(
                     dropbox_path, 
-                    #family_name, 
+                    family_name, 
                     folder_name,
                     )
 
