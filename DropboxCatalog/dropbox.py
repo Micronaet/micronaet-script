@@ -102,7 +102,6 @@ uid = sock.login(odoo_database, odoo_user, odoo_password)
 sock = xmlrpclib.ServerProxy(
     'http://%s:%s/xmlrpc/object' % (odoo_server, odoo_port))
 
-import pdb; pdb.set_trace()
 family_ids = sock.execute(
     odoo_database, uid, odoo_password, 
     'product.template', 'search', [
@@ -111,7 +110,7 @@ family_ids = sock.execute(
 
 for family in sock.execute(odoo_database, uid, odoo_password, 
         'product.template', 'read', family_ids, ['name', 'family_list']):
-    for parent in family['family_list.split']('|'):
+    for parent in family['family_list'].split('|'):
         family_db[parent] = family['name']
         if len(parent) not in parent_char:
             parent_char.append(len(parent))
