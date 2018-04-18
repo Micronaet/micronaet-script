@@ -278,6 +278,7 @@ for product in product_db:
                 f, 
                 file_replace_char, # Replace list
                 )) # Filename for destination
+            print name    
             try:    
                 destination = os.path.join(
                     dropbox_path,
