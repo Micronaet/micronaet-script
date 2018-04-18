@@ -85,6 +85,17 @@ log_sym = [] # Log database for symlinks
 # -----------------------------------------------------------------------------
 #                                 UTILITY:
 # -----------------------------------------------------------------------------
+def clean_ascii(name):
+    ''' Replace not ascii char
+    '''
+    res = ''
+    for c in name:
+        if ord(c) < 127:
+            res += c
+        else:
+            res += '_'
+    return res
+
 def clean_char(name, replace_char):
     ''' Clean name with replate list of elements
     '''
@@ -109,9 +120,11 @@ family_ids = sock.execute(
         ]) 
 
 for family in sock.execute(odoo_database, uid, odoo_password, 
-        'product.template', 'read', family_ids, ['name', 'family_list']):
+        'product.template', 'read', family_ids, [
+            'name', 'family_list', 'dropbox']):
+    family_name = clean_ascii(family['dropbox']) or clean_ascii(family['name'])
     for parent in family['family_list'].split('|'):
-        family_db[parent] = family['name']
+        family_db[parent] = family_name
         if len(parent) not in parent_char:
             parent_char.append(len(parent))
 
