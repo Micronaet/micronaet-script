@@ -303,5 +303,15 @@ for product in product_db:
                 except:
                     log_sym.append('PRESENTE: origin: %s destination: %s' % (
                         origin, destination))
-print log_sym                
+# -----------------------------------------------------------------------------                        
+# Clean operation:
+# -----------------------------------------------------------------------------                        
+# Clean empty deadlink
+#os.system('find -L "%s" -type l -exec rm -- {} +' % dropbox_path)
+
+# Clean empty folder:
+#os.system('find "%s" -empty -type d -delete' % dropbox_path)
+
+#print log_sym                
+print 'End operation'                        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
