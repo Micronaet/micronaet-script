@@ -18,6 +18,7 @@
 ###############################################################################
 import os
 import sys
+import erppeek
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
@@ -68,6 +69,7 @@ Setup parameters:
 product_db = {}
 folder_db = {}
 family_db = {}
+parent_char = [] # len of parent in family list
 case_db = {} # Check product case different elements
 
 # Check elements:
@@ -91,10 +93,26 @@ def clean_char(name, replace_char):
 #                           ODOO operation:
 # -----------------------------------------------------------------------------
 # Connect with ODOO
-
+odoo = erppeek.Client(
+    'http://%s:%s' % (
+        odoo_server, odoo_port), 
+    db=odoo_database,
+    user=odoo_user,
+    password=odoo_password,
+    )
+    
 # Read family database
-#family_db
+family_pool = odoo.model('product.template')
+family_ids = family_pool.search([
+    ('is_family', '=', True),
+    ])
 
+for family in family_pool.browse(family_ids):
+    for parent in family.family_list.split('|'):
+        family_db[parent] = family.name
+        if len(parent) not in parent_char:
+            parent_char.append(len(parent))
+        
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
