@@ -262,11 +262,11 @@ for product in product_db:
         else:
             if found_parent:
                 product_folder = os.path.join(
-                    dropbox_path, family_name, folder_name)
+                    dropbox_path, family_name, found_parent, folder_name)
             else:        
                 product_folder = os.path.join(
-                    dropbox_path, family_name, found_parent, folder_name)
-        
+                    dropbox_path, family_name, folder_name)
+
         # 2. Create if not present:
         if not demo:
             os.system('mkdir -p "%s"' % product_folder)
@@ -278,17 +278,11 @@ for product in product_db:
                 f, 
                 file_replace_char, # Replace list
                 )) # Filename for destination
-            print name    
-            if name == 'CHROMA_334   BS     S.jpg':
-                import pdb; pdb.set_trace()
-            try:    
-                destination = os.path.join(
-                    dropbox_path,
-                    product_folder, # Product folder
-                    name,
-                    )
-            except:
-                import pdb; pdb.set_trace()        
+            destination = os.path.join(
+                dropbox_path,
+                product_folder, # Product folder
+                name,
+                )
             
             # Symlink operations:     
             if demo:
