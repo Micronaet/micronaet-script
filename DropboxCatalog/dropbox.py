@@ -279,6 +279,8 @@ for product in product_db:
                 file_replace_char, # Replace list
                 )) # Filename for destination
             print name    
+            if name == 'CHROMA_334   BS     S.jpg':
+                import pdb; pdb.set_trace()
             try:    
                 destination = os.path.join(
                     dropbox_path,
