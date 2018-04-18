@@ -114,7 +114,6 @@ for family in sock.execute(odoo_database, uid, odoo_password,
         family_db[parent] = family['name']
         if len(parent) not in parent_char:
             parent_char.append(len(parent))
-import pdb; pdb.set_trace()
 
 #odoo = erppeek.Client(
 #    'http://%s:%s' % (
@@ -233,18 +232,27 @@ for product in product_db:
         # Check family:
         # ---------------------------------------------------------------------
         family_name = no_family_name
+        found_parent = False
         for l in sorted(parent_char, reverse=True):
             family_parent = folder_name[:l]
             if family_parent in family_db:
                 family_name = family_db[family_parent]
+                found_parent = family_parent
                 break
         
-        if folder_parent.isdigit(): # TODO change
+        if folder_parent.isdigit() or found_parent:
             product_folder = os.path.join(
-                dropbox_path, family_name, folder_parent, folder_name)
-        else:        
-            product_folder = os.path.join(
-                dropbox_path, family_name, folder_name)
+                dropbox_path, family_name, 
+                found_parent or folder_parent, 
+                folder_name,
+                )
+        else:
+            if found_parent:
+                product_folder = os.path.join(
+                    dropbox_path, family_name, folder_name)
+            else:        
+                product_folder = os.path.join(
+                    dropbox_path, family_name, found_parent, folder_name)
         
         # 2. Create if not present:
         if not demo:
