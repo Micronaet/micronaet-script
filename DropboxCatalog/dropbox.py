@@ -41,6 +41,7 @@ file_replace_char = parameters.file_replace_char
 folder_replace_char = parameters.folder_replace_char
 product_part = parameters.product_part
 parent_part = parameters.parent_part
+no_family_name = parameters.no_family_name
 
 print '''
 Setup parameters: 
@@ -106,12 +107,13 @@ family_pool = odoo.model('product.template')
 family_ids = family_pool.search([
     ('is_family', '=', True),
     ])
-
+import pdb; pdb.set_trace()
 for family in family_pool.browse(family_ids):
     for parent in family.family_list.split('|'):
         family_db[parent] = family.name
         if len(parent) not in parent_char:
             parent_char.append(len(parent))
+import pdb; pdb.set_trace()
         
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
@@ -197,6 +199,7 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
+import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
@@ -209,13 +212,19 @@ for product in product_db:
         # ---------------------------------------------------------------------
         # Check family:
         # ---------------------------------------------------------------------
-        # TODO 
+        family_name = no_family_name
+        for l in sorted(parent_char, reverse=True):
+            family_parent = folder_name[:l]
+            if family_parent in family_db:
+                family_name = family_db[family_parent]
+                break
         
-        if folder_parent.isdigit():
+        if folder_parent.isdigit(): # TODO change
             product_folder = os.path.join(
-                dropbox_path, folder_parent, folder_name)
+                dropbox_path, family_name, folder_parent, folder_name)
         else:        
-            product_folder = os.path.join(dropbox_path, folder_name)
+            product_folder = os.path.join(
+                dropbox_path, family_name, folder_name)
         
         # 2. Create if not present:
         if not demo:
