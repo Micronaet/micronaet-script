@@ -122,7 +122,7 @@ family_ids = sock.execute(
 for family in sock.execute(odoo_database, uid, odoo_password, 
         'product.template', 'read', family_ids, [
             'name', 'family_list', 'dropbox']):
-    family_name = clean_ascii(family['dropbox']) or clean_ascii(family['name'])
+    family_name = clean_ascii(family['dropbox'] or family['name'])
     for parent in family['family_list'].split('|'):
         family_db[parent] = family_name
         if len(parent) not in parent_char:
@@ -273,12 +273,6 @@ for product in product_db:
         
         for origin, f in product_db[product][key]:
             tot += 1
-            # ORIGIN: Filename:
-            #origin = os.path.join(
-            #    folder_db[key], # Origin folder for that key
-            #    f,
-            #    )
-
             # DESTINATION: Filename
             name = '%s_%s' % (key, clean_char(
                 f, 
