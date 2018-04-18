@@ -18,6 +18,15 @@
 #
 ###############################################################################
 # -----------------------------------------------------------------------------
+# ODOO Connection:
+# -----------------------------------------------------------------------------
+odoo_server = 'localhost'
+odoo_port = 8069
+odoo_user = 'admin'
+odoo_password = 'password'
+odoo_database = 'dbname'
+
+# -----------------------------------------------------------------------------
 # Setup demo mode
 # -----------------------------------------------------------------------------
 demo = True
@@ -36,7 +45,7 @@ input_folders = [
     ('CHROMA', '~/company/chroma', [
         # UPPER CASE!!!
         ], False),
-    ('ENVIRONMENT', '~/company/chroma', [
+    ('ENVIRONMENT', '~/company/environment', [
         # UPPER CASE!!!
         ], False),
     ]

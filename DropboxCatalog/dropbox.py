@@ -25,6 +25,14 @@ from datetime import datetime, timedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
+# ODOO connection:
+odoo_server = parameters.odoo_server
+odoo_port = parameters.odoo_port
+odoo_user = parameters.odoo_user
+odoo_password = parameters.odoo_password
+odoo_database = parameters.odoo_database
+
+# Dropbox:
 demo = parameters.demo
 input_folders = parameters.input_folders
 dropbox_path = parameters.dropbox_path
@@ -35,6 +43,7 @@ parent_part = parameters.parent_part
 
 print '''
 Setup parameters: 
+    ODOO: Connection: %s:%s DB %s utente: %s
     Demo: %s
     Input folders: %s
     Dropbox path: %s
@@ -42,6 +51,11 @@ Setup parameters:
     Folder replace char: %s
     Product part: %s    
     ''' % (
+        odoo_server, 
+        odoo_port, 
+        odoo_database, 
+        odoo_user,
+        
         demo,
         input_folders,
         dropbox_path,
@@ -53,6 +67,7 @@ Setup parameters:
 # Database elements:
 product_db = {}
 folder_db = {}
+family_db = {}
 case_db = {} # Check product case different elements
 
 # Check elements:
@@ -71,6 +86,14 @@ def clean_char(name, replace_char):
     for (find, replace) in replace_char:
         name = name.replace(find, replace)
     return name.strip() # Clean extra spaces
+
+# -----------------------------------------------------------------------------
+#                           ODOO operation:
+# -----------------------------------------------------------------------------
+# Connect with ODOO
+
+# Read family database
+#family_db
 
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
@@ -101,7 +124,7 @@ for (key, path, extension, walk) in input_folders:
             # Check estension:
             # -----------------------------------------------------------------
             part = f.split('.')
-            if len(part) > 2:
+            if len(part) > 3:
                 log.append('File with dot extra: %s' % f)
             name = part[0].upper() # Take only first block at first dot!                
             ext = part[-1].upper()
@@ -164,6 +187,12 @@ for product in product_db:
         # 1. Generate name:        
         folder_name = clean_char(product, folder_replace_char) # change char
         folder_parent = folder_name[:parent_part]
+        
+        # ---------------------------------------------------------------------
+        # Check family:
+        # ---------------------------------------------------------------------
+        # TODO 
+        
         if folder_parent.isdigit():
             product_folder = os.path.join(
                 dropbox_path, folder_parent, folder_name)
