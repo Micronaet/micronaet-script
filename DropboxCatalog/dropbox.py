@@ -97,28 +97,15 @@ def clean_char(name, replace_char):
 # -----------------------------------------------------------------------------
 # Connect with ODOO
 sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/common' % (
-        odoo_server,
-        odoo_port,       
-        ))
+    'http://%s:%s/xmlrpc/common' % (odoo_server, odoo_port))
 uid = sock.login(odoo_database, odoo_user, odoo_password)
 sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/object' % (
-        odoo_server,
-        odoo_port,       
-        ))
-
-for family in family_pool.browse(family_ids):
-    for parent in family.family_list.split('|'):
-        family_db[parent] = family.name
-        if len(parent) not in parent_char:
-            parent_char.append(len(parent))
+    'http://%s:%s/xmlrpc/object' % (odoo_server, odoo_port))
 
 import pdb; pdb.set_trace()
 family_ids = sock.execute(
     odoo_database, uid, odoo_password, 
-    'product.template', 
-    'search', [
+    'product.template', 'search', [
         ('is_family', '=', True),
         ]) 
 
