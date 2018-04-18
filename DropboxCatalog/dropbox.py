@@ -278,11 +278,14 @@ for product in product_db:
                 f, 
                 file_replace_char, # Replace list
                 )) # Filename for destination
-            destination = os.path.join(
-                dropbox_path,
-                product_folder, # Product folder
-                name,
-                )
+            try:    
+                destination = os.path.join(
+                    dropbox_path,
+                    product_folder, # Product folder
+                    name,
+                    )
+            except:
+                import pdb; pdb.set_trace()        
             
             # Symlink operations:     
             if demo:
