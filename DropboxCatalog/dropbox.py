@@ -258,6 +258,7 @@ for product in product_db:
                 family_name, 
                 found_parent or folder_parent, 
                 folder_name,
+                key,
                 )
         else:
             if found_parent:
@@ -266,12 +267,14 @@ for product in product_db:
                     family_name, 
                     found_parent, 
                     folder_name,
+                    key,
                     )
             else:        
                 product_folder = os.path.join(
                     dropbox_path, 
                     family_name, 
                     folder_name,
+                    key,
                     )
 
         # 2. Create if not present:
@@ -281,10 +284,14 @@ for product in product_db:
         for origin, f in product_db[product][key]:
             tot += 1
             # DESTINATION: Filename
-            name = '%s_%s' % (key, clean_char(
-                f, 
-                file_replace_char, # Replace list
-                )) # Filename for destination
+            #name = '%s_%s' % (
+            name = '%s' % (
+                #key, 
+                clean_char(
+                    f, 
+                    file_replace_char, # Replace list
+                    ),
+                ) # Filename for destination
             destination = os.path.join(
                 dropbox_path,
                 product_folder, # Product folder
@@ -303,6 +310,7 @@ for product in product_db:
                 except:
                     log_sym.append('PRESENTE: origin: %s destination: %s' % (
                         origin, destination))
+
 # -----------------------------------------------------------------------------                        
 # Clean operation:
 # -----------------------------------------------------------------------------                        
