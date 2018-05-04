@@ -255,26 +255,26 @@ for product in product_db:
         if folder_parent.isdigit() or found_parent:
             product_folder = os.path.join(
                 dropbox_path, 
+                key,
                 family_name, 
                 found_parent or folder_parent, 
                 folder_name,
-                key,
                 )
         else:
             if found_parent:
                 product_folder = os.path.join(
                     dropbox_path, 
+                    key,
                     family_name, 
                     found_parent, 
                     folder_name,
-                    key,
                     )
             else:        
                 product_folder = os.path.join(
                     dropbox_path, 
+                    key,
                     family_name, 
                     folder_name,
-                    key,
                     )
 
         # 2. Create if not present:
