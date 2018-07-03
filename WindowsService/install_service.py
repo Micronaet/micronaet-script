@@ -44,6 +44,7 @@ class PySvc(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):  
         ''' Start procedure RUN method
         ''' 
+        import pdb; pdb.set_trace()
         f = open(filename, 'w+')  
         rc = None  
           
