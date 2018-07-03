@@ -25,7 +25,7 @@ import win32event
 import servicemanager  
   
 filename = 'c:\\git\\Services\\test.dat'  
-
+import pdb; pdb.set_trace()
 class PySvc(win32serviceutil.ServiceFramework):  
     # you can NET START/STOP the service by the following name  
     _svc_name_ = "Python Service"  
