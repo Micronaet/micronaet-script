@@ -24,8 +24,7 @@ import win32serviceutil
 import win32event  
 import servicemanager  
   
-filename = 'c:\\git\\Services\\test.dat'  
-import pdb; pdb.set_trace()
+filename = r'c:\git\Services\test.dat'  
 class PySvc(win32serviceutil.ServiceFramework):  
     # you can NET START/STOP the service by the following name  
     _svc_name_ = "Python Service"  
@@ -44,7 +43,6 @@ class PySvc(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):  
         ''' Start procedure RUN method
         ''' 
-        import pdb; pdb.set_trace()
         f = open(filename, 'w+')  
         rc = None  
           
