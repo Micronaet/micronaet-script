@@ -24,6 +24,8 @@ import win32serviceutil
 import win32event  
 import servicemanager  
   
+filename = 'c:\\git\\Services\\test.dat'  
+
 class PySvc(win32serviceutil.ServiceFramework):  
     # you can NET START/STOP the service by the following name  
     _svc_name_ = "Python Service"  
@@ -42,7 +44,7 @@ class PySvc(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):  
         ''' Start procedure RUN method
         ''' 
-        f = open('test.dat', 'w+')  
+        f = open(filename, 'w+')  
         rc = None  
           
         # if the stop event hasn't been fired keep looping  
