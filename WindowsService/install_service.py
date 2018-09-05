@@ -118,14 +118,20 @@ class PySvc(win32serviceutil.ServiceFramework):
                 'Micronaet',
                 self._svc_name, 
                 ))
+        print 'Root folder: %s' % self._root_path
          
         # Configuration:        
         self._config_file = os.path.join(self._root_path, 'service.cfg')
+        print 'Config file: %s' % self._config_file
         
         # Log:
         self._log_path = os.path.join(self._root_path, 'log')        
         self._log_service = os.path.join(self._log_path, 'service.log')
         self._log_activity = os.path.join(self._log_path, 'activity.log')
+        print 'Log file Service: %s Activity: %s' % (
+            self._log_service,
+            self._log.activity,
+            )
         
         # Handle file:
         self._file_service = False
@@ -138,6 +144,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         try:
             os.system('mkdir %s' % self._log_path) # create also root folder
         except:
+            print 'Error creating folder structure: %s' % self._log_path
             pass # TODO manage error if not creation
 
         # ---------------------------------------------------------------------
