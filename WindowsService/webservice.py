@@ -69,7 +69,6 @@ class MicronaetWebService():
     def __init__(self, config_file):
         ''' Start XMLRPC reading config file for parameter
         '''        
-        import pdb; pdb.set_trace()
         # ---------------------------------------------------------------------
         #                       Reading config parameters:
         # ---------------------------------------------------------------------
