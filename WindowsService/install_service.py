@@ -70,12 +70,12 @@ class PySvc(win32serviceutil.ServiceFramework):
         if registry == 'activity':
             if not self._file_activity:
                 # Open log file for service session:
-                self._file_activity = open(self._file_activity, 'a+')
+                self._file_activity = open(self._log_activity, 'a+')
             current_log = self._file_activity
         else: # service registry
             if not self._file_service:
                 # Open log file for service session:
-                self._file_service = open(self._file_service, 'a+')
+                self._file_service = open(self._log_service, 'a+')
             current_log = self._file_service
  
         # ---------------------------------------------------------------------
