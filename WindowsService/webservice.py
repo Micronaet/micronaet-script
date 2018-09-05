@@ -98,7 +98,7 @@ class MicronaetWebService():
         self._server.register_function(self.execute, 'execute')
         
         # Forever loop:
-        server.serve_forever()
+        self._server.serve_forever()
 
 if __name__ == '__main__':  
     WebService = MicronaetWebService('setup.cfg')        
