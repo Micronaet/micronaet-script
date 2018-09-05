@@ -108,7 +108,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._return = '\r\n'
         
         # Root folder:
-        self._root_path = 'C:\\Micronaet\\Micronaet Listner Service'
+        self._root_path = 'C:\\Micronaet\\Micronaet Listner Service' # TODO
         #self._root_path = os.path.join(
         #    'C:\\',
         #    'Micronaet',
@@ -154,12 +154,10 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Log install event:
         # ---------------------------------------------------------------------
         self._log_data('Instance %s service%sLog path: %s%sConfig: %s' % (
-            self._svc_name,
-            self._return,
-            self._log_path,
-            self._return,       
-            self._setup_file,
-            ), registry='service')
+            self._svc_name, self._return, self._log_path,
+            self._return, self._setup_file), 
+            registry='service',
+            )
 
     # -------------------------------------------------------------------------
     #                            CONSTRUCTOR:
