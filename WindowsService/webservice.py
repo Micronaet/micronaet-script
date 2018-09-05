@@ -38,7 +38,7 @@ class MicronaetWebService():
         thread.start_new_thread(self._shutdown_thread, ())
 
     def _shutdown_thread(self, ):
-        self.shutdown()
+        self._server.shutdown()
         
     def execute(self, operation, parameter=None):
         ''' Execute method for call function (saved in ODOO)
