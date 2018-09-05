@@ -155,7 +155,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Log install event:
         # ---------------------------------------------------------------------
         self._log_data('Instance %s service%sLog path: %s%sConfig: %s' % (
-            self._svc_name, self._return, self._log_path,
+            self._svc_name_, self._return, self._log_path,
             self._return, self._setup_file), 
             registry='service',
             )
