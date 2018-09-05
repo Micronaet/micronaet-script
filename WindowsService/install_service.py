@@ -116,7 +116,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             os.path.join(
                 '~',
                 'Micronaet',
-                self._svc_name, 
+                self._svc_name_, 
                 ))
         print 'Root folder: %s' % self._root_path
          
