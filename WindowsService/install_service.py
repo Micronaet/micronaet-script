@@ -39,7 +39,7 @@ class PySvc(win32serviceutil.ServiceFramework):
     _svc_name_ = 'Micronaet Listener Service'
     
     # Service name in Service Control Manager (SCM)    
-    _svc_display_name_ = 'Micronaet WebService'
+    _svc_display_name_ = 'Micronaet Web Service'
     
     # Help text in SCM
     _svc_description_ = 'This service open a XMLRPC listner for remote call'
