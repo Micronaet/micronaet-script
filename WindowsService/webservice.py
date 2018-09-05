@@ -22,6 +22,7 @@ import os
 import sys
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 import ConfigParser
+import thread
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2', )
@@ -33,7 +34,13 @@ class MicronaetWebService():
     # -------------------------------------------------------------------------
     #                                METHODS:
     # -------------------------------------------------------------------------
-    def execute(operation, parameter=None):
+    def remote_shutdown(self, ):
+        thread.start_new_thread(self.shutdown_thread, ())
+
+    def remote_thread(self, ):
+        self._server.shutdown()
+        
+    def execute(self, operation, parameter=None):
         ''' Execute method for call function (saved in ODOO)
             operation: name of operation (searched in odoo xmlrpc.operation obj
             parameter: dict with extra parameter
@@ -95,6 +102,7 @@ class MicronaetWebService():
         self._server.register_introspection_functions()
 
         # Register exported functions:        
+        self._server.register_function(self.remote_shutdown, 'remote_shutdown')
         self._server.register_function(self.execute, 'execute')
         
         # Forever loop:

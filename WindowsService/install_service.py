@@ -221,7 +221,9 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                          STOP WEBSERVICE:
         # ---------------------------------------------------------------------
         try:
-            del(self._web_service)
+            # Terminate XMLRPC loop:
+            self._web_service.remote_shutdown()
+            
             self._log_data(
                 'Stop Listner Service', 
                 registry='service', 
