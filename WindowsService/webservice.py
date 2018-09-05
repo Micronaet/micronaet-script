@@ -36,6 +36,7 @@ class MicronaetWebService():
     # -------------------------------------------------------------------------
     def remote_shutdown(self, ):
         thread.start_new_thread(self._shutdown_thread, ())
+        return True
 
     def _shutdown_thread(self, ):
         self._server.shutdown()
