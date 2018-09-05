@@ -47,17 +47,17 @@ class PySvc(win32serviceutil.ServiceFramework):
     # -------------------------------------------------------------------------
     #                                  PRIVATE METHOD:
     # -------------------------------------------------------------------------
-    def _create_config_file(self, ):
+    def _create_setup_file(self, ):
         ''' Create config file if not present in data path
         '''
-        if not os.path.isfile(self._config_file):
-            config_file = open(self._config_file, 'w')
-            config_file.write('[XMLRPC]%shost: localhost%sport: 8000' % (
+        if not os.path.isfile(self._setup_file):
+            setup_file = open(self._setup_file, 'w')
+            setup_file.write('[XMLRPC]%shost: localhost%sport: 8000' % (
                 self._return,
                 self._return,
                 ))
-            config_file.close()
-            self._log_data('Create empty config file: %s:' % self._config_file)
+            setup_file.close()
+            self._log_data('Create empty config file: %s:' % self._setup_file)
             
         return True
         
@@ -121,8 +121,8 @@ class PySvc(win32serviceutil.ServiceFramework):
         print 'Root folder: %s' % self._root_path
          
         # Configuration:        
-        self._config_file = os.path.join(self._root_path, 'service.cfg')
-        print 'Config file: %s' % self._config_file
+        self._setup_file = os.path.join(self._root_path, 'service.cfg')
+        print 'Config file: %s' % self._setup_file
         
         # Log:
         self._log_path = os.path.join(self._root_path, 'log')        
@@ -150,7 +150,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Config file:
         # ---------------------------------------------------------------------
         # Create empty if not present:
-        self._create_config_file()
+        self._create_setup_file()
         
         # ---------------------------------------------------------------------
         # Windows intallation:
@@ -169,7 +169,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._return,
             self._log_path,
             self._return,       
-            self._config_file,
+            self._setup_file,
             ), registry='service')
       
     # -------------------------------------------------------------------------
@@ -186,7 +186,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
         # ---------------------------------------------------------------------
-        self._web_service = webservice.MicronaetWebService(self._config_file)
+        self._web_service = webservice.MicronaetWebService(self._setup_file)
 
         # ---------------------------------------------------------------------
         #                        RUNNING LOOP:
