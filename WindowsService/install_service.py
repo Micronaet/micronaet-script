@@ -22,46 +22,147 @@ import sys
 import win32service  
 import win32serviceutil  
 import win32event  
-import servicemanager  
-  
-filename = r'c:\git\Services\test.dat'  
+import servicemanager
+#import shutil
+from datetime import datetime
+
 class PySvc(win32serviceutil.ServiceFramework):  
-    # you can NET START/STOP the service by the following name  
-    _svc_name_ = "Python Service"  
-    # this text shows up as the service name in the Service  
-    # Control Manager (SCM)  
-    _svc_display_name_ = "Python Service as test"  
-    # this text shows up as the description in the SCM  
-    _svc_description_ = "This service writes stuff to a file"  
-      
-    def __init__(self, args):  
-        win32serviceutil.ServiceFramework.__init__(self,args)  
+    ''' Class for manage Microsoft Service
+    '''
+    
+    # Service name (use with net start / stop
+    _svc_name_ = 'Micronaet Listner Service'
+    
+    # Service name in Service Control Manager (SCM)    
+    _svc_display_name_ = 'Micronaet Listener Service'
+    
+    # Help text in SCM
+    _svc_description_ = 'This service open a XMLRPC listner for remote call'
+
+    # -------------------------------------------------------------------------
+    # Utility:
+    # -------------------------------------------------------------------------
+    def _create_config_file(self, ):
+        ''' Create config file if not present in path
+        '''
+        return True
+        
+    def _log_data(self, event, mode='INFO', registry='activity', close=False):
+        ''' Log data on file:
+        '''
+        # ---------------------------------------------------------------------
+        # Chose log registry file:
+        # ---------------------------------------------------------------------
+        if registry == 'activity':
+            if not self._file_activity:
+                # Open log file for service session:
+                self._file_activity = open(self._file_activity, 'a+')
+            current_log = self._file_activity
+        else: # service registry
+            if not self._file_service:
+                # Open log file for service session:
+                self._file_service = open(self._file_service, 'a+')
+            current_log = self._file_service
+ 
+        # ---------------------------------------------------------------------
+        # Write event:
+        # ---------------------------------------------------------------------
+        current_log.write('%s. [%s] %s%s' % (
+            datetime.now(),
+            mode.upper(),
+            event,
+            self._return,
+            ))
+        current_log.flush()
+        
+        # ---------------------------------------------------------------------
+        # Closing check:
+        # ---------------------------------------------------------------------
+        if close:
+            try:
+                current_log.close()
+            except:
+                pass # TODO Log closing error?
+        return True
+    
+    def __init__(self, args):
+        ''' Constructor:
+        '''
+        # ---------------------------------------------------------------------
+        # Parameters:
+        # ---------------------------------------------------------------------
+        # Return:
+        self._return = '\r\n'
+        
+        # Root folder:
+        self._root_path = os.path.expanduser(
+            os.path.join(
+                '~',
+                'Micronaet',
+                self._svc_name, 
+                )
+         
+        # Configuration:        
+        self._config_file = os.path.join(self._root_path, 'service.cfg')
+        
+        # Log:
+        self._log_path = os.path.join(self._root_path, 'log')        
+        self._log_service = os.path.join(self._log_path, 'service.log')
+        self._log_activity = os.path.join(self._log_path, 'activity.log')
+        
+        # Handle file:
+        self._file_service = False
+        self._file_activity = False
+        
+        # Millisecond for waiting:
+        self._wait_ms = 5000
+        
+        # Create path if not present:
+        try:
+            os.system('mkdir %s' % self._log_path) # create also root folder
+        except:
+            pass # TODO manage error if not creation
+
+        # Launch ancherstor init procedure:            
+        win32serviceutil.ServiceFramework.__init__(self, args)
+
         # create an event to listen for stop requests on  
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)  
+
+        self._log_data('Init Windows %s service%sLog path: %s%sConfig: %s' % (
+            self._svc_name,
+            self._return,
+            self._log_path,
+            self._return,       
+            self._config_file,
+            ))
       
     # core logic of the service     
-    def SvcDoRun(self):  
+    def SvcDoRun(self):        
         ''' Start procedure RUN method
-        ''' 
-        f = open(filename, 'w+')  
-        rc = None  
+        '''
+        response = None        
           
-        # if the stop event hasn't been fired keep looping  
-        while rc != win32event.WAIT_OBJECT_0:  
-            f.write('TEST DATA\n')  
-            f.flush()  
-            # block for 5 seconds and listen for a stop event  
-            rc = win32event.WaitForSingleObject(self.hWaitStop, 5000)  
-              
-        f.write('SHUTTING DOWN\n')  
-        f.close()  
-      
+        # If the stop event hasn't been fired keep looping  
+        while response != win32event.WAIT_OBJECT_0:  
+            # XXX WRITE CODE HERE!!!
+            
+            # Stop for X millisecond and listen for stop event
+            response = win32event.WaitForSingleObject(
+                self.hWaitStop, 
+                self._wait_ms,
+                )  
+        
     # called when we're being shut down      
     def SvcStop(self):  
-        # tell the SCM we're shutting down  
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)  
-        # fire the stop event  
-        win32event.SetEvent(self.hWaitStop)  
+        # Tell the SCM shutting down event:
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        
+        # Raise the stop event  
+        win32event.SetEvent(self.hWaitStop)
+
+        # Log operation:
+        self._log_data('Stop Listner Service', close=True)
           
 if __name__ == '__main__':  
     win32serviceutil.HandleCommandLine(PySvc)  
