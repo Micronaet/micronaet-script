@@ -61,7 +61,12 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------
         #                      CASE: OPERATION: 
         # ---------------------------------------------------------------------
-        if operation == 'lauch':
+        if operation == 'ping':
+            # Demo operation used to test echo response from RPC
+            return 'Server is up'
+            
+        elif operation == 'lauch':
+            # Launch remote command:
             command = parameter.get('command')
             try:
                 os.system(command) # Launch sprix
@@ -72,6 +77,7 @@ class MicronaetWebService():
                 res['comment'] += u'Error launch shell command\n'
                 return res
         # XXX elif
+        return True
     
     def __init__(self, config_file):
         ''' Start XMLRPC reading config file for parameter
@@ -109,5 +115,5 @@ class MicronaetWebService():
         self._server.serve_forever()
 
 if __name__ == '__main__':  
-    WebService = MicronaetWebService('setup.cfg')        
+    WebService = MicronaetWebService('demo.cfg')        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
