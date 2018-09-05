@@ -130,7 +130,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._log_activity = os.path.join(self._log_path, 'activity.log')
         print 'Log file Service: %s Activity: %s' % (
             self._log_service,
-            self._log.activity,
+            self._log_activity,
             )
         
         # Handle file:
