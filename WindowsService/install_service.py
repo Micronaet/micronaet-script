@@ -24,7 +24,10 @@ import win32serviceutil
 import win32event  
 import servicemanager
 
+import webservice
+
 from datetime import datetime
+
 
 class PySvc(win32serviceutil.ServiceFramework):  
     ''' Class for manage Microsoft Service
@@ -49,11 +52,13 @@ class PySvc(win32serviceutil.ServiceFramework):
         '''
         if not os.path.isfile(self._config_file):
             config_file = open(self._config_file, 'w')
-            config_file.write(, '[XMLRPC]%shost: localhost%sport: 8000' % (
+            config_file.write('[XMLRPC]%shost: localhost%sport: 8000' % (
                 self._return,
                 self._return,
                 ))
             config_file.close()
+            self._log_data('Create empty config file: %s:' % self._config_file)
+            
         return True
         
     def _log_data(self, event, mode='INFO', registry='activity', close=False):
@@ -112,7 +117,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 '~',
                 'Micronaet',
                 self._svc_name, 
-                )
+                ))
          
         # Configuration:        
         self._config_file = os.path.join(self._root_path, 'service.cfg')
@@ -142,7 +147,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._create_config_file()
         
         # ---------------------------------------------------------------------
-        # WIndows intallation:
+        # Windows intallation:
         # ---------------------------------------------------------------------
         # Launch ancherstor init procedure:            
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -159,7 +164,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._log_path,
             self._return,       
             self._config_file,
-            ))
+            ), registry='service')
       
     # -------------------------------------------------------------------------
     #                            PUBLIC METHODS:
@@ -169,10 +174,19 @@ class PySvc(win32serviceutil.ServiceFramework):
         '''
         response = None        
 
+        # Log operation:
+        self._log_data('Start Listner Service', registry='service')
+
+        # ---------------------------------------------------------------------
+        #                     START WEBSERVICE:
+        # ---------------------------------------------------------------------
+        self._web_service = webservice.MicronaetWebService(self._config_file)
+
+        # ---------------------------------------------------------------------
+        #                        RUNNING LOOP:
+        # ---------------------------------------------------------------------
         # If the stop event hasn't been fired keep looping  
         while response != win32event.WAIT_OBJECT_0:  
-            # XXX WRITE CODE HERE!!!
-            
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
@@ -188,8 +202,24 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Raise the stop event  
         win32event.SetEvent(self.hWaitStop)
 
-        # Log operation:
-        self._log_data('Stop Listner Service', close=True)
+        # ---------------------------------------------------------------------
+        #                          STOP WEBSERVICE:
+        # ---------------------------------------------------------------------
+        try:
+            del(self._web_service)
+            self._log_data(
+                'Stop Listner Service', 
+                registry='service', 
+                close=True,
+                )
+        except:
+            self._log_data(
+                'Error stopping listener', 
+                mode='error',
+                registry='service', 
+                close=True,
+                )
+            
 
 if __name__ == '__main__':  
     win32serviceutil.HandleCommandLine(PySvc)  
