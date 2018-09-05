@@ -58,7 +58,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 ))
             setup_file.close()
             self._log_data('Create empty config file: %s%s' % (
-                self._setup_file, self._return)
+                self._setup_file, self._return))
         return True
         
     def _log_data(self, event, mode='INFO', registry='activity', close=False):
