@@ -23,13 +23,15 @@ import win32service
 import win32serviceutil  
 import win32event  
 import servicemanager
-#import shutil
+
 from datetime import datetime
 
 class PySvc(win32serviceutil.ServiceFramework):  
     ''' Class for manage Microsoft Service
     '''
-    
+    # -------------------------------------------------------------------------
+    #                                  INSTANCE DATA:
+    # -------------------------------------------------------------------------
     # Service name (use with net start / stop
     _svc_name_ = 'Micronaet Listner Service'
     
@@ -40,11 +42,18 @@ class PySvc(win32serviceutil.ServiceFramework):
     _svc_description_ = 'This service open a XMLRPC listner for remote call'
 
     # -------------------------------------------------------------------------
-    # Utility:
+    #                                  PRIVATE METHOD:
     # -------------------------------------------------------------------------
     def _create_config_file(self, ):
-        ''' Create config file if not present in path
+        ''' Create config file if not present in data path
         '''
+        if not os.path.isfile(self._config_file):
+            config_file = open(self._config_file, 'w')
+            config_file.write(, '[XMLRPC]%shost: localhost%sport: 8000' % (
+                self._return,
+                self._return,
+                ))
+            config_file.close()
         return True
         
     def _log_data(self, event, mode='INFO', registry='activity', close=False):
@@ -84,9 +93,12 @@ class PySvc(win32serviceutil.ServiceFramework):
             except:
                 pass # TODO Log closing error?
         return True
-    
+
+    # -------------------------------------------------------------------------
+    #                            CONSTRUCTOR:
+    # -------------------------------------------------------------------------
     def __init__(self, args):
-        ''' Constructor:
+        ''' Constructor, init method
         '''
         # ---------------------------------------------------------------------
         # Parameters:
@@ -123,12 +135,24 @@ class PySvc(win32serviceutil.ServiceFramework):
         except:
             pass # TODO manage error if not creation
 
+        # ---------------------------------------------------------------------
+        # Config file:
+        # ---------------------------------------------------------------------
+        # Create empty if not present:
+        self._create_config_file()
+        
+        # ---------------------------------------------------------------------
+        # WIndows intallation:
+        # ---------------------------------------------------------------------
         # Launch ancherstor init procedure:            
         win32serviceutil.ServiceFramework.__init__(self, args)
 
         # create an event to listen for stop requests on  
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)  
 
+        # ---------------------------------------------------------------------
+        # Log install event:
+        # ---------------------------------------------------------------------
         self._log_data('Init Windows %s service%sLog path: %s%sConfig: %s' % (
             self._svc_name,
             self._return,
@@ -137,12 +161,14 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._config_file,
             ))
       
-    # core logic of the service     
+    # -------------------------------------------------------------------------
+    #                            PUBLIC METHODS:
+    # -------------------------------------------------------------------------
     def SvcDoRun(self):        
-        ''' Start procedure RUN method
+        ''' Start service method
         '''
         response = None        
-          
+
         # If the stop event hasn't been fired keep looping  
         while response != win32event.WAIT_OBJECT_0:  
             # XXX WRITE CODE HERE!!!
@@ -152,9 +178,10 @@ class PySvc(win32serviceutil.ServiceFramework):
                 self.hWaitStop, 
                 self._wait_ms,
                 )  
-        
-    # called when we're being shut down      
+
     def SvcStop(self):  
+        ''' Shutting down service:
+        '''
         # Tell the SCM shutting down event:
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         
@@ -163,7 +190,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # Log operation:
         self._log_data('Stop Listner Service', close=True)
-          
+
 if __name__ == '__main__':  
     win32serviceutil.HandleCommandLine(PySvc)  
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
