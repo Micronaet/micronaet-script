@@ -112,12 +112,13 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._return = '\r\n'
         
         # Root folder:
-        self._root_path = os.path.expanduser(
-            os.path.join(
-                r'C:\',#'~',
-                'Micronaet',
-                self._svc_name_, 
-                ))
+        self._root_path = os.path.join(
+            'C:\\',#'~',
+            'Micronaet',
+            self._svc_name_, 
+            ))
+
+        #os.path.expanduser(
         print 'Root folder: %s' % self._root_path
          
         # Configuration:        
