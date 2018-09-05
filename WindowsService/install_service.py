@@ -52,7 +52,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         '''
         if not os.path.isfile(self._setup_file):
             setup_file = open(self._setup_file, 'w')
-            setup_file.write('[XMLRPC]%shost: localhost%sport: 8000' % (
+            setup_file.write('[XMLRPC]%shost: localhost%sport: 7000' % (
                 self._return,
                 self._return,
                 ))
