@@ -36,7 +36,7 @@ class PySvc(win32serviceutil.ServiceFramework):
     #                                  INSTANCE DATA:
     # -------------------------------------------------------------------------
     # Service name (use with net start / stop
-    _svc_name_ = 'Micronaet Listner Service'
+    _svc_name_ = 'Micronaet Listener Service'
     
     # Service name in Service Control Manager (SCM)    
     _svc_display_name_ = 'Micronaet WebService'
