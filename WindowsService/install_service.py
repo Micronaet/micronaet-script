@@ -58,7 +58,6 @@ class PySvc(win32serviceutil.ServiceFramework):
                 ))
             setup_file.close()
             self._log_data('Create empty config file: %s:' % self._setup_file)
-            
         return True
         
     def _log_data(self, event, mode='INFO', registry='activity', close=False):
@@ -144,7 +143,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         
         # Create path if not present:
         try:
-            os.system('mkdir %s' % self._log_path) # create also root folder
+            os.system('mkdir "%s"' % self._log_path) # create also root folder
         except:
             print 'Error creating folder structure: %s' % self._log_path
 
