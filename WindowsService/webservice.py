@@ -35,10 +35,10 @@ class MicronaetWebService():
     #                                METHODS:
     # -------------------------------------------------------------------------
     def remote_shutdown(self, ):
-        thread.start_new_thread(self.shutdown_thread, ())
+        thread.start_new_thread(self._shutdown_thread, ())
 
-    def shutdown_thread(self, ):
-        self._server.shutdown()
+    def _shutdown_thread(self, ):
+        self.shutdown()
         
     def execute(self, operation, parameter=None):
         ''' Execute method for call function (saved in ODOO)
