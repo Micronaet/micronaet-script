@@ -109,7 +109,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._return = '\r\n'
         
         # Root folder:
-        self._root_path = 'C:\\Micronaet\\Micronaet Listner Service' # TODO
+        self._root_path = 'C:\\Micronaet\\Micronaet Listener Service' # TODO
         #self._root_path = os.path.join(
         #    'C:\\',
         #    'Micronaet',
