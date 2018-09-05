@@ -29,6 +29,91 @@ import webservice
 from datetime import datetime
 
 
+
+
+
+from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
+import ConfigParser
+
+class RequestHandler(SimpleXMLRPCRequestHandler):
+    rpc_paths = ('/RPC2', )
+
+class MicronaetWebService():
+    ''' Start XMLRPC Handler
+        Config file in parameters
+    '''
+    # -------------------------------------------------------------------------
+    #                                METHODS:
+    # -------------------------------------------------------------------------
+    def execute(operation, parameter=None):
+        ''' Execute method for call function (saved in ODOO)
+            operation: name of operation (searched in odoo xmlrpc.operation obj
+            parameter: dict with extra parameter
+                > input_file_string: text of input file
+                
+            @return: dict with parameter:
+                error: if there's an error during operation
+                result_string_file: output file returned as a string
+        '''
+        if parameter is None:  
+            parameter = {}
+            
+        res = {
+            'status': 'ok', # else 'ko'
+            'comment': '',
+            }
+
+        # ---------------------------------------------------------------------
+        #                      CASE: OPERATION: 
+        # ---------------------------------------------------------------------
+        if operation == 'lauch':
+            command = parameter.get('command')
+            try:
+                os.system(command) # Launch sprix
+                res['comment'] += u'Command launched: %s\n' % command
+                return res
+            except:
+                res['status'] = 'ko'
+                res['comment'] += u'Error launch shell command\n'
+                return res
+        # XXX elif
+    
+    def __init__(self, config_file):
+        ''' Start XMLRPC reading config file for parameter
+        '''        
+        # ---------------------------------------------------------------------
+        #                       Reading config parameters:
+        # ---------------------------------------------------------------------
+        self._config_file = config_file
+        
+        config = ConfigParser.ConfigParser()
+        config.read([self._config_file])
+
+        # XMLRPC server:
+        xmlrpc_host = config.get('XMLRPC', 'host') 
+        xmlrpc_port = eval(config.get('XMLRPC', 'port'))
+
+        # ---------------------------------------------------------------------
+        #                             Create server:
+        # ---------------------------------------------------------------------
+        self._server = SimpleXMLRPCServer(
+            (xmlrpc_host, xmlrpc_port), 
+            requestHandler=RequestHandler,
+            )
+        self._server.register_introspection_functions()
+
+        # Register exported functions:        
+        self._server.register_function(self.execute, 'execute')
+        
+        # Forever loop:
+        server.serve_forever()
+
+if __name__ == '__main__':  
+    WebService = MicronaetWebService('setup.cfg')        
+    
+    
+    
+
 class PySvc(win32serviceutil.ServiceFramework):  
     ''' Class for manage Microsoft Service
     '''
