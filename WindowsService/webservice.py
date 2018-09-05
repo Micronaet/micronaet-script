@@ -78,9 +78,13 @@ class MicronaetWebService():
         config.read([self._config_file])
 
         # XMLRPC server:
-        xmlrpc_host = config.get('XMLRPC', 'host') 
-        xmlrpc_port = eval(config.get('XMLRPC', 'port'))
-
+        try:
+            xmlrpc_host = config.get('XMLRPC', 'host') 
+            xmlrpc_port = eval(config.get('XMLRPC', 'port'))
+        except:
+            print 'Error file not present: %s' % self._config_file    
+            return 
+            
         # ---------------------------------------------------------------------
         #                             Create server:
         # ---------------------------------------------------------------------
