@@ -98,11 +98,8 @@ class PySvc(win32serviceutil.ServiceFramework):
                 pass # TODO Log closing error?
         return True
 
-    # -------------------------------------------------------------------------
-    #                            CONSTRUCTOR:
-    # -------------------------------------------------------------------------
-    def __init__(self, args):
-        ''' Constructor, init method
+    def _init(self, ):
+        ''' Initial setup (launched both init and start service)
         '''
         # ---------------------------------------------------------------------
         # Parameters:
@@ -152,7 +149,27 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Create empty if not present:
         self._create_setup_file()
-        
+
+        # ---------------------------------------------------------------------
+        # Log install event:
+        # ---------------------------------------------------------------------
+        self._log_data('Instance %s service%sLog path: %s%sConfig: %s' % (
+            self._svc_name,
+            self._return,
+            self._log_path,
+            self._return,       
+            self._setup_file,
+            ), registry='service')
+
+    # -------------------------------------------------------------------------
+    #                            CONSTRUCTOR:
+    # -------------------------------------------------------------------------
+    def __init__(self, args):
+        ''' Constructor, init method
+        '''
+        # Setup instance:
+        self._init()
+          
         # ---------------------------------------------------------------------
         # Windows intallation:
         # ---------------------------------------------------------------------
@@ -161,17 +178,6 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # create an event to listen for stop requests on  
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)  
-
-        # ---------------------------------------------------------------------
-        # Log install event:
-        # ---------------------------------------------------------------------
-        self._log_data('Init Windows %s service%sLog path: %s%sConfig: %s' % (
-            self._svc_name,
-            self._return,
-            self._log_path,
-            self._return,       
-            self._setup_file,
-            ), registry='service')
       
     # -------------------------------------------------------------------------
     #                            PUBLIC METHODS:
@@ -179,6 +185,9 @@ class PySvc(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):        
         ''' Start service method
         '''
+        # Reload instance:
+        self._init()
+
         response = None        
 
         # Log operation:
