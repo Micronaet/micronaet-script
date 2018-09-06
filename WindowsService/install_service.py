@@ -241,7 +241,11 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Terminate web server:
         try:
-            self._sock.remote_shutdown()
+            sock = xmlrpclib.ServerProxy(
+                self._xmlrpc_address, 
+                allow_none=True,
+                )
+            sock.remote_shutdown()
             time.sleep(1)
             
             self._log_data(
