@@ -256,7 +256,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 )
         except:
             self._log_data(
-                '%sCannot stop RPC_ %s\n    [%s]' % (
+                'Cannot stop RPC: %s [%s]' % (
                     self._xmlrpc_address,
                     sys.exc_info()),
                 mode='error',
