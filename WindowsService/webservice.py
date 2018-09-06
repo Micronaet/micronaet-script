@@ -83,8 +83,8 @@ class MicronaetWebService():
                         self._batch_path, '%s.bat' % command)
                     if not os.path.isfile(batch_command):
                         res['esit'] = False
-                        res['comment'] += u'Batch command not found %s!' % (
-                            command,
+                        res['comment'] += u'Batch command not found: %s!' % (
+                            batch_command,
                             )
                         return res
                         
