@@ -115,6 +115,7 @@ class MicronaetWebService():
         print 'Micronaet: XMLRPC Server started on: %s port %s' % (
             xmlrpc_host, xmlrpc_port)
         print 'Config file: %s' % self._config_file
+        print 'Waiting for calls...'
         
         # Forever loop:
         self._server.serve_forever()
