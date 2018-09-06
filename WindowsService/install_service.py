@@ -238,8 +238,8 @@ class PySvc(win32serviceutil.ServiceFramework):
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))
 
             # B. Connecting remote server:            
-            error = 'Error connecting RPC: %s)' % address, 
             address = 'http://%s:%s/RPC2' % (xmlrpc_host, xmlrpc_port)
+            error = 'Error connecting RPC: %s)' % address, 
             sock = xmlrpclib.ServerProxy(address, allow_none=True)
 
             # C. Shutdown command:
