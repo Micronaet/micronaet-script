@@ -259,7 +259,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._file_activity.close()
         except:
             self._log_data(
-                error,
+                '%s\n    [%s]' % (error, sys.exc_info()),
                 mode='error',
                 registry='service', 
                 close=True,
