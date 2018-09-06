@@ -228,44 +228,52 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                          STOP OPERATION:
         # ---------------------------------------------------------------------
         # Terminate web server:
+        error = ''
         try:
-            # Read config file:
+            # A. Read config file:
+            error = 'Error reading config file: %s' % self._setup_file            
             config = ConfigParser.ConfigParser()
             config.read([self._setup_file])
-
-            # XMLRPC server:
             xmlrpc_host = config.get('XMLRPC', 'host') 
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))
+
+            # B. Connecting remote server:            
+            error = 'Error connecting RPC: %s)' % address, 
             address = 'http://%s:%s/RPC2' % (xmlrpc_host, xmlrpc_port)
             sock = xmlrpclib.ServerProxy(address, allow_none=True)
+
+            # C. Shutdown command:
+            error = 'Error stopping listener (setup: %s)' % address, 
             sock.remote_shutdown()
             time.sleep(1)
+            
             self._log_data(
                 'Stop Listner Service %s' % address,
                 registry='service', 
                 close=True,
                 )
+
+            # D. Shutdown command:
+            error = 'Error closing log file'
+            self._file_service.close()
+            self._file_activity.close()
         except:
             self._log_data(
-                'Error stopping listener (setup: %s)' % self._setup_file, 
+                error,
                 mode='error',
                 registry='service', 
                 close=True,
                 )
                 
-        # Close log files:        
         try:
-            self._file_activity.close()
-            self._file_activity.close()
+            # Service stop part:
+            # Tell the SCM shutting down event:
+            self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+            
+            # Raise the stop event  
+            win32event.SetEvent(self.hWaitStop)
         except:
-            pass        
-
-        # Service stop part:
-        # Tell the SCM shutting down event:
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        
-        # Raise the stop event  
-        win32event.SetEvent(self.hWaitStop)
+            pass # Service unavailable
             
 
 if __name__ == '__main__':  
