@@ -35,7 +35,7 @@ try:
 
     print '[INFO] %s' % sock
     print '[INFO] %s' % sock.execute('ping')
+    print '[INFO] %s' % sock.execute('batch', {'command': 'invoice'})
 except:
     print '[ERROR] Server not reply'
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
