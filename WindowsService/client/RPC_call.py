@@ -47,9 +47,9 @@ except:
     text = '''
 [INFO]
 Launch syntax error, use:
-python ./RCP_call.py <IP RDP Server> <Port RDP Server> <command>
+python RCP_call.py <IP RDP Server> <Port RDP Server> <command>
 ex.:   
-python ./RCP_call.py 192.168.1.100 7000 invoice
+python RCP_call.py 192.168.1.100 7000 invoice
 '''
     print text
     message_window(text)
