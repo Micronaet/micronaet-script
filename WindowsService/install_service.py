@@ -158,6 +158,9 @@ class PySvc(win32serviceutil.ServiceFramework):
         config.read([self._setup_file])
         self._xmlrpc_port = eval(config.get('XMLRPC', 'port'))
 
+        # XMLRPC server:            
+        self._xmlrpc_address = 'http://localhost:%s/RPC2' % self._xmlrpc_port
+
         # ---------------------------------------------------------------------
         # Log install event:
         # ---------------------------------------------------------------------
@@ -211,7 +214,25 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                        RUNNING LOOP:
         # ---------------------------------------------------------------------
         # If the stop event hasn't been fired keep looping  
+        check_every = 20 # times
+        i = 0
         while response != win32event.WAIT_OBJECT_0:
+            i += 1
+            # Check working service:
+            try:
+                if i > check_every:
+                    i = 0
+                    if not self._sock:
+                        self._sock = xmlrpclib.ServerProxy(
+                            self._address, 
+                            allow_none=True,
+                            )
+                    self._sock.execute('ping') # Check operation            
+                    self._log_data('Server up') # TODO remove
+            except:
+                self._log_data('Server is down from remote')
+                os.system('net stop %s' % self._svc_name_) # is better mode?
+                    
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
@@ -231,18 +252,8 @@ class PySvc(win32serviceutil.ServiceFramework):
                 registry='service', 
                 )
 
-            # A. Connecting remote server:            
-            address = 'http://localhost:%s/RPC2' % self._xmlrpc_port
-            error = 'Error connecting RPC: %s)' % address, 
-            sock = xmlrpclib.ServerProxy(address, allow_none=True)
-            self._log_data(
-                'Connect XMLRCP Server %s' % address,
-                registry='service', 
-                )
-
-            # B. Shutdown command:
             error = 'Error stopping listener (setup: %s)' % address, 
-            sock.remote_shutdown()
+            self._sock.remote_shutdown()
             time.sleep(1)
             
             self._log_data(
