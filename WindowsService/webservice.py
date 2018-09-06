@@ -32,6 +32,31 @@ class MicronaetWebService():
         Config file in parameters
     '''
     # -------------------------------------------------------------------------
+    #                               PRIVATE METHODS:
+    # -------------------------------------------------------------------------
+    def _log_data(self, event, mode='INFO'):
+        ''' Log data on file:
+        '''
+        # ---------------------------------------------------------------------
+        # Chose log registry file:
+        # ---------------------------------------------------------------------
+        if not self._file_log:
+            # Open log file for service session:
+            self._file_log = open(self._filename_log, 'a+')
+        
+        # ---------------------------------------------------------------------
+        # Write event:
+        # ---------------------------------------------------------------------
+        self._file_log.write('%s. [%s] %s%s' % (
+            datetime.now(),
+            mode.upper(),
+            event,
+            self._return,
+            ))
+        self._file_log.flush()        
+        return True
+    
+    # -------------------------------------------------------------------------
     #                                METHODS:
     # -------------------------------------------------------------------------
     def remote_shutdown(self, ):
@@ -119,11 +144,16 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------        
         config = ConfigParser.ConfigParser()
 
+        # ---------------------------------------------------------------------
         # A. Service configuration:        
+        # ---------------------------------------------------------------------
         current_path = os.path.dirname(os.path.realpath(__file__))  
         config.read([os.path.join(current_path, 'service.cfg')])
         self._root_path = config.get('path', 'root')
         self._batch_path = os.path.join(self._root_path, 'rdp', 'batch')
+        self._log_path = os.path.join(self._root_path, 'rdp', 'log')
+        self._filename_log = os.path.join(self._log_path, 'rdp.log')
+        self._file_log = False
 
         # Create path if not present:
         try:
@@ -131,12 +161,16 @@ class MicronaetWebService():
         except:
             print 'Error creating rdp folder: %s' % self._batch_path
 
+        # ---------------------------------------------------------------------
         # C. RDP Configuration:
+        # ---------------------------------------------------------------------
         self._config_file = config_file        
         config.read([self._config_file])        
         
-
-        # XMLRPC server:
+        
+        # ---------------------------------------------------------------------
+        #                          XMLRPC server:
+        # ---------------------------------------------------------------------
         try:
             xmlrpc_host = config.get('XMLRPC', 'host') 
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))

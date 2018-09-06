@@ -106,15 +106,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         config = ConfigParser.ConfigParser()
         current_path = os.path.dirname(os.path.realpath(__file__))  
         config.read([os.path.join(current_path, 'service.cfg')])
-        self._root_path = config.get('path', 'root')
-        
-        #self._root_path = 'C:\\Micronaet\\Micronaet Listener Service' # TODO
-        #self._root_path = os.path.join(
-        #    'C:\\',
-        #    'Micronaet',
-        #    self._svc_name_, 
-        #    ))
-
+        self._root_path = config.get('path', 'root')        
         print 'Root folder: %s' % self._root_path
          
         # Configuration:        
