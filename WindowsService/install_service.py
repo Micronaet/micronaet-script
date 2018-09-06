@@ -199,23 +199,17 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Reload instance:
         self._init()
 
-        response = None        
-
         # Log operation:
-        self._log_data('Start Listner Service', registry='service')
+        self._log_data('Start RPC Service', registry='service')
 
-        # ---------------------------------------------------------------------
-        #                     START WEBSERVICE:
-        # ---------------------------------------------------------------------        
-        # Launch indipendent task:
-        os.system(self._webserver_command)
+        # START WEBSERVICE:        
+        os.system(self._webserver_command) # Launch indipendent task:
 
-        # ---------------------------------------------------------------------
-        #                        RUNNING LOOP:
-        # ---------------------------------------------------------------------
+        # RUNNING LOOP:
         # If the stop event hasn't been fired keep looping  
         #check_every = 20 # times
         #i = 0
+        response = None        
         while response != win32event.WAIT_OBJECT_0:
             '''i += 1
             # Check working service:
@@ -232,7 +226,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             except:
                 self._log_data('Server is down from remote')
                 #os.system('net stop %s' % self._svc_name_) # is better mode?
-            '''        
+            '''
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
