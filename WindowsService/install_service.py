@@ -220,6 +220,11 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Terminate web server:
         try:
+            self._log_data(
+                'Start shutdown operations%s' % self._return,
+                registry='service', 
+                )
+
             # A. Read config file:
             error = 'Error reading config file: %s' % self._setup_file            
             config = ConfigParser.ConfigParser()
@@ -242,7 +247,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             time.sleep(1)
             
             self._log_data(
-                'Stop Listner Service %s' % address,
+                'Shutdown RPC Service %s' % address,
                 registry='service', 
                 )
         except:
