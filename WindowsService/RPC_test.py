@@ -37,12 +37,5 @@ try:
     print '[INFO] %s' % sock.execute('ping')
 except:
     print '[ERROR] Server not reply'
-    
-#sock.remote_shutdown()
-#print 'Wait 1 sec...'
-#time.sleep(1)
-#try:
-#    print sock.execute('ping')
-#except:    
-#    print 'Server is down'
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

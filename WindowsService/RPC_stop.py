@@ -24,13 +24,20 @@ import xmlrpclib
 import time
 
 try:
+    hostname = sys.argv[1]
+    port = sys.argv[2]
+except:
+    print '[INFO] Launch with host port parameter!'
+    sys.exit()
+
+try:
     sock = xmlrpclib.ServerProxy(
         'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
     print '[INFO] %s' % sock
 except:
     print '[ERROR] Server not reply'
     sys.exit()
-    
+
 sock.remote_shutdown()
 print '[INFO] Wait 2 sec...'
 time.sleep(1)

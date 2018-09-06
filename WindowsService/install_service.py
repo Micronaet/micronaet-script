@@ -153,14 +153,20 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Create empty if not present:
         self._create_setup_file()
 
+        # Read from config file port used from XMLRPC:
+        config = ConfigParser.ConfigParser()
+        config.read([self._setup_file])
+        self._xmlrpc_port = eval(config.get('XMLRPC', 'port'))
+
         # ---------------------------------------------------------------------
         # Log install event:
         # ---------------------------------------------------------------------
-        self._log_data('Instance %s service%s    Log path: %s%sConfig: %s' % (
-            self._svc_name_, self._return, self._log_path,
-            self._return, self._setup_file), 
-            registry='service',
-            )
+        self._log_data(
+            'Instance %s%s    Log path: %s%sConfig: %s [localhost:%s]' % (
+                self._svc_name_, self._return, self._log_path,
+                self._return, self._setup_file, self._xmlrpc_port), 
+                registry='service',
+                )
         self._log_data('Web Server command: %s' % self._webserver_command)    
 
     # -------------------------------------------------------------------------
@@ -225,15 +231,8 @@ class PySvc(win32serviceutil.ServiceFramework):
                 registry='service', 
                 )
 
-            # A. Read config file:
-            error = 'Error reading config file: %s' % self._setup_file            
-            config = ConfigParser.ConfigParser()
-            config.read([self._setup_file])
-            #xmlrpc_host = config.get('XMLRPC', 'host') 
-            xmlrpc_port = eval(config.get('XMLRPC', 'port'))
-
-            # B. Connecting remote server:            
-            address = 'http://localhost:%s/RPC2' % xmlrpc_port
+            # A. Connecting remote server:            
+            address = 'http://localhost:%s/RPC2' % self._xmlrpc_port
             error = 'Error connecting RPC: %s)' % address, 
             sock = xmlrpclib.ServerProxy(address, allow_none=True)
             self._log_data(
@@ -241,7 +240,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 registry='service', 
                 )
 
-            # C. Shutdown command:
+            # B. Shutdown command:
             error = 'Error stopping listener (setup: %s)' % address, 
             sock.remote_shutdown()
             time.sleep(1)
