@@ -110,11 +110,6 @@ class PySvc(win32serviceutil.ServiceFramework):
         
         # Root folder:
         self._root_path = 'C:\\Micronaet\\Micronaet Listener Service' # TODO
-        self._webserver_command = os.path.join(
-            os.path.realpath(__file__),
-            'webservice.py',
-            )
-            
         #self._root_path = os.path.join(
         #    'C:\\',
         #    'Micronaet',
@@ -127,6 +122,15 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Configuration:        
         self._setup_file = os.path.join(self._root_path, 'service.cfg')
         print 'Config file: %s' % self._setup_file
+
+        self._webserver_command = 'start "%s" "%s"' % (
+            os.path.join(
+                os.path.realpath(__file__),
+                'webservice.py',
+                ),
+            self._setup_file,
+            ) 
+        print 'Web Server: %s' % self._webserver_command
         
         # Log:
         self._log_path = os.path.join(self._root_path, 'log')        
@@ -164,6 +168,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._return, self._setup_file), 
             registry='service',
             )
+        self._log_data('Web Server command: %s' % self._webserver_command)    
 
     # -------------------------------------------------------------------------
     #                            CONSTRUCTOR:
@@ -199,7 +204,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
-        # ---------------------------------------------------------------------
+        # ---------------------------------------------------------------------        
         os.system('start "%s" "%s"' % (
             self._webserver_command,
             self._setup_file,
