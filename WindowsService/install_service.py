@@ -125,7 +125,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         self._webserver_command = 'start "%s" "%s"' % (
             os.path.join(
-                os.path.realpath(__file__),
+                os.path.dirname(os.path.realpath(__file__)),
                 'webservice.py',
                 ),
             self._setup_file,
@@ -205,7 +205,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
         # ---------------------------------------------------------------------        
-        #os.system(self._webserver_command)
+        os.system(self._webserver_command)
         #self._web_service = False # init in looping procedure after
         #self._web_service = webservice.MicronaetWebService(
         #    self._setup_file)
