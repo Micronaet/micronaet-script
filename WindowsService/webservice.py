@@ -185,14 +185,14 @@ class MicronaetWebService():
         try:
             os.system('mkdir "%s"' % self._batch_path)
         except:
-            message = 'RDP Folder creation error: %s' % command
+            message = 'RDP Batch Folder creation error: %s' % command
             print message
             self._log_data(message, mode='error')
 
         try:
             os.system('mkdir "%s"' % self._log_path)
         except:
-            message = 'RDP Folder creation error: %s' % command
+            message = 'RDP Log Folder creation error: %s' % command
             print message
             self._log_data(message, mode='error')
 
