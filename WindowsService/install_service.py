@@ -234,11 +234,11 @@ class PySvc(win32serviceutil.ServiceFramework):
             error = 'Error reading config file: %s' % self._setup_file            
             config = ConfigParser.ConfigParser()
             config.read([self._setup_file])
-            xmlrpc_host = config.get('XMLRPC', 'host') 
+            #xmlrpc_host = config.get('XMLRPC', 'host') 
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))
 
             # B. Connecting remote server:            
-            address = 'http://%s:%s/RPC2' % (xmlrpc_host, xmlrpc_port)
+            address = 'http://localhost:%s/RPC2' % xmlrpc_port
             error = 'Error connecting RPC: %s)' % address, 
             sock = xmlrpclib.ServerProxy(address, allow_none=True)
 
