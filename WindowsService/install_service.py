@@ -230,7 +230,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                         ))
                     #os.system('net stop %s' % self._svc_name_) # is better mode?
             '''
-            self._log_data('Server is up')
+            self._log_data('Server is up: %s' % self._xmlrpc_address)
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
