@@ -119,7 +119,6 @@ class PySvc(win32serviceutil.ServiceFramework):
         #    self._svc_name_, 
         #    ))
 
-        #os.path.expanduser(
         print 'Root folder: %s' % self._root_path
          
         # Configuration:        
@@ -225,12 +224,6 @@ class PySvc(win32serviceutil.ServiceFramework):
     def SvcStop(self):  
         ''' Shutting down service:
         '''
-        # Tell the SCM shutting down event:
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        
-        # Raise the stop event  
-        win32event.SetEvent(self.hWaitStop)
-
         # ---------------------------------------------------------------------
         #                          STOP OPERATION:
         # ---------------------------------------------------------------------
@@ -266,6 +259,13 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._file_activity.close()
         except:
             pass        
+
+        # Service stop part:
+        # Tell the SCM shutting down event:
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        
+        # Raise the stop event  
+        win32event.SetEvent(self.hWaitStop)
             
 
 if __name__ == '__main__':  
