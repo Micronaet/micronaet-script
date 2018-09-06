@@ -46,7 +46,7 @@ class MicronaetWebService():
             operation: name of operation (searched in odoo xmlrpc.operation obj
             parameter: dict with extra parameter
                 > input_file_string: text of input file
-                
+
             @return: dict with parameter:
                 error: if there's an error during operation
                 result_string_file: output file returned as a string
@@ -117,11 +117,25 @@ class MicronaetWebService():
         '''        
         # ---------------------------------------------------------------------
         #                       Reading config parameters:
-        # ---------------------------------------------------------------------
-        self._config_file = config_file
-        
+        # ---------------------------------------------------------------------        
         config = ConfigParser.ConfigParser()
-        config.read([self._config_file])
+
+        # A. Service configuration:        
+        current_path = os.path.dirname(os.path.realpath(__file__))  
+        config.read([os.path.join(current_path, 'service.cfg')])
+        self._root_path = config.get('path', 'root')
+        self._batch_path = os.path.join(self._root_path, 'rdp', 'batch')
+
+        # Create path if not present:
+        try:
+            os.system('mkdir "%s"' % self._batch_path)
+        except:
+            print 'Error creating rdp folder: %s' % self._batch_path
+
+        # C. RDP Configuration:
+        self._config_file = config_file        
+        config.read([self._config_file])        
+        
 
         # XMLRPC server:
         try:
