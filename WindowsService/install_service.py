@@ -64,7 +64,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 self._setup_file, self._return))
         return True
         
-    def _log_data(self, event, mode='INFO', registry='activity', close=False):
+    def _log_data(self, event, mode='INFO', registry='activity'):
         ''' Log data on file:
         '''
         # ---------------------------------------------------------------------
@@ -90,16 +90,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             event,
             self._return,
             ))
-        current_log.flush()
-        
-        # ---------------------------------------------------------------------
-        # Closing check:
-        # ---------------------------------------------------------------------
-        if close:
-            try:
-                current_log.close()
-            except:
-                pass # TODO Log closing error?
+        current_log.flush()        
         return True
 
     def _init(self, ):
@@ -228,7 +219,6 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                          STOP OPERATION:
         # ---------------------------------------------------------------------
         # Terminate web server:
-        error = ''
         try:
             # A. Read config file:
             error = 'Error reading config file: %s' % self._setup_file            
@@ -241,6 +231,10 @@ class PySvc(win32serviceutil.ServiceFramework):
             address = 'http://localhost:%s/RPC2' % xmlrpc_port
             error = 'Error connecting RPC: %s)' % address, 
             sock = xmlrpclib.ServerProxy(address, allow_none=True)
+            self._log_data(
+                'Connect XMLRCP Server %s' % address,
+                registry='service', 
+                )
 
             # C. Shutdown command:
             error = 'Error stopping listener (setup: %s)' % address, 
@@ -250,23 +244,26 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._log_data(
                 'Stop Listner Service %s' % address,
                 registry='service', 
-                close=True,
                 )
-
-            # D. Shutdown command:
-            error = 'Error closing log file'
-            self._file_service.close()
-            self._file_activity.close()
         except:
             self._log_data(
                 '%s\n    [%s]' % (error, sys.exc_info()),
                 mode='error',
                 registry='service', 
-                close=True,
                 )
                 
+        # Close log file        
         try:
-            # Service stop part:
+            self._file_service.close()
+        except:
+            pass # Service unavailable
+        try:
+            self._file_activity.close()
+        except:
+            pass # Service unavailable
+
+        # Service stop part:
+        try:
             # Tell the SCM shutting down event:
             self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
             
