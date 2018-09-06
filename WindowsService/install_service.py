@@ -205,6 +205,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # START WEBSERVICE:        
         os.system(self._webserver_command) # Launch indipendent task:
+        time.sleep(2)
 
         # RUNNING LOOP:
         # If the stop event hasn't been fired keep looping  
@@ -212,26 +213,25 @@ class PySvc(win32serviceutil.ServiceFramework):
         i = 0
 
         response = None
+        try: # TODO loop for server up:
+            sock = xmlrpclib.ServerProxy(
+                self._xmlrpc_address, allow_none=True)
+        except:
+            sock = False
         while response != win32event.WAIT_OBJECT_0:            
             # Check working service:
             if i > check_every:
                 i = 0
-                self._log_data('Server is up: %s' % self._xmlrpc_address)
+                try:
+                    sock.execute('ping') # Check operation                  
+                    # TODO remove:
+                    self._log_data('Server is up: %s' % self._xmlrpc_address)
+                except:
+                    self._log_data(u'Server is down from remote')
+                    #os.system('net stop %s' % self._svc_name_) # is better mode?
             else:    
                 i += 1
 
-            '''
-            if not self._sock:
-                    self._sock = xmlrpclib.ServerProxy(
-                        self._xmlrpc_address, allow_none=True)
-                self._sock.execute('ping') # Check operation
-                self._log_data('Server is up') # TODO remove
-                except:
-                    self._log_data(u'Server is down from remote %s' % (
-                        sys.exc_info()
-                        ))
-                    #os.system('net stop %s' % self._svc_name_) # is better mode?
-            '''
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
