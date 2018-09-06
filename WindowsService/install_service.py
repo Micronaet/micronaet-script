@@ -207,26 +207,26 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # RUNNING LOOP:
         # If the stop event hasn't been fired keep looping  
-        #check_every = 20 # times
-        #i = 0
+        check_every = 2 # 20 times
+        i = 0
+        
         response = None        
         while response != win32event.WAIT_OBJECT_0:
-            '''i += 1
+            i += 1
+            
             # Check working service:
-            try:
-                if i > check_every:
+            if i > check_every:
+                try:
                     i = 0
                     if not self._sock:
                         self._sock = xmlrpclib.ServerProxy(
-                            self._xmlrpc_address, 
-                            allow_none=True,
-                            )
-                    self._sock.execute('ping') # Check operation            
-                    self._log_data('Server up') # TODO remove
-            except:
-                self._log_data('Server is down from remote')
-                #os.system('net stop %s' % self._svc_name_) # is better mode?
-            '''
+                            self._xmlrpc_address, allow_none=True)
+                    self._sock.execute('ping') # Check operation
+                    self._log_data('Server is up') # TODO remove
+                except:
+                    self._log_data('Server is down from remote')
+                    #os.system('net stop %s' % self._svc_name_) # is better mode?
+            
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
