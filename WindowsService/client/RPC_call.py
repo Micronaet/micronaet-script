@@ -24,6 +24,17 @@ import xmlrpclib
 import time
 from Tkinter import *
 
+def message_window(text):
+    # Open window message:    
+    root = Tk()
+    frame = Frame(root)
+    frame.pack()
+    label = Label(frame, text=text)
+    label.pack()
+    quitButton = Button(frame, text="OK", command=frame.quit)
+    quitButton.pack()
+    root.mainloop()
+    
 try:
     # -------------------------------------------------------------------------
     # Command parameters:
@@ -32,21 +43,14 @@ try:
     port = sys.argv[2]
     launch_command = sys.argv[3]
 except:
-    # Open window message:    
-    root = Tk()
-    frame = Frame(root)
-    frame.pack()
-    label = Label(frame, text='''
+    message_window('''
         [INFO] Launch syntax error, use:
             python ./RCP_call.py <IP RDP Server> <Port RDP Server> <command>
             
             ex.:   
             python ./RCP_call.py 192.168.1.100 7000 invoice
             ''')
-    label.pack()
-    quitButton = Button(frame, text="OK", command=frame.quit)
-    quitButton.pack()
-    root.mainloop()
+
     sys.exit()
     
 try:
@@ -55,7 +59,13 @@ try:
     # -------------------------------------------------------------------------
     sock = xmlrpclib.ServerProxy(
         'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
-    print '[INFO] %s' % sock.execute('batch', {'command': launch_command})
+    reply = sock.execute('batch', {'command': launch_command})
+    text = '[ERROR]\n%s' % reply.get('comment', '???')
+    print text
+    if not reply.get('esit', False):
+        message_window(text)
+    
 except:
     print '[ERROR] Server not reply'
+    message_window('[ERROR]\nServer not ready')
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
