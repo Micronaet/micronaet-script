@@ -224,7 +224,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                     i = 0
                     if not self._sock:
                         self._sock = xmlrpclib.ServerProxy(
-                            self._address, 
+                            self._xmlrpc_address, 
                             allow_none=True,
                             )
                     self._sock.execute('ping') # Check operation            
@@ -251,13 +251,13 @@ class PySvc(win32serviceutil.ServiceFramework):
             time.sleep(1)
             
             self._log_data(
-                'Shutdown RPC Service %s' % self._address,
+                'Shutdown RPC Service %s' % self._xmlrpc_address,
                 registry='service', 
                 )
         except:
             self._log_data(
                 '%sCannot stop RPC_ %s\n    [%s]' % (
-                    self._address,
+                    self._xmlrpc_address,
                     , sys.exc_info()),
                 mode='error',
                 registry='service', 
