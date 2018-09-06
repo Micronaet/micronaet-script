@@ -60,10 +60,10 @@ try:
     sock = xmlrpclib.ServerProxy(
         'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
     reply = sock.execute('batch', {'command': launch_command})
-    text = '[ERROR]\n%s' % reply.get('comment', '???')
+    text = reply.get('comment', '???')
     print text
     if not reply.get('esit', False):
-        message_window(text)
+        message_window('[ERROR]\n%s' % text)
     
 except:
     print '[ERROR] Server not reply'
