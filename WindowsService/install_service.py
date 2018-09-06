@@ -160,6 +160,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # XMLRPC server:            
         self._xmlrpc_address = 'http://localhost:%s/RPC2' % self._xmlrpc_port
+        self._sock = False
 
         # ---------------------------------------------------------------------
         # Log install event:
@@ -210,7 +211,6 @@ class PySvc(win32serviceutil.ServiceFramework):
         check_every = 5 # 20 times
         i = 0
 
-        self._sock = False
         response = None
         while response != win32event.WAIT_OBJECT_0:            
             # Check working service:
@@ -220,14 +220,12 @@ class PySvc(win32serviceutil.ServiceFramework):
             else:    
                 i += 1
 
-            '''if i > check_every:
-                try:
-                    i = 0
-                    if not self._sock:
-                        self._sock = xmlrpclib.ServerProxy(
-                            self._xmlrpc_address, allow_none=True)
-                    self._sock.execute('ping') # Check operation
-                    self._log_data('Server is up') # TODO remove
+            '''
+            if not self._sock:
+                    self._sock = xmlrpclib.ServerProxy(
+                        self._xmlrpc_address, allow_none=True)
+                self._sock.execute('ping') # Check operation
+                self._log_data('Server is up') # TODO remove
                 except:
                     self._log_data(u'Server is down from remote %s' % (
                         sys.exc_info()
