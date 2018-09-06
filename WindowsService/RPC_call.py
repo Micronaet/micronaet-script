@@ -46,7 +46,7 @@ try:
     # -------------------------------------------------------------------------
     sock = xmlrpclib.ServerProxy(
         'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
-    print '[INFO] %s' % sock.execute('batch', {'command': lauch_command})
+    print '[INFO] %s' % sock.execute('batch', {'command': launch_command})
 except:
     print '[ERROR] Server not reply'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
