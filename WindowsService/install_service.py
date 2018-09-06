@@ -251,7 +251,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 )
             sock.remote_shutdown()
             time.sleep(1)
-            
+
             self._log_data(
                 'Shutdown RPC Service %s' % self._xmlrpc_address,
                 registry='service', 
@@ -260,7 +260,8 @@ class PySvc(win32serviceutil.ServiceFramework):
             self._log_data(
                 'Cannot stop RPC: %s [%s]' % (
                     self._xmlrpc_address,
-                    sys.exc_info()),
+                    sys.exc_info(),
+                    ),
                 mode='error',
                 registry='service', 
                 )
