@@ -110,6 +110,11 @@ class PySvc(win32serviceutil.ServiceFramework):
         
         # Root folder:
         self._root_path = 'C:\\Micronaet\\Micronaet Listener Service' # TODO
+        self._webserver_command = os.path.join(
+            os.path.realpath(__file__),
+            'webservice.py',
+            )
+            
         #self._root_path = os.path.join(
         #    'C:\\',
         #    'Micronaet',
@@ -195,17 +200,19 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
         # ---------------------------------------------------------------------
-        self._web_service = False # init in looping procedure after
+        os.system('start "%s" "%s"' % (
+            self._webserver_command,
+            self._setup_file,
+            )) 
+        #self._web_service = False # init in looping procedure after
+        #self._web_service = webservice.MicronaetWebService(
+        #    self._setup_file)
 
         # ---------------------------------------------------------------------
         #                        RUNNING LOOP:
         # ---------------------------------------------------------------------
         # If the stop event hasn't been fired keep looping  
         while response != win32event.WAIT_OBJECT_0:  
-            # Start web service in internal procedure (for stop command):
-            if not self._web_service:
-                self._web_service = webservice.MicronaetWebService(
-                    self._setup_file)
             
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(

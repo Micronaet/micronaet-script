@@ -112,9 +112,16 @@ class MicronaetWebService():
         self._server.register_function(self.remote_shutdown, 'remote_shutdown')
         self._server.register_function(self.execute, 'execute')
         
+        print 'Micronaet: XMLRPC Server started on: %s port %s' % (
+            xmlrpc_host, xmlrpc_port)
+        print 'Config file: %s' % self._config_file
+        
         # Forever loop:
         self._server.serve_forever()
 
 if __name__ == '__main__':  
-    WebService = MicronaetWebService('demo.cfg')        
+    if len(sys.argv) == 2:
+        WebService = MicronaetWebService(sys.argv[1])
+    else:
+        print 'Launch passing config.cfg fullpath'    
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

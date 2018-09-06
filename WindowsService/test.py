@@ -21,10 +21,18 @@
 import os
 import sys
 import xmlrpclib
+import time
 
-import pdb; pdb.set_trace()
 sock = xmlrpclib.ServerProxy(
     'http://localhost:7000/RPC2', allow_none=True)
-print sock
 
+print sock
+print sock.execute('ping')
+sock.remote_shutdown()
+print 'Wait 1 sec...'
+time.sleep(1)
+try:
+    print sock.execute('ping')
+except:    
+    print 'Server is down'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
