@@ -25,6 +25,8 @@ import win32event
 import servicemanager
 
 import webservice
+import xmlrpclib
+import ConfigParser
 
 from datetime import datetime
 
@@ -205,10 +207,8 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
         # ---------------------------------------------------------------------        
+        # Launch indipendent task:
         os.system(self._webserver_command)
-        #self._web_service = False # init in looping procedure after
-        #self._web_service = webservice.MicronaetWebService(
-        #    self._setup_file)
 
         # ---------------------------------------------------------------------
         #                        RUNNING LOOP:
@@ -234,9 +234,20 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                          STOP WEBSERVICE:
         # ---------------------------------------------------------------------
         try:
-            # Terminate XMLRPC loop:
-            self._web_service.remote_shutdown()
-            
+            # Read config file:
+            config = ConfigParser.ConfigParser()
+            config.read([self._setup_file])
+
+            # XMLRPC server:
+            xmlrpc_host = config.get('XMLRPC', 'host') 
+            xmlrpc_port = eval(config.get('XMLRPC', 'port'))
+            sock = xmlrpclib.ServerProxy(
+                'http://%s:%s/RPC2' % (
+                    xmlrpc_host,
+                    xmlrpc_port,                        
+                    ), allow_none=True)
+            sock.remote_shutdown()
+            time.sleep(1)
             self._log_data(
                 'Stop Listner Service', 
                 registry='service', 
@@ -244,7 +255,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                 )
         except:
             self._log_data(
-                'Error stopping listener', 
+                'Error stopping listener (setup: %s)' % self._setup_file, 
                 mode='error',
                 registry='service', 
                 close=True,
