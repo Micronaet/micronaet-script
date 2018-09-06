@@ -231,7 +231,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                     self._log_data('Server up') # TODO remove
             except:
                 self._log_data('Server is down from remote')
-                os.system('net stop %s' % self._svc_name_) # is better mode?
+                #os.system('net stop %s' % self._svc_name_) # is better mode?
                     
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
@@ -247,12 +247,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Terminate web server:
         try:
-            self._log_data(
-                'Start shutdown operations%s' % self._return,
-                registry='service', 
-                )
-
-            error = 'Error stopping listener (setup: %s)' % address, 
+            error = 'Error stopping listener (setup: %s)' % self._address, 
             self._sock.remote_shutdown()
             time.sleep(1)
             
