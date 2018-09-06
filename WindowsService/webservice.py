@@ -56,15 +56,35 @@ class MicronaetWebService():
         self._file_log.flush()        
         return True
     
+    def _shutdown_thread(self, ):
+        ''' Hidden procedure for close RDP server
+        '''
+        # Close server:
+        message = 'RDP Server shutdown in progress...'
+        print message
+        self._log_data(message)
+        
+        self._server.shutdown()
+
+        message = 'RDP Server shutdown done!'
+        print message
+        self._log_data(message)
+
+        # Close log file:
+        try:
+            self._file_log.close()
+        except:
+            pass    
+
     # -------------------------------------------------------------------------
     #                                METHODS:
     # -------------------------------------------------------------------------
     def remote_shutdown(self, ):
+        ''' Procedure to close server via XMLRPC
+        '''
         thread.start_new_thread(self._shutdown_thread, ())
         return True
 
-    def _shutdown_thread(self, ):
-        self._server.shutdown()
         
     def execute(self, operation, parameter=None):
         ''' Execute method for call function (saved in ODOO)
@@ -90,6 +110,7 @@ class MicronaetWebService():
         if operation == 'ping':
             # Demo operation used to test echo response from RPC
             res['comment'] = 'Server is up'
+            self._log_data('Call [ping]')
             return res
             
         # ---------------------------------------------------------------------                
@@ -97,6 +118,7 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------                
         elif operation == 'batch': # Launch remote command:
             command = parameter.get('command')
+            self._log_data('Call [batch] >> command: %s' % command)
             batch_path = os.path.dirname(os.path.realpath(__file__))
             
             # -----------------------------------------------------------------
@@ -133,6 +155,8 @@ class MicronaetWebService():
             else:        
                 res['esit'] = False
                 res['comment'] += u'Unknow command parameter: %s' % command
+                self._log_data('Unknown call [batch] >> command: %s' % command, 
+                    mode='error')
                 return res
         return True
     
@@ -159,14 +183,15 @@ class MicronaetWebService():
         try:
             os.system('mkdir "%s"' % self._batch_path)
         except:
-            print 'Error creating rdp folder: %s' % self._batch_path
+            message = 'RDP Folder creation error: %s' % command
+            print message
+            self._log_data(message, mode='error')
 
         # ---------------------------------------------------------------------
         # C. RDP Configuration:
         # ---------------------------------------------------------------------
         self._config_file = config_file        
         config.read([self._config_file])        
-        
         
         # ---------------------------------------------------------------------
         #                          XMLRPC server:
@@ -175,7 +200,9 @@ class MicronaetWebService():
             xmlrpc_host = config.get('XMLRPC', 'host') 
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))
         except:
-            print 'Error file not present: %s' % self._config_file    
+            message = 'Config file not present: %s' % self._config_file 
+            print message
+            self._log_data(message, mode='error')
             return 
             
         # ---------------------------------------------------------------------
@@ -208,5 +235,5 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         WebService = MicronaetWebService(sys.argv[1])
     else:
-        print 'Launch passing config.cfg fullpath'    
+        print 'Launch passing config.cfg fullpath'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
