@@ -228,7 +228,9 @@ class PySvc(win32serviceutil.ServiceFramework):
                 except:
                     self._log_data(u'Server is down from remote')
                     try:
-                        os.system('net stop "%s"' % self._svc_name_) #TODO better
+                        # TODO is the better way?
+                        self.SvcStop()
+                        #os.system('net stop "%s"' % self._svc_name_) 
                     except:
                         self._log_data(u'Cannot stop service!')
 
