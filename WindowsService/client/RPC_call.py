@@ -46,8 +46,8 @@ try:
 except:
     text = '''
 [INFO]
-Launch syntax error, use:
-python RCP_call.py <IP RDP Server> <Port RDP Server> <command>
+Sintassi errata, utilizzare:
+python RCP_call.py <IP RDP Server> <Porta RDP Server> <comando>
 ex.:   
 python RCP_call.py 192.168.1.100 7000 invoice
 '''
@@ -68,6 +68,7 @@ try:
         message_window('[ERROR]\n%s' % text)
     
 except:
-    print '[ERROR] Server not reply'
-    message_window('[ERROR]\nServer not ready')
+    text = '[ERROR] Nessuna risposta del server\nverificare il servizio!'
+    print text
+    message_window(text)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
