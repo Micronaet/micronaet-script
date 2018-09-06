@@ -23,16 +23,26 @@ import sys
 import xmlrpclib
 import time
 
-sock = xmlrpclib.ServerProxy(
-    'http://localhost:7000/RPC2', allow_none=True)
-
-print sock
-print sock.execute('ping')
-sock.remote_shutdown()
-print 'Wait 1 sec...'
-time.sleep(1)
 try:
-    print sock.execute('ping')
-except:    
-    print 'Server is down'
+    hostname = sys.argv[1]
+    port = sys.argv[2]
+except:
+    print '[INFO] Launch with host port parameter!'
+    sys.exit()
+try:
+    sock = xmlrpclib.ServerProxy(
+        'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
+
+    print '[INFO] %s' % sock
+    print '[INFO] %s' % sock.execute('ping')
+except:
+    print '[ERROR] Server not reply'
+    
+#sock.remote_shutdown()
+#print 'Wait 1 sec...'
+#time.sleep(1)
+#try:
+#    print sock.execute('ping')
+#except:    
+#    print 'Server is down'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
