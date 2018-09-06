@@ -207,7 +207,7 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # RUNNING LOOP:
         # If the stop event hasn't been fired keep looping  
-        check_every = 2 # 20 times
+        check_every = 1 # 20 times
         i = 0
 
         self._sock = False
@@ -225,7 +225,7 @@ class PySvc(win32serviceutil.ServiceFramework):
                     self._sock.execute('ping') # Check operation
                     self._log_data('Server is up') # TODO remove
                 except:
-                    self._log_data('Server is down from remote %s' % (
+                    self._log_data(u'Server is down from remote %s' % (
                         sys.exc_info()
                         ))
                     #os.system('net stop %s' % self._svc_name_) # is better mode?
