@@ -223,12 +223,14 @@ class PySvc(win32serviceutil.ServiceFramework):
             if i > check_every:
                 i = 0
                 try:
-                    sock.execute('ping') # Check operation                  
-                    # TODO remove:
-                    self._log_data('Server is up: %s' % self._xmlrpc_address)
+                    sock.execute('ping') # Check server up
                 except:
                     self._log_data(u'Server is down from remote')
-                    #os.system('net stop %s' % self._svc_name_) # is better mode?
+                    try:
+                        os.system('net stop %s' % self._svc_name_) #TODO better
+                    except:
+                        self._log_data(u'Cannot stop service!')
+                        
             else:    
                 i += 1
 
@@ -247,9 +249,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Terminate web server:
         try:
             sock = xmlrpclib.ServerProxy(
-                self._xmlrpc_address, 
-                allow_none=True,
-                )
+                self._xmlrpc_address, allow_none=True)
             sock.remote_shutdown()
             time.sleep(1)
 
@@ -260,9 +260,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         except:
             self._log_data(
                 'Cannot stop RPC: %s [%s]' % (
-                    self._xmlrpc_address,
-                    sys.exc_info(),
-                    ),
+                    self._xmlrpc_address, sys.exc_info()),
                 mode='error',
                 registry='service', 
                 )
