@@ -55,7 +55,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         '''
         if not os.path.isfile(self._setup_file):
             setup_file = open(self._setup_file, 'w')
-            setup_file.write('[XMLRPC]%shost: localhost%sport: 7000' % (
+            setup_file.write('[XMLRPC]%shost: 0.0.0.0%sport: 7000' % (
                 self._return,
                 self._return,
                 ))
@@ -166,7 +166,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Log install event:
         # ---------------------------------------------------------------------
-        self._log_data('Instance %s service%sLog path: %s%sConfig: %s' % (
+        self._log_data('Instance %s service%s    Log path: %s%sConfig: %s' % (
             self._svc_name_, self._return, self._log_path,
             self._return, self._setup_file), 
             registry='service',
