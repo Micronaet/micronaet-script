@@ -89,13 +89,11 @@ class MicronaetWebService():
                         return res
                         
                     os.system(command) # Launch sprix
-                    res['comment'] += u'Command launched: %s' % command
+                    res['comment'] += u'Command launched: %s' % batch_path
                     return res
                 except:
                     res['esit'] = False
-                    res['comment'] += u'Error launch shell command %s' % (
-                        command,
-                        )
+                    res['comment'] += u'Error launch command %s' % batch_path
                     return res
 
             # -----------------------------------------------------------------
