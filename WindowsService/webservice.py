@@ -55,7 +55,7 @@ class MicronaetWebService():
             parameter = {}
             
         res = {
-            'status': 'ok', # else 'ko'
+            'esit': True,
             'comment': '',
             }
 
@@ -64,7 +64,8 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------
         if operation == 'ping':
             # Demo operation used to test echo response from RPC
-            return 'Server is up'
+            res['comment'] = 'Server is up'
+            return res
             
         elif operation == 'lauch':
             # Launch remote command:
@@ -74,10 +75,9 @@ class MicronaetWebService():
                 res['comment'] += u'Command launched: %s\n' % command
                 return res
             except:
-                res['status'] = 'ko'
+                res['esit'] = False
                 res['comment'] += u'Error launch shell command\n'
                 return res
-        # XXX elif
         return True
     
     def __init__(self, config_file):
