@@ -180,6 +180,7 @@ class MicronaetWebService():
         self._log_path = os.path.join(self._root_path, 'rdp', 'log')
         self._filename_log = os.path.join(self._log_path, 'rdp.log')
         self._file_log = False
+        self._return = '\r\n'
 
         # Create path if not present:
         try:
