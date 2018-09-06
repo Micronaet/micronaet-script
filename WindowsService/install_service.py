@@ -209,7 +209,8 @@ class PySvc(win32serviceutil.ServiceFramework):
         # If the stop event hasn't been fired keep looping  
         check_every = 2 # 20 times
         i = 0
-        
+
+        self._sock = False
         response = None        
         while response != win32event.WAIT_OBJECT_0:
             i += 1
