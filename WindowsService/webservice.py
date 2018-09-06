@@ -77,8 +77,8 @@ class MicronaetWebService():
             # -----------------------------------------------------------------
             # Launch invoice:
             # -----------------------------------------------------------------
-            if command == 'invoice':            
-                try:                
+            if command == 'invoice':
+                try:
                     batch_command = os.path.join(
                         self._batch_path, '%s.bat' % command)
                     if not os.path.isfile(batch_command):
@@ -88,12 +88,13 @@ class MicronaetWebService():
                             )
                         return res
                         
-                    os.system(command) # Launch sprix
-                    res['comment'] += u'Command launched: %s' % batch_path
+                    os.system(batch_command) # Launch sprix
+                    res['comment'] += u'Command launched: %s' % batch_command
                     return res
                 except:
                     res['esit'] = False
-                    res['comment'] += u'Error launch command %s' % batch_path
+                    res['comment'] += \
+                        u'Error launch command %s' % batch_command
                     return res
 
             # -----------------------------------------------------------------
