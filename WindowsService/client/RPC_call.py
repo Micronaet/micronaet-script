@@ -65,10 +65,10 @@ try:
     text = reply.get('comment', '???')
     print text
     if not reply.get('esit', False):
-        message_window('[ERROR]\n%s' % text)
+        message_window('[ERRORE]\n%s' % text)
     
 except:
-    text = '[ERROR] Nessuna risposta del server\nverificare il servizio!'
+    text = '[ERRORE]\nNessuna risposta del server\nverificare il servizio!'
     print text
     message_window(text)
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
