@@ -67,16 +67,48 @@ class MicronaetWebService():
             res['comment'] = 'Server is up'
             return res
             
-        elif operation == 'lauch':
-            # Launch remote command:
+        # ---------------------------------------------------------------------                
+        # Launch command
+        # ---------------------------------------------------------------------                
+        elif operation == 'batch': # Launch remote command:
             command = parameter.get('command')
-            try:
-                os.system(command) # Launch sprix
-                res['comment'] += u'Command launched: %s\n' % command
-                return res
-            except:
+            batch_path = os.path.dirname(os.path.realpath(__file__))
+            
+            # -----------------------------------------------------------------
+            # Launch invoice:
+            # -----------------------------------------------------------------
+            if command == 'invoice':            
+                try:                
+                    batch_command = os.path.join(batch_path, 'batch', 
+                        '%s.bat' % command)
+                    if not os.path.isfile(batch_command):
+                        res['esit'] = False
+                        res['comment'] += u'Batch command not found %s!' % (
+                            command,
+                            )
+                        return res
+                        
+                    os.system(command) # Launch sprix
+                    res['comment'] += u'Command launched: %s' % command
+                    return res
+                except:
+                    res['esit'] = False
+                    res['comment'] += u'Error launch shell command %s' % (
+                        command,
+                        )
+                    return res
+
+            # -----------------------------------------------------------------
+            # XXX invoice:
+            # -----------------------------------------------------------------
+            # TODO 
+            
+            # -----------------------------------------------------------------
+            # Launch error:
+            # -----------------------------------------------------------------
+            else:        
                 res['esit'] = False
-                res['comment'] += u'Error launch shell command\n'
+                res['comment'] += u'Unknow command parameter: %s' % command
                 return res
         return True
     
