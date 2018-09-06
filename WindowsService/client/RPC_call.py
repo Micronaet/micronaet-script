@@ -25,13 +25,14 @@ import time
 from Tkinter import *
 
 def message_window(text):
-    # Open window message:    
+    ''' Open Standard message for output
+    '''
     root = Tk()
     frame = Frame(root)
     frame.pack()
     label = Label(frame, text=text)
     label.pack()
-    quitButton = Button(frame, text="OK", command=frame.quit)
+    quitButton = Button(frame, text='OK', command=frame.quit)
     quitButton.pack()
     root.mainloop()
     
@@ -43,14 +44,15 @@ try:
     port = sys.argv[2]
     launch_command = sys.argv[3]
 except:
-    message_window('''
+    text = '''
         [INFO] Launch syntax error, use:
             python ./RCP_call.py <IP RDP Server> <Port RDP Server> <command>
             
             ex.:   
             python ./RCP_call.py 192.168.1.100 7000 invoice
-            ''')
-
+            '''
+    print text
+    message_window(text)
     sys.exit()
     
 try:
