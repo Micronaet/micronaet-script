@@ -79,8 +79,8 @@ class MicronaetWebService():
             # -----------------------------------------------------------------
             if command == 'invoice':            
                 try:                
-                    batch_command = os.path.join(batch_path, 'batch', 
-                        '%s.bat' % command)
+                    batch_command = os.path.join(
+                        self._batch_path, '%s.bat' % command)
                     if not os.path.isfile(batch_command):
                         res['esit'] = False
                         res['comment'] += u'Batch command not found %s!' % (
