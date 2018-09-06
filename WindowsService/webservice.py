@@ -112,12 +112,17 @@ class MicronaetWebService():
         self._server.register_function(self.remote_shutdown, 'remote_shutdown')
         self._server.register_function(self.execute, 'execute')
         
+        # ---------------------------------------------------------------------
+        # Hello string:
+        # ---------------------------------------------------------------------
         print 'Micronaet: XMLRPC Server started on: %s port %s' % (
             xmlrpc_host, xmlrpc_port)
         print 'Config file: %s' % self._config_file
         print 'Waiting for calls...'
         
+        # ---------------------------------------------------------------------
         # Forever loop:
+        # ---------------------------------------------------------------------
         self._server.serve_forever()
 
 if __name__ == '__main__':  
