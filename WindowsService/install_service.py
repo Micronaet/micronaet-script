@@ -205,10 +205,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         #                     START WEBSERVICE:
         # ---------------------------------------------------------------------        
-        os.system('start "%s" "%s"' % (
-            self._webserver_command,
-            self._setup_file,
-            )) 
+        #os.system(self._webserver_command)
         #self._web_service = False # init in looping procedure after
         #self._web_service = webservice.MicronaetWebService(
         #    self._setup_file)
@@ -217,8 +214,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                        RUNNING LOOP:
         # ---------------------------------------------------------------------
         # If the stop event hasn't been fired keep looping  
-        while response != win32event.WAIT_OBJECT_0:  
-            
+        while response != win32event.WAIT_OBJECT_0:
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
