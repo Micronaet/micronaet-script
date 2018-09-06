@@ -20,9 +20,11 @@
 ###############################################################################
 import os
 import sys
-from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 import ConfigParser
 import thread
+
+from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
+from datetime import datetime
 
 class RequestHandler(SimpleXMLRPCRequestHandler):
     rpc_paths = ('/RPC2', )
@@ -182,6 +184,13 @@ class MicronaetWebService():
         # Create path if not present:
         try:
             os.system('mkdir "%s"' % self._batch_path)
+        except:
+            message = 'RDP Folder creation error: %s' % command
+            print message
+            self._log_data(message, mode='error')
+
+        try:
+            os.system('mkdir "%s"' % self._log_path)
         except:
             message = 'RDP Folder creation error: %s' % command
             print message
