@@ -207,13 +207,13 @@ class PySvc(win32serviceutil.ServiceFramework):
 
         # RUNNING LOOP:
         # If the stop event hasn't been fired keep looping  
-        check_every = 1 # 20 times
-        i = 0
+        #check_every = 1 # 20 times
+        #i = 0
 
         self._sock = False
         response = None
         while response != win32event.WAIT_OBJECT_0:
-            i += 1
+            ''''i += 1
             
             # Check working service:
             if i > check_every:
@@ -229,7 +229,8 @@ class PySvc(win32serviceutil.ServiceFramework):
                         sys.exc_info()
                         ))
                     #os.system('net stop %s' % self._svc_name_) # is better mode?
-            
+            '''
+            self._log_data('Server is up')
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
