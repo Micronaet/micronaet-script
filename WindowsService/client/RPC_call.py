@@ -22,6 +22,7 @@ import os
 import sys
 import xmlrpclib
 import time
+from Tkinter import *
 
 try:
     # -------------------------------------------------------------------------
@@ -31,13 +32,21 @@ try:
     port = sys.argv[2]
     launch_command = sys.argv[3]
 except:
-    print '''
-    [INFO] Launch syntax error, use:
-        python ./RCP_call.py <IP RDP Server> <Port RDP Server> <command>
-        
-        ex.:   
-        python ./RCP_call.py 192.168.1.100 7000 invoice
-        '''
+    # Open window message:    
+    root = Tk()
+    frame = Frame(root)
+    frame.pack()
+    label = Label(frame, text='''
+        [INFO] Launch syntax error, use:
+            python ./RCP_call.py <IP RDP Server> <Port RDP Server> <command>
+            
+            ex.:   
+            python ./RCP_call.py 192.168.1.100 7000 invoice
+            ''')
+    label.pack()
+    quitButton = Button(frame, text="OK", command=frame.quit)
+    quitButton.pack()
+    root.mainloop()
     sys.exit()
     
 try:
