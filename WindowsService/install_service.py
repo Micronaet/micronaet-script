@@ -166,9 +166,9 @@ class PySvc(win32serviceutil.ServiceFramework):
         # Log install event:
         # ---------------------------------------------------------------------
         self._log_data(
-            'Instance %s%s    Log path: %s%s    Config: %s [localhost:%s]' % (
+            'Instance %s%s    Log path: %s%s    Config: %s' % (
                 self._svc_name_, self._return, self._log_path,
-                self._return, self._setup_file, self._xmlrpc_port), 
+                self._return, self._setup_file),
                 registry='service',
                 )
         self._log_data('Web Server command: %s' % self._webserver_command)    
@@ -219,6 +219,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         except:
             sock = False
         while response != win32event.WAIT_OBJECT_0:            
+            i += 1
             # Check working service:
             if i > check_every:
                 i = 0
@@ -227,12 +228,9 @@ class PySvc(win32serviceutil.ServiceFramework):
                 except:
                     self._log_data(u'Server is down from remote')
                     try:
-                        os.system('net stop %s' % self._svc_name_) #TODO better
+                        os.system('net stop "%s"' % self._svc_name_) #TODO better
                     except:
                         self._log_data(u'Cannot stop service!')
-                        
-            else:    
-                i += 1
 
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
