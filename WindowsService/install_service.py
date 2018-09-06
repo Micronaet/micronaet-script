@@ -214,10 +214,10 @@ class PySvc(win32serviceutil.ServiceFramework):
         #                        RUNNING LOOP:
         # ---------------------------------------------------------------------
         # If the stop event hasn't been fired keep looping  
-        check_every = 20 # times
-        i = 0
+        #check_every = 20 # times
+        #i = 0
         while response != win32event.WAIT_OBJECT_0:
-            i += 1
+            '''i += 1
             # Check working service:
             try:
                 if i > check_every:
@@ -232,7 +232,7 @@ class PySvc(win32serviceutil.ServiceFramework):
             except:
                 self._log_data('Server is down from remote')
                 #os.system('net stop %s' % self._svc_name_) # is better mode?
-                    
+            '''        
             # Stop for X millisecond and listen for stop event
             response = win32event.WaitForSingleObject(
                 self.hWaitStop, 
@@ -247,17 +247,18 @@ class PySvc(win32serviceutil.ServiceFramework):
         # ---------------------------------------------------------------------
         # Terminate web server:
         try:
-            error = 'Error stopping listener (setup: %s)' % self._address, 
             self._sock.remote_shutdown()
             time.sleep(1)
             
             self._log_data(
-                'Shutdown RPC Service %s' % address,
+                'Shutdown RPC Service %s' % self._address,
                 registry='service', 
                 )
         except:
             self._log_data(
-                '%s\n    [%s]' % (error, sys.exc_info()),
+                '%sCannot stop RPC_ %s\n    [%s]' % (
+                    self._address,
+                    , sys.exc_info()),
                 mode='error',
                 registry='service', 
                 )
