@@ -123,7 +123,7 @@ class PySvc(win32serviceutil.ServiceFramework):
         self._setup_file = os.path.join(self._root_path, 'service.cfg')
         print 'Config file: %s' % self._setup_file
 
-        self._webserver_command = 'start "%s" "%s"' % (
+        self._webserver_command = 'start %s "%s"' % (
             os.path.join(
                 os.path.dirname(os.path.realpath(__file__)),
                 'webservice.py',
