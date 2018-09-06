@@ -168,11 +168,11 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------
         #                       Reading config parameters:
         # ---------------------------------------------------------------------        
-        config = ConfigParser.ConfigParser()
 
         # ---------------------------------------------------------------------
         # A. Service configuration:        
         # ---------------------------------------------------------------------
+        config = ConfigParser.ConfigParser()
         current_path = os.path.dirname(os.path.realpath(__file__))  
         config.read([os.path.join(current_path, 'service.cfg')])
         self._root_path = config.get('path', 'root')
@@ -200,6 +200,7 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------
         # C. RDP Configuration:
         # ---------------------------------------------------------------------
+        config = ConfigParser.ConfigParser()
         self._config_file = config_file        
         config.read([self._config_file])        
         
