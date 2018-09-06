@@ -166,11 +166,7 @@ class MicronaetWebService():
         ''' Start XMLRPC reading config file for parameter
         '''        
         # ---------------------------------------------------------------------
-        #                       Reading config parameters:
-        # ---------------------------------------------------------------------        
-
-        # ---------------------------------------------------------------------
-        # A. Service configuration:        
+        # A. Service configuration: .\service.cfg       
         # ---------------------------------------------------------------------
         config = ConfigParser.ConfigParser()
         current_path = os.path.dirname(os.path.realpath(__file__))  
@@ -182,23 +178,24 @@ class MicronaetWebService():
         self._file_log = False
         self._return = '\r\n'
 
-        # Create path if not present:
+        # Create batch path if not present:
         try:
             os.system('mkdir "%s"' % self._batch_path)
         except:
-            message = 'RDP Batch Folder creation error: %s' % command
+            message = 'RDP Batch Folder creation error: %s' % self._batch_path
             print message
             self._log_data(message, mode='error')
 
+        # Create log path if not present:
         try:
             os.system('mkdir "%s"' % self._log_path)
         except:
-            message = 'RDP Log Folder creation error: %s' % command
+            message = 'RDP Log Folder creation error: %s' % self._log_path
             print message
             self._log_data(message, mode='error')
 
         # ---------------------------------------------------------------------
-        # C. RDP Configuration:
+        # B. RDP Configuration: (file passed)
         # ---------------------------------------------------------------------
         config = ConfigParser.ConfigParser()
         self._config_file = config_file        
