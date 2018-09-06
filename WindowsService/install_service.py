@@ -23,6 +23,7 @@ import win32service
 import win32serviceutil  
 import win32event  
 import servicemanager
+import time
 
 import webservice
 import xmlrpclib
@@ -231,8 +232,9 @@ class PySvc(win32serviceutil.ServiceFramework):
         win32event.SetEvent(self.hWaitStop)
 
         # ---------------------------------------------------------------------
-        #                          STOP WEBSERVICE:
+        #                          STOP OPERATION:
         # ---------------------------------------------------------------------
+        # Terminate web server:
         try:
             # Read config file:
             config = ConfigParser.ConfigParser()
@@ -241,15 +243,12 @@ class PySvc(win32serviceutil.ServiceFramework):
             # XMLRPC server:
             xmlrpc_host = config.get('XMLRPC', 'host') 
             xmlrpc_port = eval(config.get('XMLRPC', 'port'))
-            sock = xmlrpclib.ServerProxy(
-                'http://%s:%s/RPC2' % (
-                    xmlrpc_host,
-                    xmlrpc_port,                        
-                    ), allow_none=True)
+            address = 'http://%s:%s/RPC2' % (xmlrpc_host, xmlrpc_port)
+            sock = xmlrpclib.ServerProxy(address, allow_none=True)
             sock.remote_shutdown()
             time.sleep(1)
             self._log_data(
-                'Stop Listner Service', 
+                'Stop Listner Service %s' % address,
                 registry='service', 
                 close=True,
                 )
@@ -260,6 +259,13 @@ class PySvc(win32serviceutil.ServiceFramework):
                 registry='service', 
                 close=True,
                 )
+                
+        # Close log files:        
+        try:
+            self._file_activity.close()
+            self._file_activity.close()
+        except:
+            pass        
             
 
 if __name__ == '__main__':  
