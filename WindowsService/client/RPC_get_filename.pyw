@@ -51,7 +51,7 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\server.xlsx c:\client\client.
     hostname = sys.argv[1]
     port = sys.argv[2]
     filename = sys.argv[3]
-    output = sys.argv[3]
+    output = sys.argv[4]
 
     # -------------------------------------------------------------------------
     # RDP Operation:
