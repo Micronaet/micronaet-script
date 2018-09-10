@@ -22,7 +22,6 @@ import os
 import sys
 import ConfigParser
 import thread
-import base64
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer, SimpleXMLRPCRequestHandler
 from datetime import datetime
@@ -119,16 +118,6 @@ class MicronaetWebService():
         # ---------------------------------------------------------------------                
         # Launch command
         # ---------------------------------------------------------------------                
-        elif operation == 'file': # Get binary file
-            try:
-                filename = parameter.get('filename')            
-                f_bin = open(filename, 'rb')
-                res['file'] = base64.encode(f_bin.readall())
-            except:
-                res['esit'] = False
-                res['comment'] += 'Cannot access filename passed as context    
-            return res
-            
         elif operation == 'batch': # Launch remote command:
             command = parameter.get('command')
             self._log_data('Call [batch] >> command: %s' % command)
