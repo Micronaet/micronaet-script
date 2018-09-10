@@ -69,7 +69,7 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\server.xlsx c:\client\client.
 
     import pdb; pdb.set_trace()
     text_data = reply['file']
-    binary_data = base64.b64decode()
+    binary_data = base64.b64decode(text_data)
     f_out = open(output, 'wb')
     f_out.write(binary_data)
     f_out.close()
