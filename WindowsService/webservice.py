@@ -167,16 +167,7 @@ class MicronaetWebService():
                     res['comment'] += \
                         u'Error launch command %s' % batch_command
                     return res
-            else:
-                res['esit'] = False
-                res['comment'] += \
-                    u'Error command parameter not present%s'
-                return res
-                        
-            
-            # -----------------------------------------------------------------
-            # Launch error:
-            # -----------------------------------------------------------------
+
             else:        
                 res['esit'] = False
                 res['comment'] += u'Unknow command parameter: %s' % command
