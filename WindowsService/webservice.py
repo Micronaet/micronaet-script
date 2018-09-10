@@ -128,10 +128,16 @@ class MicronaetWebService():
                 binary_data = f_in.read()
                 res['file'] = base64.b64encode(binary_data)
                 f_in.close()
+                self._log_data(
+                    'Call [file] file name: %s (present)' % filename)
                 
             except:
                 res['esit'] = False
                 res['comment'] += 'Cannot access filename passed as context'
+                self._log_data(
+                    'Call [file] file name: %s (not present)' % filename, 
+                    mode='error',
+                    )
             return res
             
         elif operation == 'batch': # Launch remote command:
