@@ -124,7 +124,7 @@ class MicronaetWebService():
             try:
                 filename = parameter.get('filename')            
                 f_bin = open(filename, 'rb')
-                res['file'] = base64.encode(f_bin.readall())
+                res['file'] = base64.encode(f_bin.read())
             except:
                 res['esit'] = False
                 res['comment'] += 'Cannot access filename passed as context'
