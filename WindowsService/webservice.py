@@ -126,7 +126,7 @@ class MicronaetWebService():
                 res['file'] = base64.encode(f_bin.readall())
             except:
                 res['esit'] = False
-                res['comment'] += 'Cannot access filename passed as context    
+                res['comment'] += 'Cannot access filename passed as context'
             return res
             
         elif operation == 'batch': # Launch remote command:
