@@ -120,6 +120,7 @@ class MicronaetWebService():
         # Launch command
         # ---------------------------------------------------------------------                
         elif operation == 'file': # Get binary file
+            import pdb; pdb.set_trace()
             try:
                 filename = parameter.get('filename')            
                 f_bin = open(filename, 'rb')
