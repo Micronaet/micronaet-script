@@ -148,7 +148,7 @@ class MicronaetWebService():
             # -----------------------------------------------------------------
             # Launch invoice:
             # -----------------------------------------------------------------
-            if command == 'invoice':
+            if command:
                 try:
                     batch_command = os.path.join(
                         self._batch_path, '%s.bat' % command)
@@ -167,11 +167,12 @@ class MicronaetWebService():
                     res['comment'] += \
                         u'Error launch command %s' % batch_command
                     return res
-
-            # -----------------------------------------------------------------
-            # XXX invoice:
-            # -----------------------------------------------------------------
-            # TODO 
+            else:
+                res['esit'] = False
+                res['comment'] += \
+                    u'Error command parameter not present%s'
+                return res
+                        
             
             # -----------------------------------------------------------------
             # Launch error:
