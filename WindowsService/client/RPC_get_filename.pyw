@@ -67,12 +67,9 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\server.xlsx c:\client\client.
 
     text = '[ERRORE] Non riesco a salvare il file in locale'
 
-    f_bin = open(filename , 'wb')
     import pdb; pdb.set_trace()
-    text_data = reply['file']
-    f_bin.write(base64.b64decode(text_data))
-    f_bin.close()    
-    # XXX XLSX file will be opened from batch
+    binary_string = base64.b64decode(reply['file'])
+    open(output, 'wb').write(binary_string);
     
 except:
     print text

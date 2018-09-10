@@ -122,12 +122,9 @@ class MicronaetWebService():
         elif operation == 'file': # Get binary file
             try:
                 filename = parameter.get('filename')      
+                
                 import pdb; pdb.set_trace()
-                f_bin = open(filename , 'rb')
-                binary_data = f_bin.read()
-                res['file'] = base64.b64encode(binary_data)
-                #res['file'] = base64.encodestring()
-                f_bin.close()
+                res['file'] = base64.b64encode(open(filename, 'rb').read())
                 
             except:
                 res['esit'] = False
