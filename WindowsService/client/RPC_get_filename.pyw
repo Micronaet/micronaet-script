@@ -44,13 +44,14 @@ try:
     text = '''
 [INFO]
 Sintassi errata, utilizzare:
-python RCP_call.py <IP RDP Server> <Porta RDP Server> <fullname>
+python RCP_call.py <IP RDP Server> <Porta RDP Server> <server file> <client file>
 ex.:   
-python RCP_call.py 192.168.1.100 7000 c:\micronaet\_filename_.xlsx
+python RCP_call.py 192.168.1.100 7000 c:\micronaet\server.xlsx c:\client\client.xlsx
 '''
     hostname = sys.argv[1]
     port = sys.argv[2]
     filename = sys.argv[3]
+    output = sys.argv[3]
 
     # -------------------------------------------------------------------------
     # RDP Operation:
@@ -65,7 +66,6 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\_filename_.xlsx
         sys.exit()
 
     text = '[ERRORE] Non riesco a salvare il file in locale'
-    output = '.\\prova.xlsx'
     f_bin = open(output, 'wb')
     import pdb; pdb.set_trace()
     binary = base64.decodestring(reply.get('file'))
