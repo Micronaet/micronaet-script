@@ -22,11 +22,19 @@ import os
 import sys
 import xmlrpclib
 import time
-from Tkinter import *
+try:
+    from Tkinter import *
+    graphic = True
+except
+    graphic = False
 
 def message_window(text):
     ''' Open Standard message for output
     '''
+    if not graphic:
+        print '[TEXT] %s' % text
+        return
+
     root = Tk()
     frame = Frame(root)
     frame.pack()
