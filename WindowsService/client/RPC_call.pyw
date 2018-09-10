@@ -25,7 +25,7 @@ import time
 try:
     from Tkinter import *
     graphic = True
-except
+except:
     graphic = False
 
 def message_window(text):
