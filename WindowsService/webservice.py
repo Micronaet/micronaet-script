@@ -124,7 +124,10 @@ class MicronaetWebService():
                 filename = parameter.get('filename')      
                 
                 import pdb; pdb.set_trace()
-                res['file'] = base64.b64encode(open(filename, 'rb').read())
+                f_in = open(filename, 'rb')
+                binary_data = f_in.read()
+                res['file'] = base64.b64encode(binary_data)
+                f_in.close()
                 
             except:
                 res['esit'] = False
