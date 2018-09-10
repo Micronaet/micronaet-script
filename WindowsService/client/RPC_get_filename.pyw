@@ -69,7 +69,8 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\server.xlsx c:\client\client.
 
     f_bin = open(filename , 'wb')
     import pdb; pdb.set_trace()
-    f_bin.write(base64.decodestring(reply['file']))
+    text_data = reply['file']
+    f_bin.write(base64.b64decode(text_data))
     f_bin.close()    
     # XXX XLSX file will be opened from batch
     
