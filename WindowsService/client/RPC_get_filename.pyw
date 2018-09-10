@@ -22,6 +22,7 @@ import os
 import sys
 import xmlrpclib
 import time
+import base64
 from Tkinter import *
 
 def message_window(text):
