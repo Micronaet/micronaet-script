@@ -57,7 +57,7 @@ python RCP_call.py 192.168.1.100 7000 c:\micronaet\_filename_.xlsx
     text = '[ERRORE]\nNessuna risposta del server\nverificare il servizio!'
     sock = xmlrpclib.ServerProxy(
         'http://%s:%s/RPC2' % (hostname, port), allow_none=True)
-    reply = sock.execute('batch', {'filename': filename})
+    reply = sock.execute('file', {'filename': filename})
     
     if not reply.get('esit', False):
         message_window('[ERRORE] Nessun file di ritorno dalla procedura')
