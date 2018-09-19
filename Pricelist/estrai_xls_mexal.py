@@ -621,7 +621,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARCUL',
                 '', #_ARCUP',       
                 '', #_ARRIC',
-                '', #_ARCOS',
+                csv_float(price, price_decimal), #_ARCOS',
                 '', #_ARSCO',
                 '', #_ARSCQ',
                 '', #_ARLIS',       
