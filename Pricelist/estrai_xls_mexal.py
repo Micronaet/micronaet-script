@@ -559,7 +559,8 @@ for root, dirs, files in os.walk(path_xls):
                     default_discount = ''
 
             if discount_category == False:
-                discount_category = WS.cell(row, 6).value or ''
+                discount_category = str(
+                    WS.cell(row, 6).value or '').rstrip('.0')
 
             # Transform data read:
             name_csv = csv_text(name, name_limit)
