@@ -477,6 +477,7 @@ for root, dirs, files in os.walk(path_xls):
     for filename_xls in files:
         is_error = False
         default_discount = False
+        discount_category = False
         f_split = filename_xls.split('.')
         if len(f_split) != 3 or \
                 not f_split[0].isdigit() or \
@@ -549,12 +550,16 @@ for root, dirs, files in os.walk(path_xls):
             price = WS.cell(row, 2).value
             vat = WS.cell(row, 3).value
             uom = WS.cell(row, 4).value
+            
             if default_discount == False:
                 discount = WS.cell(row, 5).value # Supplier discount values
                 if discount:
                     default_discount = discount
                 else:
                     default_discount = ''
+
+            if discount_category == False:
+                discount_category = WS.cell(row, 6).value or ''
 
             # Transform data read:
             name_csv = csv_text(name, name_limit)
@@ -622,7 +627,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARCUP',       
                 '', #_ARRIC',
                 '', #_ARCOS',
-                '', #_ARSCO',
+                discount_category, #_ARSCO',
                 '', #_ARSCQ',
                 '', #_ARLIS',       
                 '1', #_ARTPR',
