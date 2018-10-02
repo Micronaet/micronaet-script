@@ -426,7 +426,11 @@ def csv_uom(value):
 def csv_vat(value):
     ''' VAT conversion in string
     '''
-    return str(int(value))
+    try:
+        return str(int(value))
+    except:
+        print 'Errore convertendo IVA: %s' % value
+        return ''
 
 def csv_text(value, limit):
     ''' CSV limited text (for write in file)
@@ -448,7 +452,10 @@ def get_ascii_name(value):
     '''
     if not value:
         return ''
-        
+    if type(value) == float:
+        print 'Float value %s' % value
+        return '%s' % value
+    
     res = ''
     for c in value.strip():
         if c == ';':
@@ -494,6 +501,7 @@ for root, dirs, files in os.walk(path_xls):
             continue    
                 
         file_xls = os.path.join(path_xls, filename_xls)
+        print 'Read: %s' % file_xls
         done_file_xls = os.path.join(
             path_done_xls, 
             '%s.%s' % (now(), filename_xls),
@@ -537,6 +545,7 @@ for root, dirs, files in os.walk(path_xls):
             # Read columns from pricelist XLS:
             # -----------------------------------------------------------------
             default_code = get_code(WS.cell(row, 0).value)
+            print 'Import line: %s [%s]' % (i, default_code)
             if not default_code:
                 file_log_data(
                     f_log_xls, 
@@ -559,8 +568,7 @@ for root, dirs, files in os.walk(path_xls):
                     default_discount = ''
 
             if discount_category == False:
-                discount_category = str(
-                    WS.cell(row, 6).value or '').rstrip('.0')
+                discount_category = str(WS.cell(row, 6).value or '').rstrip('.0')
 
             # Transform data read:
             name_csv = csv_text(name, name_limit)
@@ -584,7 +592,10 @@ for root, dirs, files in os.walk(path_xls):
                     newline=newline,
                     )
                 continue
-
+            vat_string = csv_vat(vat)
+            if not vat_string:
+                print '%s. IVA non presente!' % i
+                sys.exit()
             record = [
                 'A', #_ARTIP',
                 csv_text(default_code, code_limit), #_ARCOD',
@@ -610,7 +621,7 @@ for root, dirs, files in os.walk(path_xls):
                 '', #_ARDSL(7)',
                 '', #_ARDSL(8)',
                 '', #_ARDSL(9)',
-                csv_vat(vat), #_ARIVA',       
+                vat_string, #_ARIVA',       
                 csv_uom(uom), #_ARUM1',
                 '', #_ARUM2',
                 '', #_ARDEC',
