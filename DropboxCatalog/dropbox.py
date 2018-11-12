@@ -18,8 +18,8 @@
 ###############################################################################
 import os
 import sys
-#import erppeek
-import xmlrpclib
+import erppeek
+#import xmlrpclib
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
@@ -107,45 +107,43 @@ def clean_char(name, replace_char):
 #                           ODOO operation:
 # -----------------------------------------------------------------------------
 # Connect with ODOO
-sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/common' % (odoo_server, odoo_port))
-uid = sock.login(odoo_database, odoo_user, odoo_password)
-sock = xmlrpclib.ServerProxy(
-    'http://%s:%s/xmlrpc/object' % (odoo_server, odoo_port))
-
-family_ids = sock.execute(
-    odoo_database, uid, odoo_password, 
-    'product.template', 'search', [
-        ('is_family', '=', True),
-        ]) 
-
-for family in sock.execute(odoo_database, uid, odoo_password, 
-        'product.template', 'read', family_ids, [
-            'name', 'family_list', 'dropbox']):
-    family_name = clean_ascii(family['dropbox'] or family['name'])
-    for parent in family['family_list'].split('|'):
-        family_db[parent] = family_name
-        if len(parent) not in parent_char:
-            parent_char.append(len(parent))
-
-#odoo = erppeek.Client(
-#    'http://%s:%s' % (
-#        odoo_server, odoo_port), 
-#    db=odoo_database,
-#    user=odoo_user,
-#    password=odoo_password,
-#    )
-    
-# Read family database
-#family_pool = odoo.model('product.template')
-#family_ids = family_pool.search([
-#    ('is_family', '=', True),
-#    ])
-#for family in family_pool.browse(family_ids):
-#    for parent in family.family_list.split('|'):
-#        family_db[parent] = family.name
+#sock = xmlrpclib.ServerProxy(
+#    'http://%s:%s/xmlrpc/common' % (odoo_server, odoo_port))
+#uid = sock.login(odoo_database, odoo_user, odoo_password)
+#sock = xmlrpclib.ServerProxy(
+#    'http://%s:%s/xmlrpc/object' % (odoo_server, odoo_port))
+#family_ids = sock.execute(
+#    odoo_database, uid, odoo_password, 
+#    'product.template', 'search', [
+#        ('is_family', '=', True),
+#        ]) 
+#for family in sock.execute(odoo_database, uid, odoo_password, 
+#        'product.template', 'read', family_ids, [
+#            'name', 'family_list', 'dropbox']):
+#    family_name = clean_ascii(family['dropbox'] or family['name'])
+#    for parent in family['family_list'].split('|'):
+#        family_db[parent] = family_name
 #        if len(parent) not in parent_char:
 #            parent_char.append(len(parent))
+
+odoo = erppeek.Client(
+    'http://%s:%s' % (
+        odoo_server, odoo_port), 
+    db=odoo_database,
+    user=odoo_user,
+    password=odoo_password,
+    )
+    
+# Read family database
+family_pool = odoo.model('product.template')
+family_ids = family_pool.search([
+    ('is_family', '=', True),
+    ])
+for family in family_pool.browse(family_ids):
+    for parent in family.family_list.split('|'):
+        family_db[parent] = clean_ascii(family.dropbox or family.name
+        if len(parent) not in parent_char:
+            parent_char.append(len(parent))
         
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
