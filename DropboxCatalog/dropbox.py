@@ -141,7 +141,7 @@ family_ids = family_pool.search([
     ])
 for family in family_pool.browse(family_ids):
     for parent in family.family_list.split('|'):
-        family_db[parent] = clean_ascii(family.dropbox or family.name
+        family_db[parent] = clean_ascii(family.dropbox or family.name)
         if len(parent) not in parent_char:
             parent_char.append(len(parent))
         
