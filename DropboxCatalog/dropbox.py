@@ -139,6 +139,7 @@ family_pool = odoo.model('product.template')
 family_ids = family_pool.search([
     ('is_family', '=', True),
     ])
+import pdb; pdb.set_trace()
 for family in family_pool.browse(family_ids):
     for parent in family.family_list.split('|'):
         family_db[parent] = clean_ascii(family.dropbox or family.name)
