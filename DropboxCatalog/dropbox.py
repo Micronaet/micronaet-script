@@ -321,6 +321,7 @@ for product in product_db:
 # Clean empty folder:
 #os.system('find "%s" -empty -type d -delete' % dropbox_path)
 
-#print log_sym                
+if demo:
+    print log_sym                
 print 'End operation'                        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
