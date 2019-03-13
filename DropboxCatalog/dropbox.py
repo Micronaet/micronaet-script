@@ -113,7 +113,7 @@ def get_modify_date(fullname):
 def get_now_less_month(month):
     ''' Return date now
     '''
-    return (datetime.now() - relativedelta(months=month)
+    return (datetime.now() + relativedelta(months=month)
         ).strftime('%Y-%m-%d')
     
 # -----------------------------------------------------------------------------
@@ -228,8 +228,6 @@ for (key, path, extension, walk) in input_folders:
             if file_modify >= from_month:
                 recent_modify.append((
                     key, file_modify[5:7], fullname, f))
-            else:
-                print 'File %s date %s' % (f, file_modify)
 
             # -----------------------------------------------------------------
             # Check case problem:
