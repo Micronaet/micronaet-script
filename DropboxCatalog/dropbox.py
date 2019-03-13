@@ -340,7 +340,7 @@ for product in product_db:
 # Recent file management:
 # -----------------------------------------------------------------------------
 import pdb; pdb.set_trace()
-recent_folder = os.path(dropbox_path, 'RECENT')
+recent_folder = os.path.join(dropbox_path, 'RECENT')
 # A. Remove previous data in RECENT folder:
 os.system('rm -r "%s"' % recent_folder)
 
