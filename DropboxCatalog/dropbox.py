@@ -228,6 +228,8 @@ for (key, path, extension, walk) in input_folders:
             if file_modify >= from_month:
                 recent_modify.append((
                     key, file_modify[5:7], fullname, f))
+            else:
+                print 'File %s date %s' % (f, file_modify)
 
             # -----------------------------------------------------------------
             # Check case problem:
