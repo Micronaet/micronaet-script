@@ -169,7 +169,6 @@ recent_modify = [] # (from_path, name)
 from_month = get_now_less_month(month)
 
 tot = 0
-import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     # XXX walk for now is not used
     
