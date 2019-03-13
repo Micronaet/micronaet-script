@@ -362,7 +362,7 @@ for key, file_month, origin, f in recent_modify:
         log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
             origin, destination))
 
-os.system('chmod 777 "%s" -R' % recent_folder)
+os.system('chmod 777 "%s" -R' % dropbox_path)
 
 # -----------------------------------------------------------------------------                        
 # Clean operation:
