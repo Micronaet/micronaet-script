@@ -74,5 +74,8 @@ folder_replace_char = [
 product_part = 12 # Folder product name
 parent_part = 3 # Folder parent name (if all numeric)
 
+# Recent file management:
+month = -6 # Month from date to recent files
+
 no_family_name = 'NON CLASSIFICATO'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

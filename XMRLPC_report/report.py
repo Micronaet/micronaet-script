@@ -8,7 +8,31 @@ import ConfigParser
 import time
 import base64
 
-cfg_file = os.path.join(os.path.expanduser('openerp.cfg'))
+# -----------------------------------------------------------------------------
+# Read configuration parameter:
+# -----------------------------------------------------------------------------
+cfg_file = os.path.expanduser('../openerp.cfg')
+
+config = ConfigParser.ConfigParser()
+config.read([cfg_file])
+dbname = config.get('dbaccess', 'dbname')
+user = config.get('dbaccess', 'user')
+pwd = config.get('dbaccess', 'pwd')
+server = config.get('dbaccess', 'server')
+port = config.get('dbaccess', 'port')   # verify if it's necessary: getint
+
+# -----------------------------------------------------------------------------
+# Connect to ODOO:
+# -----------------------------------------------------------------------------
+odoo = erppeek.Client(
+    'http://%s:%s' % (
+        server, port), 
+    db=dbname,
+    user=user,
+    password=pwd,
+    )
+product = odoo.model('product.product')
+
    
 # Set up parameters (for connection to Open ERP Database) *********************
 config = ConfigParser.ConfigParser()

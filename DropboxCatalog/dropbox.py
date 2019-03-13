@@ -23,7 +23,7 @@ import erppeek
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
-
+from dateutil.relativedelta import relativedelta
 
 # -----------------------------------------------------------------------------
 # Parameters:
@@ -44,6 +44,7 @@ folder_replace_char = parameters.folder_replace_char
 product_part = parameters.product_part
 parent_part = parameters.parent_part
 no_family_name = parameters.no_family_name
+month = parameters.month
 
 print '''
 Setup parameters: 
@@ -103,6 +104,18 @@ def clean_char(name, replace_char):
         name = name.replace(find, replace)
     return name.strip() # Clean extra spaces
 
+def get_modify_date(fullname):
+    ''' Return modify date for file
+    '''
+    return datetime.fromtimestamp(
+        os.stat(fullname).st_mtime).strftime('%Y-%m-%d')
+
+def get_now_less_month(month):
+    ''' Return date now
+    '''
+    return (datetime.now() - relativedelta(months=month)
+        ).strftime('%Y-%m-%d')
+    
 # -----------------------------------------------------------------------------
 #                           ODOO operation:
 # -----------------------------------------------------------------------------
@@ -151,6 +164,10 @@ for family in family_pool.browse(family_ids):
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
+# Folder for modify:
+recent_modify = [] # (from_path, name)
+from_month = get_now_less_month(month)
+
 tot = 0
 for (key, path, extension, walk) in input_folders:
     # XXX walk for now is not used
@@ -200,10 +217,20 @@ for (key, path, extension, walk) in input_folders:
                 product_db[product][key] = []
                 
             # File to symlink:    
-            product_db[product][key].append((
-                os.path.join(root, f),
-                f,
-                ))    
+            fullname = os.path.join(root, f)
+            product_db[product][key].append((fullname, f))
+            
+            # -----------------------------------------------------------------
+            # New product management:
+            # -----------------------------------------------------------------
+            file_modify = get_modify_date(fullname)
+            if file_modify >= from_month:
+                recent_modify.append((
+                    key,
+                    file_modify[5:7]
+                    fullname,
+                    f,
+                    ))
 
             # -----------------------------------------------------------------
             # Check case problem:
@@ -311,6 +338,34 @@ for product in product_db:
                 except:
                     log_sym.append('PRESENTE: origin: %s destination: %s' % (
                         origin, destination))
+
+
+# -----------------------------------------------------------------------------                        
+# Recent file management:
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
+recent_folder = os.path(dropbox_path, 'RECENT')
+# A. Remove previous data in RECENT folder:
+os.system('rm -r "%s"' % recent_folder)
+
+# Loop the new image:
+for key, month, origin, f in recent_modify:
+    # B. Create first level + month folder:
+    this_folder = os.path.join(recent_folder, key, this_month)
+    os.system('mkdir -p "%s"' % this_folder)
+    
+    # Create symlink:
+    name = '%s' % clean_char(f, file_replace_char)
+    destination = os.path.join(this_folder, name)
+
+    # Symlink operations:
+    if demo:
+        log_sym.append('RECENT origin: %s destination: %s' % (
+            origin, destination)) 
+    else:
+        os.symlink(origin, destination)
+        log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
+            origin, destination))
 
 # -----------------------------------------------------------------------------                        
 # Clean operation:
