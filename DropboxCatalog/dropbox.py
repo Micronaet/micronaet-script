@@ -345,9 +345,9 @@ recent_folder = os.path.join(dropbox_path, 'RECENT')
 os.system('rm -r "%s"' % recent_folder)
 
 # Loop the new image:
-for key, month, origin, f in recent_modify:
+for key, file_month, origin, f in recent_modify:
     # B. Create first level + month folder:
-    this_folder = os.path.join(recent_folder, key, this_month)
+    this_folder = os.path.join(recent_folder, key, file_month)
     os.system('mkdir -p "%s"' % this_folder)
     
     # Create symlink:
