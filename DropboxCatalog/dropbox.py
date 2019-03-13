@@ -169,6 +169,7 @@ recent_modify = [] # (from_path, name)
 from_month = get_now_less_month(month)
 
 tot = 0
+import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     # XXX walk for now is not used
     
@@ -339,10 +340,10 @@ for product in product_db:
 # -----------------------------------------------------------------------------                        
 # Recent file management:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 # A. Remove previous data in RECENT folder:
 os.system('rm -r "%s"' % recent_folder)
+import pdb; pdb.set_trace()
 
 # Loop the new image:
 for key, file_month, origin, f in recent_modify:
