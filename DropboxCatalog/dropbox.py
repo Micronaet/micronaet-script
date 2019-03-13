@@ -342,7 +342,6 @@ for product in product_db:
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 # A. Remove previous data in RECENT folder:
 os.system('rm -r "%s"' % recent_folder)
-import pdb; pdb.set_trace()
 
 # Loop the new image:
 for key, file_month, origin, f in recent_modify:
