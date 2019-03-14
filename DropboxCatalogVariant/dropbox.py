@@ -19,7 +19,6 @@
 import os
 import sys
 import erppeek
-#import xmlrpclib
 import shutil
 import parameters # Micronaet: configuration file
 from datetime import datetime, timedelta
@@ -28,6 +27,17 @@ from dateutil.relativedelta import relativedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
+# Name conversion for folder parent:
+name_conversion = {
+    'I': 'Indoor',
+    'C': 'Commercializzati',
+
+    'catalog': 'Catalogo',
+    'out': 'Fuori catalogo',
+    'stock': 'Stock',    
+    }
+
+
 # ODOO connection:
 odoo_server = parameters.odoo_server
 odoo_port = parameters.odoo_port
@@ -150,20 +160,27 @@ odoo = erppeek.Client(
     password=odoo_password,
     )
     
-# Read family database
-family_pool = odoo.model('product.template')
-family_ids = family_pool.search([
-    ('is_family', '=', True),
+# Pool used:
+product_pool = odoo.model('product.product')
+product_ids = product_pool.search([
+    # Statistic category:
+    '&', '&', '|',
+    ('statistic_category', '=ilike', 'I%'),
+    ('statistic_category', '=ilike', 'C%'),
+
+    # With code:
+    ('default_code', '!=', False),
+
+    # 3 Gamma category:    
+    ('status', 'in', ('catalog', 'out', 'stock')),
     ])
-for family in family_pool.browse(family_ids):
-    if not family.family_list:
-        print 'Family list not present for: %s' % family.name 
-        continue
-    for parent in family.family_list.split('|'):
-        family_db[parent] = clean_ascii(family.dropbox or family.name)
-        if len(parent) not in parent_char:
-            parent_char.append(len(parent))
-        
+product_odoo = {}
+for product in product_pool.browse(product_ids):
+    product_odoo[product.default_code.upper()] = (
+        product.statistic_category[0].upper(),
+        product.status,
+        )
+
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
@@ -173,8 +190,6 @@ from_month = get_now_less_month(month)
 
 tot = 0
 for (key, path, extension, walk) in input_folders:
-    # XXX walk for now is not used
-    
     path = os.path.expanduser(path)
     if key in folder_db:
         error.append('KEY not unique: %s jump folder %s' % (key, path))
@@ -192,20 +207,24 @@ for (key, path, extension, walk) in input_folders:
             if '.' not in f:
                 log.append('No dot in filename, so no ext.: %s' % f)
                 continue
-                
+
             # -----------------------------------------------------------------
             # Check estension:
             # -----------------------------------------------------------------
             part = f.split('.')
             if len(part) > 3:
                 log.append('File with dot extra: %s' % f)
-            name = part[0].upper() # Take only first block at first dot!                
+            name = part[0].upper() # Take only first block for product code
             ext = part[-1].upper()
             
             if not name:
                 log.append('No product folder: %s' % f)
                 continue
 
+            if name not in product_odoo:
+                log.append('Product code not found: %s [file: %s]' % (name, f))
+                continue
+                
             if extension and ext not in extension:
                 log.append('Estension %s not used: %s' % (ext, f))
                 continue
@@ -213,7 +232,7 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # Generate product / folder name
             # -----------------------------------------------------------------
-            product = name#[:product_part]
+            product = name
             if product not in product_db:
                 product_db[product] = {}
             if key not in product_db[product]:
@@ -232,7 +251,7 @@ for (key, path, extension, walk) in input_folders:
                     key, file_modify[:7], fullname, f))
 
             # -----------------------------------------------------------------
-            # Check case problem:
+            # Check case problem in product filename:
             # -----------------------------------------------------------------
             product_upper = product.upper()
             if product_upper in case_db:
@@ -244,6 +263,7 @@ for (key, path, extension, walk) in input_folders:
 
             # Log insert:                
             log.append('File used %s [Key: %s]' % (f, key))
+
         # TODO check walk clause here!!!
         # if not walk: 
         #     break
@@ -264,45 +284,19 @@ for product in product_db:
         # DESTINATION: Folder
         # ---------------------------------------------------------------------
         # 1. Generate name:        
-        folder_name = clean_char(product, folder_replace_char) # change char
+        #product_code = clean_char(product, folder_replace_char) # change char
         #folder_parent = folder_name[:parent_part]
-        
+
         # ---------------------------------------------------------------------
-        # Check family:
+        # Folder structure:
         # ---------------------------------------------------------------------
-        family_name = no_family_name
-        found_parent = False
-        for l in sorted(parent_char, reverse=True):
-            family_parent = folder_name[:l]
-            if family_parent in family_db:
-                family_name = family_db[family_parent]
-                found_parent = family_parent
-                break
-        
-        if folder_parent.isdigit() or found_parent:
-            product_folder = os.path.join(
-                dropbox_path, 
-                key,
-                family_name, 
-                found_parent or folder_parent, 
-                folder_name,
-                )
-        else:
-            if found_parent:
-                product_folder = os.path.join(
-                    dropbox_path, 
-                    key,
-                    family_name, 
-                    found_parent, 
-                    folder_name,
-                    )
-            else:        
-                product_folder = os.path.join(
-                    dropbox_path, 
-                    key,
-                    family_name, 
-                    folder_name,
-                    )
+        statistic, gamma = product_odoo[product]
+        product_folder = os.path.join(
+            dropbox_path, 
+            key,
+            name_conversion[statistic],
+            name_conversion[gamma],
+            )
 
         # 2. Create if not present:
         if not demo:
@@ -311,36 +305,23 @@ for product in product_db:
         for origin, f in product_db[product][key]:
             tot += 1
             # DESTINATION: Filename
-            #name = '%s_%s' % (
-            name = '%s' % (
-                #key, 
-                clean_char(
-                    f, 
-                    file_replace_char, # Replace list
-                    ),
-                ) # Filename for destination
-            destination = os.path.join(
-                dropbox_path,
-                product_folder, # Product folder
-                name,
-                )
+            name = '%s' % clean_char(f, file_replace_char)
+            destination = os.path.join(dropbox_path, name)
             
-            # Symlink operations:     
+            # Symlink operations:
             if demo:
                 log_sym.append('DEMO origin: %s destination: %s' % (
                     origin, destination)) 
             else:    
-                try:
-                    os.symlink(origin, destination)
-                    log_sym.append('CREATO: origin: %s destination: %s' % (
-                        origin, destination))
-                except:
-                    log_sym.append('PRESENTE: origin: %s destination: %s' % (
-                        origin, destination))
+                os.symlink(origin, destination)
+                log_sym.append('CREATO: origin: %s destination: %s' % (
+                    origin, destination))
 
 # -----------------------------------------------------------------------------                        
 # Recent file management:
 # -----------------------------------------------------------------------------
+if demo:
+    sys.exit()
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 # A. Remove previous data in RECENT folder:
 os.system('rm -r "%s"' % recent_folder)
