@@ -307,10 +307,14 @@ for product in product_db:
             if demo:
                 log_sym.append('DEMO origin: %s destination: %s' % (
                     origin, destination)) 
-            else:    
-                os.symlink(origin, destination)
-                log_sym.append('CREATO: origin: %s destination: %s' % (
-                    origin, destination))
+            else:
+                try:
+                    os.symlink(origin, destination)
+                    log_sym.append('CREATO: origin: %s destination: %s' % (
+                        origin, destination))
+                except:
+                    log_sym.append('ERRORE: origin: %s destination: %s' % (
+                        origin, destination))
 
 # -----------------------------------------------------------------------------                        
 # Recent file management:
