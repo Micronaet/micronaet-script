@@ -51,7 +51,6 @@ input_folders = parameters.input_folders
 dropbox_path = parameters.dropbox_path
 file_replace_char = parameters.file_replace_char
 folder_replace_char = parameters.folder_replace_char
-no_family_name = 'NON CATALOGATO'
 month = parameters.month
 
 print '''
@@ -79,8 +78,6 @@ Setup parameters:
 # Database elements:
 product_db = {}
 folder_db = {}
-family_db = {}
-parent_char = [] # len of parent in family list
 case_db = {} # Check product case different elements
 
 # Check elements:
@@ -149,8 +146,6 @@ def get_now_less_month(month):
 #    family_name = clean_ascii(family['dropbox'] or family['name'])
 #    for parent in family['family_list'].split('|'):
 #        family_db[parent] = family_name
-#        if len(parent) not in parent_char:
-#            parent_char.append(len(parent))
 
 odoo = erppeek.Client(
     'http://%s:%s' % (
@@ -180,7 +175,7 @@ for product in product_pool.browse(product_ids):
         product.statistic_category[0].upper(),
         product.status,
         )
-
+import pdb; pdb.set_trace()
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
