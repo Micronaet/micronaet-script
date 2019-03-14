@@ -267,6 +267,7 @@ for (key, path, extension, walk) in input_folders:
 # -----------------------------------------------------------------------------
 #                            CREATE SYMLINKS:
 # -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
 # Destination root folder:
 dropbox_path = os.path.expanduser(dropbox_path)
 
