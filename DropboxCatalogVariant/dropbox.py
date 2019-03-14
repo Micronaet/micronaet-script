@@ -302,7 +302,7 @@ for product in product_db:
             tot += 1
             # DESTINATION: Filename
             name = '%s' % clean_char(f, file_replace_char)
-            destination = os.path.join(dropbox_path, name)
+            destination = os.path.join(product_folder, name)
             
             # Symlink operations:
             if demo:
