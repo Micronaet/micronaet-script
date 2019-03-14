@@ -196,8 +196,8 @@ for (key, path, extension, walk) in input_folders:
         for f in files:
             tot += 1    
 
-            if f.startswith('.'):
-                log.append('Temp file not used: %s' % f)
+            if f.startswith('.') or f.startswith('_'):
+                log.append('Temp file not used (start . or _): %s' % f)
                 continue
             if '.' not in f:
                 log.append('No dot in filename, so no ext.: %s' % f)
