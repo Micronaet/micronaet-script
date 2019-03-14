@@ -175,7 +175,7 @@ for product in product_pool.browse(product_ids):
         product.statistic_category[0].upper(),
         product.status,
         )
-import pdb; pdb.set_trace()
+
 # -----------------------------------------------------------------------------
 #                           READ ALL INPUT FOLDERS:
 # -----------------------------------------------------------------------------
@@ -267,7 +267,6 @@ for (key, path, extension, walk) in input_folders:
 # -----------------------------------------------------------------------------
 #                            CREATE SYMLINKS:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 # Destination root folder:
 dropbox_path = os.path.expanduser(dropbox_path)
 
