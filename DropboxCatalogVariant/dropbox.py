@@ -41,9 +41,7 @@ input_folders = parameters.input_folders
 dropbox_path = parameters.dropbox_path
 file_replace_char = parameters.file_replace_char
 folder_replace_char = parameters.folder_replace_char
-product_part = parameters.product_part
-parent_part = parameters.parent_part
-no_family_name = parameters.no_family_name
+no_family_name = 'NON CATALOGATO'
 month = parameters.month
 
 print '''
@@ -54,7 +52,6 @@ Setup parameters:
     Dropbox path: %s
     File replace char: %s
     Folder replace char: %s
-    Product part: %s    
     ''' % (
         odoo_server, 
         odoo_port, 
@@ -66,7 +63,7 @@ Setup parameters:
         dropbox_path,
         file_replace_char,
         folder_replace_char,
-        product_part,        
+        #product_part,        
         )
 
 # Database elements:
@@ -216,7 +213,7 @@ for (key, path, extension, walk) in input_folders:
             # -----------------------------------------------------------------
             # Generate product / folder name
             # -----------------------------------------------------------------
-            product = name[:product_part]
+            product = name#[:product_part]
             if product not in product_db:
                 product_db[product] = {}
             if key not in product_db[product]:
@@ -268,7 +265,7 @@ for product in product_db:
         # ---------------------------------------------------------------------
         # 1. Generate name:        
         folder_name = clean_char(product, folder_replace_char) # change char
-        folder_parent = folder_name[:parent_part]
+        #folder_parent = folder_name[:parent_part]
         
         # ---------------------------------------------------------------------
         # Check family:
