@@ -37,6 +37,7 @@ name_conversion = {
     'stock': 'Stock',    
     }
 
+permanent_files = ['aggiornato.txt']
 
 # ODOO connection:
 odoo_server = parameters.odoo_server
@@ -277,6 +278,9 @@ old_file = []
 new_file = []
 for root, folders, files in os.walk(dropbox_path):
     for f in files:
+        # Jump status files:
+        if f in permanent_files:
+            continue
         old_file.append(os.path.join(root, f))
 
 # TODO write log file:
@@ -304,10 +308,7 @@ for product in product_db:
             # DESTINATION: Filename
             name = '%s' % clean_char(f, file_replace_char)
             destination = os.path.join(product_folder, name)
-            try:
-                new_file.append(destination)
-            except:
-                import pdb; pdb.set_trace()    
+            new_file.append(destination)
             
             # Symlink operations:
             if demo:
@@ -322,7 +323,6 @@ for product in product_db:
                     log_sym.append('ERRORE: origin: %s destination: %s' % (
                         origin, destination))
 
-
 # -----------------------------------------------------------------------------                        
 # Recent file management:
 # -----------------------------------------------------------------------------
@@ -331,8 +331,6 @@ if demo:
     sys.exit()
 
 recent_folder = os.path.join(dropbox_path, 'RECENT')
-# A. Remove previous data in RECENT folder:
-#os.system('rm -r "%s"' % recent_folder)
 
 # Loop the new image:
 for key, file_month, origin, f in recent_modify:
@@ -362,10 +360,7 @@ for key, file_month, origin, f in recent_modify:
 # -----------------------------------------------------------------------------
 # Remove unused files:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
-old_file = set(old_file)
-new_file = set(new_file)
-for destination in (old_file - new_file):
+for destination in (set(old_file) - set(new_file)):
     os.remove(destination)    
 
 # -----------------------------------------------------------------------------

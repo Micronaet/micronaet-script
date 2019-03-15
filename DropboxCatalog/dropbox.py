@@ -345,8 +345,16 @@ for product in product_db:
 # Recent file management:
 # -----------------------------------------------------------------------------
 recent_folder = os.path.join(dropbox_path, 'RECENT')
-# A. Remove previous data in RECENT folder:
-os.system('rm -r "%s"' % recent_folder)
+
+# -----------------------------------------------------------------------------
+# Load all files present in dropbox_path folder (also recent):
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
+old_file = []
+new_file = []
+for root, folders, files in os.walk(recent_folder):
+    for f in files:
+        old_file.append(os.path.join(root, f))
 
 # Loop the new image:
 for key, file_month, origin, f in recent_modify:
@@ -357,6 +365,7 @@ for key, file_month, origin, f in recent_modify:
     # Create symlink:
     name = '%s' % clean_char(f, file_replace_char)
     destination = os.path.join(this_folder, name)
+    new_file.append(destination)
 
     # Symlink operations:
     if demo:
@@ -367,16 +376,14 @@ for key, file_month, origin, f in recent_modify:
         log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
             origin, destination))
 
+# -----------------------------------------------------------------------------
+# Remove unused files:
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
+for destination in (set(old_file) - set(new_file)):
+    os.remove(destination)    
+
 os.system('chmod 777 "%s" -R' % dropbox_path)
-
-# -----------------------------------------------------------------------------                        
-# Clean operation:
-# -----------------------------------------------------------------------------                        
-# Clean empty deadlink
-#os.system('find -L "%s" -type l -exec rm -- {} +' % dropbox_path)
-
-# Clean empty folder:
-#os.system('find "%s" -empty -type d -delete' % dropbox_path)
 
 if demo:
     print log_sym                
