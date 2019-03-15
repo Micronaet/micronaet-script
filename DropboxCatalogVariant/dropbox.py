@@ -304,7 +304,10 @@ for product in product_db:
             # DESTINATION: Filename
             name = '%s' % clean_char(f, file_replace_char)
             destination = os.path.join(product_folder, name)
-            new_file.append(destination)
+            try:
+                new_file.append(destination)
+            except:
+                import pdb; pdb.set_trace()    
             
             # Symlink operations:
             if demo:
