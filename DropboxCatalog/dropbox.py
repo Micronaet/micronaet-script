@@ -376,7 +376,6 @@ for key, file_month, origin, f in recent_modify:
             log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
                 origin, destination))
         except:        
-            os.symlink(origin, destination)
             log_sym.append('RECENT ESISTENTE: origin: %s destination: %s' % (
                 origin, destination))
 
