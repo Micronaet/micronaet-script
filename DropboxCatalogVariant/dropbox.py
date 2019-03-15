@@ -350,9 +350,14 @@ for key, file_month, origin, f in recent_modify:
         log_sym.append('RECENT origin: %s destination: %s' % (
             origin, destination)) 
     else:
-        os.symlink(origin, destination)
-        log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
-            origin, destination))
+        try:
+            os.symlink(origin, destination)
+            log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
+                origin, destination))
+        except:
+            log_sym.append('RECENT ESISTE: origin: %s destination: %s' % (
+                origin, destination))
+                    
 
 # -----------------------------------------------------------------------------
 # Remove unused files:
