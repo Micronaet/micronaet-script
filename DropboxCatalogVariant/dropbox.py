@@ -270,20 +270,24 @@ for (key, path, extension, walk) in input_folders:
 # Destination root folder:
 dropbox_path = os.path.expanduser(dropbox_path)
 
+# -----------------------------------------------------------------------------
+# Load all files present in dropbox_path folder (also recent):
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
+old_file = []
+new_file = []
+for root, folders, files in os.walk(dropbox_path):
+    for f in files:
+        old_file.append(os.path(root, f))
+import pdb; pdb.set_trace()
+
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
-        # DESTINATION: Folder
-        # ---------------------------------------------------------------------
-        # 1. Generate name:        
-        #product_code = clean_char(product, folder_replace_char) # change char
-        #folder_parent = folder_name[:parent_part]
-
-        # ---------------------------------------------------------------------
-        # Folder structure:
+        # Folder destination:
         # ---------------------------------------------------------------------
         statistic, gamma = product_odoo[product]
         product_folder = os.path.join(
@@ -302,6 +306,7 @@ for product in product_db:
             # DESTINATION: Filename
             name = '%s' % clean_char(f, file_replace_char)
             destination = os.path.join(product_folder, name)
+            new_file.append(destination)
             
             # Symlink operations:
             if demo:
@@ -316,14 +321,17 @@ for product in product_db:
                     log_sym.append('ERRORE: origin: %s destination: %s' % (
                         origin, destination))
 
+
 # -----------------------------------------------------------------------------                        
 # Recent file management:
 # -----------------------------------------------------------------------------
 if demo:
+    print log_sym
     sys.exit()
+
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 # A. Remove previous data in RECENT folder:
-os.system('rm -r "%s"' % recent_folder)
+#os.system('rm -r "%s"' % recent_folder)
 
 # Loop the new image:
 for key, file_month, origin, f in recent_modify:
@@ -334,6 +342,7 @@ for key, file_month, origin, f in recent_modify:
     # Create symlink:
     name = '%s' % clean_char(f, file_replace_char)
     destination = os.path.join(this_folder, name)
+    new_file.append(destination)
 
     # Symlink operations:
     if demo:
@@ -344,6 +353,18 @@ for key, file_month, origin, f in recent_modify:
         log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
             origin, destination))
 
+# -----------------------------------------------------------------------------
+# Remove unused files:
+# -----------------------------------------------------------------------------
+import pdb; pdb.set_trace()
+old_file = set(old_file)
+new_file = set(new_file)
+for destination in (old_file - new_file):
+    os.remove(destination)    
+
+# -----------------------------------------------------------------------------
+# Update mod for files remain:
+# -----------------------------------------------------------------------------
 os.system('chmod 777 "%s" -R' % dropbox_path)
 
 # -----------------------------------------------------------------------------                        
@@ -355,7 +376,5 @@ os.system('chmod 777 "%s" -R' % dropbox_path)
 # Clean empty folder:
 #os.system('find "%s" -empty -type d -delete' % dropbox_path)
 
-if demo:
-    print log_sym                
 print 'End operation'                        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
