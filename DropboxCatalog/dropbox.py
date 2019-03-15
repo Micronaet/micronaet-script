@@ -382,7 +382,6 @@ for key, file_month, origin, f in recent_modify:
 # -----------------------------------------------------------------------------
 # Remove unused files:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 for destination in (set(old_file) - set(new_file)):
     os.remove(destination)    
 
