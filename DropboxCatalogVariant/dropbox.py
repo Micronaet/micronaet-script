@@ -273,13 +273,11 @@ dropbox_path = os.path.expanduser(dropbox_path)
 # -----------------------------------------------------------------------------
 # Load all files present in dropbox_path folder (also recent):
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 old_file = []
 new_file = []
 for root, folders, files in os.walk(dropbox_path):
     for f in files:
         old_file.append(os.path.join(root, f))
-import pdb; pdb.set_trace()
 
 # TODO write log file:
 # Read all product and key elements:
