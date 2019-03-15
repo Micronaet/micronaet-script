@@ -349,7 +349,6 @@ recent_folder = os.path.join(dropbox_path, 'RECENT')
 # -----------------------------------------------------------------------------
 # Load all files present in dropbox_path folder (also recent):
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 old_file = []
 new_file = []
 for root, folders, files in os.walk(recent_folder):
@@ -372,9 +371,14 @@ for key, file_month, origin, f in recent_modify:
         log_sym.append('RECENT origin: %s destination: %s' % (
             origin, destination)) 
     else:
-        os.symlink(origin, destination)
-        log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
-            origin, destination))
+        try:
+            os.symlink(origin, destination)
+            log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
+                origin, destination))
+        except:        
+            os.symlink(origin, destination)
+            log_sym.append('RECENT ESISTENTE: origin: %s destination: %s' % (
+                origin, destination))
 
 # -----------------------------------------------------------------------------
 # Remove unused files:
