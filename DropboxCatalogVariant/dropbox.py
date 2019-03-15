@@ -278,7 +278,7 @@ old_file = []
 new_file = []
 for root, folders, files in os.walk(dropbox_path):
     for f in files:
-        old_file.append(os.path(root, f))
+        old_file.append(os.path.join(root, f))
 import pdb; pdb.set_trace()
 
 # TODO write log file:
