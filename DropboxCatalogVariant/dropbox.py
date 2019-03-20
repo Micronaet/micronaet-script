@@ -114,12 +114,12 @@ def get_modify_date(fullname):
     '''
     modify_date = datetime.fromtimestamp(
         os.stat(fullname).st_mtime).strftime('%Y-%m-%d')
-    create_date = datetime.fromtimestamp(
-        os.stat(fullname).st_ctime).strftime('%Y-%m-%d')    
-    if create_date > modify_date:
-        return create_date
-    else:
-        return modify_date        
+    #create_date = datetime.fromtimestamp(
+    #    os.stat(fullname).st_ctime).strftime('%Y-%m-%d')    
+    #if create_date > modify_date:
+    #    return create_date
+    #else:
+    return modify_date        
 
 def get_now_less_month(month):
     ''' Return date now
