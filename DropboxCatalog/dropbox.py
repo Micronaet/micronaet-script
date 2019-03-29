@@ -370,7 +370,7 @@ for key, file_month, origin, f in recent_modify:
     # Evaluate exclusion:
     code = f.split('.')[0].replace('_', ' ')
     if code in excluded_recent:
-        log_sym.append('RECENT Excluded: %s' % code
+        log_sym.append('RECENT Excluded: %s' % code)
         continue
 
     # B. Create first level + month folder:
@@ -403,7 +403,6 @@ for destination in (set(old_file) - set(new_file)):
 
 os.system('chmod 777 "%s" -R' % dropbox_path)
 
-if demo:
-    print log_sym                
+print log_sym                
 print 'End operation'                        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
