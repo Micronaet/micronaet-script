@@ -156,7 +156,7 @@ odoo = erppeek.Client(
 # Dropbox recent excluded:
 excluded_recent = []
 product_pool = odoo.model('product.product')
-product_ids = family_pool.search([
+product_ids = product_pool.search([
     ('no_dropbox', '=', True),
     ('default_code', '!=', False),
     ])
