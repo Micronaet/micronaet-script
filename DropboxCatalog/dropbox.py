@@ -370,7 +370,7 @@ for key, file_month, origin, f in recent_modify:
     # Evaluate exclusion:
     code = f.split('.')[0].replace('_', ' ')
     if code in excluded_recent:
-        import pdb; pdb.set_trace()
+        log_sym.append('RECENT Excluded: %s' % code
         continue
 
     # B. Create first level + month folder:
