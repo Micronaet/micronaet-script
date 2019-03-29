@@ -366,16 +366,15 @@ for root, folders, files in os.walk(recent_folder):
         old_file.append(os.path.join(root, f))
 
 # Loop the new image:
-import pdb; pdb.set_trace()
 for key, file_month, origin, f in recent_modify:
     # B. Create first level + month folder:
     this_folder = os.path.join(recent_folder, key, file_month)
     os.system('mkdir -p "%s"' % this_folder)
     
     # Evaluate exclusion:
-    for exclude in excluded_recent:
-        if f.startswith(exclude):
-            continue
+    code = f.split('.')[0].replace('_', ' ')
+    if code in excluded_recent:
+        continue
 
     # Create symlink:
     name = '%s' % clean_char(f, file_replace_char)
