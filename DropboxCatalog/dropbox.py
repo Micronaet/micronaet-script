@@ -366,6 +366,7 @@ for root, folders, files in os.walk(recent_folder):
         old_file.append(os.path.join(root, f))
 
 # Loop the new image:
+import pdb; pdb.set_trace()
 for key, file_month, origin, f in recent_modify:
     # B. Create first level + month folder:
     this_folder = os.path.join(recent_folder, key, file_month)
