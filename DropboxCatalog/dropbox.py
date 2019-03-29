@@ -403,6 +403,7 @@ for destination in (set(old_file) - set(new_file)):
 
 os.system('chmod 777 "%s" -R' % dropbox_path)
 
-print log_sym                
+if demo:
+    print log_sym                
 print 'End operation'                        
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
