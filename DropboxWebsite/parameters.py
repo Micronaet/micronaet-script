@@ -32,45 +32,11 @@ odoo_database = 'dbname'
 demo = True
 
 # -----------------------------------------------------------------------------
-# Folder are a list of element for manage input folders:
-# -----------------------------------------------------------------------------
-#     (KEY, PATH, ESTENSION, WALK)
-#
-#     > KEY: start name of output dropbox file (must be unique!)
-#     > PATH: Path of the folder
-#     > Estension: list of valid estension (no case check) XXX always uppercase
-#     > Walk subfolder element
-
-input_folders = [
-    ('CHROMA', '~/company/chroma', [
-        # UPPER CASE!!!
-        ], False),
-    ('ENVIRONMENT', '~/company/environment', [
-        # UPPER CASE!!!
-        ], False),
-    ]
-
-# -----------------------------------------------------------------------------
 # Drobbox root folder:
 # -----------------------------------------------------------------------------
+samba_path = '~/mnt/samba'
 dropbox_path = '~/dropbox/product'
 
-# -----------------------------------------------------------------------------
-# List of 2 elements tuple for replate in dropbox filename some char
-# -----------------------------------------------------------------------------
-# For filename:
-file_replace_char = [
-    ('_', ' '),
-    ]
-# For folder product name:    
-folder_replace_char = [
-    ('_', ' '),
-    ]
-
-# -----------------------------------------------------------------------------
-# Product name beginning char to consider:
-# -----------------------------------------------------------------------------
-# Recent file management:
-month = -6 # Month from date to recent files
-
+# Check file:
+samba_check = '~/mnt/samba/whoami.samba'
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -35,46 +35,26 @@ odoo_password = parameters.odoo_password
 odoo_database = parameters.odoo_database
 
 # Dropbox:
-#demo = parameters.demo
-#input_folders = parameters.input_folders
-#dropbox_path = parameters.dropbox_path
-#file_replace_char = parameters.file_replace_char
-#folder_replace_char = parameters.folder_replace_char
-#month = parameters.month
+demo = parameters.demo
+samba_path = parameters.samba_path
+dropbox_path = parameters.dropbox_path
 
 print '''
 Setup parameters: 
     ODOO: Connection: %s:%s DB %s utente: %s
-    Demo: s
-    Input folders: s
-    Dropbox path: s
-    File replace char: s
-    Folder replace char: s
+    Demo: %s
+    Samba folders: %s
+    Dropbox path: %s
     ''' % (
         odoo_server, 
         odoo_port, 
         odoo_database, 
         odoo_user,
         
-        #demo,
-        #input_folders,
-        #dropbox_path,
-        #file_replace_char,
-        #folder_replace_char,
-        #product_part,        
+        demo,
+        samba_path,
+        dropbox_path,
         )
-
-# Database elements:
-#product_db = {}
-#folder_db = {}
-#case_db = {} # Check product case different elements
-
-# Check elements:
-error = [] # Error database
-warning = [] # Warning database
-info = [] #Info database
-log = [] # Log database
-log_sym = [] # Log database for symlinks
 
 # -----------------------------------------------------------------------------
 #                                 UTILITY:
@@ -103,25 +83,36 @@ product_ids = product_pool.search([
     ('connector_id.wordpress', '=', True),
     ])
 
-# TODO only if new file (check how):
-product_odoo = {}
-dropbox_root_path = os.path.expanduser(dropbox_path) # TODO
-samba_root_path = '' # TODO
+# Check elements:
+#error = [] # Error database
+#warning = [] # Warning database
+#info = [] # Info database
+#log = [] # Log database
+#log_sym = [] # Log database for symlinks
+#product_odoo = {}
 
+# Only if new file (check how):
+dropbox_root_path = os.path.expanduser(dropbox_path)
+samba_root_path = os.path.expanduser(samba_path)
 
-# Save current files:
+# -----------------------------------------------------------------------------
+# Save current files (Dropbox folder):
+# -----------------------------------------------------------------------------
 current_files = []
-for root, folders, files in os.walk(samba_root_path):
+for root, folders, files in os.walk(dropbox_root_path):
     for f in files:
         current_files.append(
             os.path.join(root, f)
-    break # only first folder!        
+    break # only first folder! 
 
+# -----------------------------------------------------------------------------
+# Logg on all product image selected:
+# -----------------------------------------------------------------------------
 for product in product_pool.browse(product_ids):
-    for image in product.image_ids:        
+    for image in product.image_ids:      
         image_id = image.id
-        code = '' # TODO
-        samba_relative_path = ''
+        code = image.album_id.code        
+        samba_relative_path = image.album_id.path # TODO dropbox_path
         filename = product.filename
         
         origin = os.path.(samba_relative_path, filename)

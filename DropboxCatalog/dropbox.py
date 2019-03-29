@@ -152,6 +152,16 @@ odoo = erppeek.Client(
     user=odoo_user,
     password=odoo_password,
     )
+
+# Dropbox recent excluded:
+excluded_recent = []
+product_pool = odoo.model('product.product')
+product_ids = family_pool.search([
+    ('no_dropbox', '=', True),
+    ('default_code', '!=', False),
+    ])
+for product in product_pool.browse(product_ids):
+    excluded_recent.append(product.default_code)
     
 # Read family database
 family_pool = odoo.model('product.template')
@@ -361,6 +371,11 @@ for key, file_month, origin, f in recent_modify:
     this_folder = os.path.join(recent_folder, key, file_month)
     os.system('mkdir -p "%s"' % this_folder)
     
+    # Evaluate exclusion:
+    for exclude in excluded_recent:
+        if f.startswith(exclude):
+            continue
+
     # Create symlink:
     name = '%s' % clean_char(f, file_replace_char)
     destination = os.path.join(this_folder, name)
