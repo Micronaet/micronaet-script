@@ -28,6 +28,8 @@ from dateutil.relativedelta import relativedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
+rsync_mask = 'rsync -avh %s %s'
+
 # ODOO connection:
 odoo_server = parameters.odoo_server
 odoo_port = parameters.odoo_port
@@ -324,8 +326,11 @@ for product in product_db:
                     origin, destination)) 
             else:    
                 try:
-                    #os.symlink(origin, destination)
-                    shutil.copy(origin, destination)
+                    # os.symlink(origin, destination)
+                    # shutil.copy(origin, destination)
+                    os.system(rsync_mask % (origin, destination))
+                    print 'CREATO: origin: %s destination: %s' % (
+                        origin, destination)  # TODO remove
                     log_sym.append('CREATO: origin: %s destination: %s' % (
                         origin, destination))
                 except:
@@ -369,11 +374,14 @@ for key, file_month, origin, f in recent_modify:
             origin, destination)) 
     else:
         try:
-            #os.symlink(origin, destination)
-            shutil.copy(origin, destination)
+            # os.symlink(origin, destination)
+            # shutil.copy(origin, destination)
+            os.system(rsync_mask % (origin, destination))
+            print 'RECENT CREATO: origin: %s destination: %s' % (
+                origin, destination)  # TODO remove
             log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
                 origin, destination))
-        except:        
+        except:  # TODO used?   
             log_sym.append('RECENT ESISTENTE: origin: %s destination: %s' % (
                 origin, destination))
 
