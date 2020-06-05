@@ -28,7 +28,7 @@ from dateutil.relativedelta import relativedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
-rsync_mask = 'rsync -avh %s %s'
+rsync_mask = 'rsync -avh "%s" "%s"'
 
 # ODOO connection:
 odoo_server = parameters.odoo_server
