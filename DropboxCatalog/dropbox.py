@@ -329,11 +329,9 @@ for product in product_db:
                     # os.symlink(origin, destination)
                     # shutil.copy(origin, destination)
                     os.system(rsync_mask % (origin, destination))
-                    print 'CREATO: origin: %s destination: %s' % (
-                        origin, destination)  # TODO remove
                     log_sym.append('CREATO: origin: %s destination: %s' % (
                         origin, destination))
-                except:
+                except:  # TODO used?
                     log_sym.append('PRESENTE: origin: %s destination: %s' % (
                         origin, destination))
 
@@ -377,8 +375,6 @@ for key, file_month, origin, f in recent_modify:
             # os.symlink(origin, destination)
             # shutil.copy(origin, destination)
             os.system(rsync_mask % (origin, destination))
-            print 'RECENT CREATO: origin: %s destination: %s' % (
-                origin, destination)  # TODO remove
             log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
                 origin, destination))
         except:  # TODO used?   

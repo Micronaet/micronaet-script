@@ -316,7 +316,9 @@ for product in product_db:
                     origin, destination)) 
             else:
                 try:
-                    os.symlink(origin, destination)
+                    # os.symlink(origin, destination)
+                    # shutil.copy(origin, destination)
+                    os.system(rsync_mask % (origin, destination))
                     log_sym.append('CREATO: origin: %s destination: %s' % (
                         origin, destination))
                 except:
@@ -349,7 +351,9 @@ for key, file_month, origin, f in recent_modify:
             origin, destination)) 
     else:
         try:
-            os.symlink(origin, destination)
+            # os.symlink(origin, destination)
+            # shutil.copy(origin, destination)
+            os.system(rsync_mask % (origin, destination))
             log_sym.append('RECENT CREATO: origin: %s destination: %s' % (
                 origin, destination))
         except:
