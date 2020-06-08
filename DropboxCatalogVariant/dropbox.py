@@ -337,6 +337,7 @@ if demo:
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 
 # Loop the new image:
+import pdb; pdb.set_trace()
 for key, file_month, origin, f in recent_modify:
     # B. Create first level + month folder:
     this_folder = os.path.join(recent_folder, key, file_month)
