@@ -27,6 +27,8 @@ from dateutil.relativedelta import relativedelta
 # -----------------------------------------------------------------------------
 # Parameters:
 # -----------------------------------------------------------------------------
+rsync_mask = 'rsync -avh "%s" "%s"'
+
 # Name conversion for folder parent:
 name_conversion = {
     'I': 'Indoor',
