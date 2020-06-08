@@ -28,7 +28,6 @@ from dateutil.relativedelta import relativedelta
 # Parameters:
 # -----------------------------------------------------------------------------
 rsync_mask = 'rsync -avh "%s" "%s"'
-import pdb; pdb.set_trace()
 
 
 # Name conversion for folder parent:
@@ -175,7 +174,6 @@ product_ids = product_pool.search([
     ('status', 'in', ('catalog', 'out', 'stock')),
     ])
 product_odoo = {}
-import pdb; pdb.set_trace()
 for product in product_pool.browse(product_ids):
     product_odoo[product.default_code.upper()] = (
         product.statistic_category[0].upper(),
@@ -190,7 +188,6 @@ recent_modify = [] # (from_path, name)
 from_month = get_now_less_month(month)
 
 tot = 0
-import pdb; pdb.set_trace()
 for (key, path, extension, walk) in input_folders:
     path = os.path.expanduser(path)
     if key in folder_db:
@@ -292,7 +289,6 @@ for root, folders, files in os.walk(dropbox_path):
 # TODO write log file:
 # Read all product and key elements:
 tot = 0
-import pdb; pdb.set_trace()
 for product in product_db:
     for key in product_db[product]:
         # ---------------------------------------------------------------------
@@ -342,7 +338,6 @@ if demo:
 recent_folder = os.path.join(dropbox_path, 'RECENT')
 
 # Loop the new image:
-import pdb; pdb.set_trace()
 for key, file_month, origin, f in recent_modify:
     # B. Create first level + month folder:
     this_folder = os.path.join(recent_folder, key, file_month)
@@ -372,7 +367,6 @@ for key, file_month, origin, f in recent_modify:
 # -----------------------------------------------------------------------------
 # Remove unused files:
 # -----------------------------------------------------------------------------
-import pdb; pdb.set_trace()
 for destination in (set(old_file) - set(new_file)):
     os.remove(destination)    
 
