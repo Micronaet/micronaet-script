@@ -1,14 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import logging
 import sys
 import pdb
 import time
 from opcua import Client
 from opcua.tools import endpoint_to_strings
-
-logger = logging.getLogger(__name__)
 
 uri = "opc.tcp://192.168.1.186:4840"
 
@@ -16,13 +13,13 @@ def get_endpoints(uri):
     client = Client(uri, timeout=2)
     edps = client.connect_and_get_server_endpoints()
     for i, ep in enumerate(edps, start=1):
-        logger.info('Endpoint %s:', i)
+        print '[INFO]', 'Endpoint %s:', i
         for (n, v) in endpoint_to_strings(ep):
-            logger.info('  %s: %s', n, v)
-        logger.info('')
+            print '[INFO]', '  %s: %s', n, v
     return edps
+
 pdb.set_trace()
-get_endpoints(uri)
+edps = get_endpoints(uri)
 
 sys.exit()
 client = Client(uri)
