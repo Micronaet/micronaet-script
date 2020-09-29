@@ -21,7 +21,7 @@ def get_endpoints(uri):
             logger.info('  %s: %s', n, v)
         logger.info('')
     return edps
-
+pdb.set_trace()
 get_endpoints(uri)
 
 sys.exit()
