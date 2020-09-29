@@ -29,8 +29,10 @@ pdb.set_trace()
 
 client = Client(uri)
 root = client.get_root_node()
+pdb.set_trace()
+sensor =root.get_child([0])
 descriptions = get_children(root)
-print descriptions
+print(descriptions)
 
 sys.exit()
 client = Client(uri)
