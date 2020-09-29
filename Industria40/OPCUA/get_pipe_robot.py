@@ -1,11 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import logging
 import sys
 import pdb
 import time
 from opcua import Client
 from opcua.tools import endpoint_to_strings
+
+logger = logging.getLogger(__name__)
 
 uri = "opc.tcp://192.168.1.186:4840"
 
