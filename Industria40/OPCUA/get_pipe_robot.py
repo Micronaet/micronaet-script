@@ -13,13 +13,13 @@ def get_endpoints(uri):
     client = Client(uri, timeout=2)
     endpoints = client.connect_and_get_server_endpoints()
     for i, ep in enumerate(endpoints, start=1):
-        print('[INFO]', 'Endpoint %s:', i)
+        print('[INFO]', 'Endpoint %s:' % i)
         for (n, v) in endpoint_to_strings(ep):
-            print('[INFO]', '  %s: %s', n, v)
+            print('[INFO]', '  %s: %s' % (n, v))
     return endpoints
 
 pdb.set_trace()
-edps = get_endpoints(uri)
+endpoints = get_endpoints(uri)
 
 sys.exit()
 client = Client(uri)
