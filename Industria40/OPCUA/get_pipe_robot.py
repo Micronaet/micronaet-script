@@ -12,10 +12,10 @@ uri = "opc.tcp://192.168.1.186:4840"
 def get_endpoints(uri):
     client = Client(uri, timeout=2)
     endpoints = client.connect_and_get_server_endpoints()
-    for i, ep in enumerate(endpoints, start=1):
+    for i, endpoint in enumerate(endpoints, start=1):
         print('[INFO]', 'Endpoint %s:' % i)
-        for (n, v) in endpoint_to_strings(ep):
-            print('[INFO]', '  %s: %s' % (n, v))
+        for record in endpoint_to_strings(endpoint):  #
+            print('[RECORD]', '  %s: %s' % record)
     return endpoints
 
 pdb.set_trace()
