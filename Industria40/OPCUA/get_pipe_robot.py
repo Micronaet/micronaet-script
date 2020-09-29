@@ -6,12 +6,26 @@ import pdb
 import time
 from opcua import Client
 
-url = "opc.tcp://192.168.1.186:4840"
+uri = "opc.tcp://192.168.1.186:4840"
 
-client = Client("opc.tcp://192.168.1.186:4840")
+def get_endpoints(uri):
+    client = Client(uri, timeout=2)
+    edps = client.connect_and_get_server_endpoints()
+    for i, ep in enumerate(edps, start=1):
+        logger.info('Endpoint %s:', i)
+        for (n, v) in endpoint_to_strings(ep):
+            logger.info('  %s: %s', n, v)
+        logger.info('')
+    return edps
 
+get_endpoints(uri)
+
+sys.exit()
+client = Client(uri)
 client.connect()
 pdb.set_trace()
+
+
 
 print("client connect")
 root = client.get_root_node()
