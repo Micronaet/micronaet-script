@@ -14,8 +14,8 @@ def get_endpoints(uri):
     endpoints = client.connect_and_get_server_endpoints()
     for i, endpoint in enumerate(endpoints, start=1):
         print('[INFO]', 'Endpoint %s:' % i)
-        for record in endpoint_to_strings(endpoint):  #
-            print('[RECORD]', '  %s: %s' % record)
+        for record in endpoint_to_strings(endpoint):  # name, value
+            print('  >>>   %s: %s' % record)
     return endpoints
 
 pdb.set_trace()
