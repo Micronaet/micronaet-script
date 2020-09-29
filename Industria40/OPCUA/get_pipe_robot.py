@@ -11,6 +11,7 @@ url = "opc.tcp://192.168.1.186:4840"
 client = Client("opc.tcp://192.168.1.186:4840")
 
 client.connect()
+pdb.set_trace()
 
 print("client connect")
 root = client.get_root_node()
