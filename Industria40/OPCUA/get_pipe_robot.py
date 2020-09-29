@@ -9,6 +9,12 @@ from opcua.tools import endpoint_to_strings
 
 uri = "opc.tcp://192.168.1.186:4840"
 
+
+def get_children(node):
+    descs = node.get_children_descriptions()
+    descs.sort(key=lambda x: x.BrowseName)
+    return descs
+
 def get_endpoints(uri):
     client = Client(uri, timeout=2)
     endpoints = client.connect_and_get_server_endpoints()
@@ -19,7 +25,12 @@ def get_endpoints(uri):
     return endpoints
 
 pdb.set_trace()
-endpoints = get_endpoints(uri)
+# endpoints = get_endpoints(uri)
+
+client = Client(uri)
+root = client.get_root_node()
+descriptions = get_children(root)
+print descriptions
 
 sys.exit()
 client = Client(uri)
