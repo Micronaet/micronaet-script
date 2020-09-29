@@ -30,6 +30,9 @@ pdb.set_trace()
 client = Client(uri)
 root = client.get_root_node()
 pdb.set_trace()
+for line in root.get_children():
+    print line
+
 sensor =root.get_child([0])
 descriptions = get_children(root)
 print(descriptions)
