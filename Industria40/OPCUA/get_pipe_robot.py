@@ -30,12 +30,12 @@ pdb.set_trace()
 client = Client(uri)
 root = client.get_root_node()
 pdb.set_trace()
-for line in root.get_children():
-    print line
+# for line in root.get_children():
+#     print(line)
 
-sensor =root.get_child([0])
-descriptions = get_children(root)
-print(descriptions)
+# sensor =root.get_child([0])
+# descriptions = get_children(root)
+# print(descriptions)
 
 sys.exit()
 client = Client(uri)
@@ -61,7 +61,6 @@ pdb.set_trace()
 client.disconnect()
 sys.exit()
 #temp = client.get_node("ns=2;i=2")
-print temp
 
 modes = {
     '':  (
@@ -86,7 +85,7 @@ modes = {
     'get_root_node',
     'get_server_node',
     'get_values',
-    'import_xml',
+    'import_xml',oca
     )
     }
 
@@ -98,9 +97,9 @@ for mode in modes:
                 call,
                 mode,
                 ))
-            print '[INFO]', call, '>>>>>', operation
+            print('[INFO]', call, '>>>>>', operation)
         except:
-            print '[ERROR]', sys.exc_info()
+            print('[ERROR]', sys.exc_info())
 
 client.disconnect()
 sys.exit()
