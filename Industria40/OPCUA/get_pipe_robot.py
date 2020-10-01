@@ -34,7 +34,7 @@ node = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza")
 
 import pdb; pdb.set_trace()
 for description in node.get_children_descriptions():
-    node_desc = client.get_node(node_desc.NodeId)
+    node_desc = client.get_node(description.NodeId)
     print node_desc
     
 
