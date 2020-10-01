@@ -29,7 +29,7 @@ def get_endpoints(uri):
 client = Client(uri)
 client.connect()
 print(client.get_node("ns=6;s=::AsGlobalPV:VersionePLC").get_value())
-work_time = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza"
+work_time = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza")
 import pdb; pdb.set_trace()
 client.disconnect()
 sys.exit()
