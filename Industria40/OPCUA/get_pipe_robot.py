@@ -28,7 +28,7 @@ pdb.set_trace()
 # endpoints = get_endpoints(uri)
 
 client = Client(uri)
-client.connectr()
+client.connect()
 print client.get_node("ns=4;i=21001").get_value()
 client.disconnect()
 sys.exit()
