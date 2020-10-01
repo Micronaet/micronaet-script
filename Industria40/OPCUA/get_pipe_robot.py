@@ -28,6 +28,19 @@ pdb.set_trace()
 # endpoints = get_endpoints(uri)
 
 client = Client(uri)
+
+
+
+
+test = client.get_node("ns=4;i=40000")
+test_value = text.get_value()
+print 'Device Manual', text_value
+client.disconnect()
+sys.exit()
+
+
+
+
 root = client.get_root_node()
 pdb.set_trace()
 # for line in root.get_children():
