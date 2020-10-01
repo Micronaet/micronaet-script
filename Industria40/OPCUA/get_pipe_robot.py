@@ -32,11 +32,12 @@ client.connect()
 print(client.get_node("ns=6;s=::AsGlobalPV:VersionePLC").get_value())
 node = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza")
 
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
+"""
 for description in node.get_children_descriptions():
     node_desc = client.get_node(description.NodeId)
     print node_desc
-    
+"""    
 
 client.disconnect()
 sys.exit()
