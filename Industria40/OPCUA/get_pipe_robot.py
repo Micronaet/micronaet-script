@@ -6,7 +6,7 @@ import pdb
 import time
 from opcua import Client
 from opcua.tools import endpoint_to_strings
-from opcua.common.structures_generator import StructGenerator, _clean_name
+# from opcua.common.structures_generator import StructGenerator, _clean_name
 
 uri = "opc.tcp://192.168.1.186:4840"
 
