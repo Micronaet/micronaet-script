@@ -29,6 +29,7 @@ def get_endpoints(uri):
 client = Client(uri)
 client.connect()
 print client.get_node("ns=6;s=::AsGlobalPV:VersionePLC").get_value()
+print client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza").get_value()
 client.disconnect()
 sys.exit()
 
