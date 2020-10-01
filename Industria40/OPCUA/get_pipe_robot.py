@@ -29,7 +29,7 @@ pdb.set_trace()
 
 client = Client(uri)
 client.connect()
-print client.get_node("ns=4;i=21001").get_value()
+print client.get_node("ns=4;s=::AsGlobalPV:VersionPLC").get_value()
 client.disconnect()
 sys.exit()
 
