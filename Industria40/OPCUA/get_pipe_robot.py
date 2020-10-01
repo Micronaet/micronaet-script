@@ -6,6 +6,7 @@ import pdb
 import time
 from opcua import Client
 from opcua.tools import endpoint_to_strings
+from opcua.common.structures_generator import StructGenerator, _clean_name
 
 uri = "opc.tcp://192.168.1.186:4840"
 
@@ -29,8 +30,14 @@ def get_endpoints(uri):
 client = Client(uri)
 client.connect()
 print(client.get_node("ns=6;s=::AsGlobalPV:VersionePLC").get_value())
-work_time = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza")
+node = client.get_node("ns=6;s=::AsGlobalPV:OreLavoroUtenza")
+
 import pdb; pdb.set_trace()
+for description in node.get_children_descriptions():
+    node_desc = client.get_node(node_desc.NodeId)
+    print node_desc
+    
+
 client.disconnect()
 sys.exit()
 
