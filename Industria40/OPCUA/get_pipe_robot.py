@@ -33,7 +33,7 @@ client = Client(uri)
 
 
 test = client.get_node("ns=4;i=40000")
-test_value = text.get_value()
+test_value = test.get_value()
 print 'Device Manual', text_value
 client.disconnect()
 sys.exit()
